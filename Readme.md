@@ -48,19 +48,16 @@ Features/Limitations
 * IDE example sketches for HID devices
 * IDE example sketch for 16u2 - 328/2560 communication
 
-**16u2 specifications on a normal R3 Uno/Mega:**
+**16u2 features on a normal R3 Uno/Mega:**
 * 16kb flash (minus 4kb for the Hoodloader) (8 for a 8u2, 32 for a 32u2)
 * 500 bytes ram (1000 bytes for a 32u2)
 * 4 usable USB Endpoints (3 for CDC Serial, 1 for an HID device)
 * 176 bytes DPRAM
 * 2 status LEDs (TX + RX)
 * 7 i/o pins with PCINT, SPI and PWM (3 pin SPI header + additional 4 pin header)
-* some i/o pins are connected to the 328/2560 (Serial, RESET)
-* less i/o pins, not all pins are broken out (SS, INT, etc)
-* no I2C (u2 series doesn't have TWI) but Serial (to 328/2560) and SPI (master only)
-
-
-
+* Some i/o pins are connected to the 328/2560 (Serial, RESET)
+* Less i/o pins, not all pins are broken out (SS, INT, etc)
+* No I2C (u2 series doesn't have TWI) but Serial (to 328/2560) and SPI (master only)
 
 Two Microconttrollers are better than one (Information)
 =======================================================
@@ -172,7 +169,7 @@ How to get back to the DFU bootloader
 Hoodloader v2 - How to use
 ==========================
 
-![16u2 Reset](pictures/ArduinoUno_R3_Front_Reset.png)
+![Bootloader Modes](pictures/bootloader.png)
 
 Short the reset pin once to enter the actual 16u2 program. Then your 16u2 firmware/sketch starts running.
 By default the program starts. If no program is presented the bootloader will run.
@@ -185,12 +182,12 @@ Once you've uploaded your custom program it is possible that you don't have/use 
 That might happen if you want to use more USB-HID functions which would be limited by the CDC.
 To enter bootloader mode to upload to one of the two MCUs (16u2 and 328/2560) short the reset pin twice again.
 
-![Bootloader Modes](pictures/bootloader.png)
+![16u2 Reset](pictures/ArduinoUno_R3_Front_Reset.jpg)
 
 Arduino Uno Overview/Pinout
 ===========================
 
-![Arduino Uno Pinout](pictures/pinout.jpg)
+![Arduino Uno Pinout](pictures/pinout.png)
 (c) [pighixxx](http://forum.arduino.cc/index.php/topic,146315.0.html)
 
 
