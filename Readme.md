@@ -6,12 +6,13 @@ Hoodloader v2
 **Hoodloader v2 takes Arduino Uno's and Mega's USB functions to a whole new level.**
 Version 2 is a __real__ bootloader  for the 16u2 (not a firmware like v1) which replaces the DFU Bootloader
 with a custom CDC Bootloader with USB-Serial function.
-The main function is to reprogram the main MCU (328/2560) and the USB MCU (16u2) at the same time
-with all its functions and no limitations.
 
-**It adds fully Arduino compatibility for the 16u2 to use it as standalone AVR too.**
+**The main function is to reprogram the main MCU (328/2560) and the USB MCU (16u2) at the same time
+with all its functions and no limitations.**
+
+It adds fully Arduino compatibility for the 16u2 to use it as standalone AVR too.
 So you can use the 16u2 for custom Arduino sketches. Whether __USB__, sensors, leds or anything you can imagine of.
-Its fully Arduino compatible now (with some i/o pins). **All you need is a normal Arduino Uno/Mega R3 + USB cable.**
+Its fully Arduino IDE compatible now (with some i/o pins). **All you need is a normal Arduino Uno/Mega R3 + USB cable.**
 
 Before I go more into detail you need to understand how the Arduino Uno/Mega works,
 what the Hoodloader does and what it can be used for, please read the text below.
@@ -59,8 +60,8 @@ Features/Limitations
 * Less i/o pins, not all pins are broken out (SS, INT, etc)
 * No I2C (u2 series doesn't have TWI) but Serial (to 328/2560) and SPI (master only)
 
-Two Microconttrollers are better than one (Information)
-=======================================================
+Two Microcontrollers are better than one
+=========================================
 
 **This section describes how the whole thing works together and gives some background information.
 For better understanding I recommend to read this.**
@@ -104,15 +105,14 @@ Last but not least there were some problems with the multi report descriptor of 
 To keep things simple for now: Some OS (linux especially with gamepads) had problems with
 too many USB-HID devices in a same report (Keyboard, Mouse, 4 gamepads, Media, etc).
 
-
 This time I want to keep things more clear but still more flexible.
 And I also want to add more documentation for those of you who want to learn this USB stuff
 and develop more professional things on their own. I know that its hard to understand the USB protocol.
 Its a lot of text in the readme, but hopefully some people are glad about that information.
+
 But I am not perfect neither. I learned everything on my own. Learning by doing.
 **I started from scratch at the end of Jan 2014 with Arduino/Electronics!**
 So you can do that too, I believe in you :)
-
 
 Hoodloader v2 - what's new?
 ===========================
@@ -130,7 +130,7 @@ You can ether use the CDC + HID or more HIDs without CDC or custom USB devices.
 
 **To sum up: You can flash the 16u2 with avr-dude or Arduino IDE and the 328/2560 with the Arduino IDE like you are used to.**
 
-Hoodloader v2 - How can I brick my Arduino?
+Can I brick my Arduino?
 ===========================================
 
 Bricking is a wide defined term. In this case bricking 'only' means that you cannot use you Arduino any more
@@ -184,18 +184,6 @@ To enter bootloader mode to upload to one of the two MCUs (16u2 and 328/2560) sh
 
 ![16u2 Reset](pictures/ArduinoUno_R3_Front_Reset.jpg)
 
-Arduino Uno Overview/Pinout
-===========================
-
-![Arduino Uno Pinout](pictures/pinout.png)
-(c) [pighixxx](http://forum.arduino.cc/index.php/topic,146315.0.html)
-
-
-16u2 Pinout
-```
-TODO
-```
-
 How to upload sketches to the 328/2560
 --------------------------------------
 
@@ -219,6 +207,19 @@ or download here
 
 avrdude.exe -C avrdude.conf -p at90usb162 -c avr109 -b 1200 -P COM13 -U flash:w:Hoodloader1_8.hex 
 avrdude.exe -C avrdude.conf -p at90usb162 -c avr109 -b 1200 -P COM13 -e
+
+
+Arduino Uno Overview/Pinout
+===========================
+
+![Arduino Uno Pinout](pictures/pinout.png)
+(c) [pighixxx](http://forum.arduino.cc/index.php/topic,146315.0.html)
+
+
+16u2 Pinout
+```
+TODO
+```
 
 
 Hoodpedia
