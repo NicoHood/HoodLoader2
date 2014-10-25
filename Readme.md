@@ -71,6 +71,8 @@ and some online shops even sell the bigger 32u2 (I've got two of them *g*).
 | Before          | DFU Bootloader (via Flip)                   | USB-Serial Firmware    |
 | After           | Hoodloader v2 (CDC Bootloader + USB-Serial) | Custom Sketch/Firmware |
 
+
+
 Hoodloader v2 is a __Bootloader__ not a firmware. It replaces the DFU bootloader with a CDC bootloader.
 **You wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx) any more.**
 But this gives us the option to use avr-dude to flash the 16u2 with custom firmware.
@@ -167,7 +169,7 @@ Burning via ISP (advanced)
 This is for advanced users who want to burn the bootloader with an external ISP directly.
 You can do this with your program if choice (e.g. avr-dude) or use the Arduino IDE and select 16u2 and hit "burn bootloader".
 
-TODO lock fuses to deactivate bootloader sction access?
+TODO lock fuses to deactivate bootloader section access?
 ====
 
 ```
@@ -183,11 +185,11 @@ Hoodloader v2 - How to use
 
 ![Bootloader Modes](pictures/bootloader.png)
 
-Short the reset pin once to enter the actual 16u2 program. Then your 16u2 firmware/sketch starts running.
+**Short the reset pin once to enter the actual 16u2 program** (see picture below). Then your 16u2 firmware/sketch starts running.
 By default the program starts. If no program is presented the bootloader will run.
 
 Because the Hoodloader replaces the 16u2's bootloader you can enter it like the Arduino Leonardo bootloader.
-Short the reset pin (see pinout picture) twice to enter bootloader mode (manually) to upload code to the 16u2 or the 328/2560.
+**Short the reset pin twice to enter bootloader mode (manually)** to upload code to the 16u2 or the 328/2560.
 Then you have full CDC bootloader functions and USB-Serial with auto reset.
 
 Once you've uploaded your custom program it is possible that you don't have/use the CDC Serial any more.
@@ -355,6 +357,7 @@ pin numbers for installation sketch
 smaller headlines
 we->you replace
 links
+check if fastled/other libs work
 
 How to compile (with a Raspberry Pi)
 ==================================
