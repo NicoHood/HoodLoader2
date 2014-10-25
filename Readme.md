@@ -20,6 +20,8 @@ I know its a lot of text, but you should understand the basics.
 **Caution: read the installing instructions carefully to not brick your Arduino.**
 The rest is for interested people.
 
+See [HID Project](https://github.com/NicoHood/HID) for the Arduino IDE core files/examples.
+
 See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
 
 HID Project
@@ -46,8 +48,9 @@ Features/Limitations
 * Arduino integration + programming with the 16u2
 * USB-Serial programming of the 328/2560
 * Self flashing sketch to burn the Hoodloader v2 to the 16u2
-* IDE example sketches for HID devices
-* IDE example sketch for 16u2 - 328/2560 communication
+* IDE example USB-Serial demo (equal to original firmware)
+* IDE example sketches for HID devices (directly controlled by the 16u2 sketch)
+* IDE example sketch for 16u2 - 328/2560 communication (similar to Hoodloader v1 technique)
 
 **16u2 features on a normal R3 Uno/Mega:**
 * 16kb flash (minus 4kb for the Hoodloader) (8 for a 8u2, 32 for a 32u2)
@@ -59,6 +62,9 @@ Features/Limitations
 * Some i/o pins are connected to the 328/2560 (Serial, RESET)
 * Less i/o pins, not all pins are broken out (SS, INT, etc)
 * No I2C (u2 series doesn't have TWI) but Serial (to 328/2560) and SPI (master only)
+* Baud 1200 is used for Serial reprogramming, you wont be able to use the USB-Serial bridge with active Hoodloader
+
+See [HID Project](https://github.com/NicoHood/HID) for the Arduino IDE core files/examples.
 
 Two Microcontrollers are better than one
 =========================================
@@ -121,7 +127,7 @@ It has a **USB-Serial function** (except at baud 1200 which is used for CDC uplo
 that everyone should have pre-installed on its Arduino Uno/Mega. This is used to reprogram the 328/2560.
 
 Hoodloader v2 is a __Bootloader__ not a firmware. It replaces the DFU bootloader with a CDC bootloader.
-**You wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx) anymore.**
+**You wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx) any more.**
 But this gives us the option to **use avr-dude to flash the 16u2 with custom firmware** (like some of the listed above).
 
 The main advantage is to **flash the 16u2 with the Arduino IDE**.
@@ -135,21 +141,23 @@ Can I brick my Arduino?
 
 Bricking is a wide defined term. In this case bricking 'only' means that you cannot use you Arduino any more
 without a second ISP or an [Arduino that acts as ISP](http://arduino.cc/en/Tutorial/ArduinoISP) /
-[16u2 as ISP with Hoodloader v1](https://github.com/NicoHood/Hoodloader)).
+[16u2 as ISP with Hoodloader v1](https://github.com/NicoHood/Hoodloader)). 
+We avoid not to overwrite the bootloader wrong and wont be able to flash it again without the needed hardware.
 
 **So if you have a standalone Arduino UNO read the instructions carefully and don't panic if anything seems not to work first!**
 The only problem is when anything goes wrong when flashing the 16u2's bootloader. **Once it is installed you are save.**
-__Normally nothing should go wrong__, if it does, read the instructions below.
+__Normally nothing should go wrong__, if it does, read the instructions below. If the install sketch is still on your main MCU
+you can still try to flash the bootloader again 'blind' without Serial output via USB.
 
-**You also wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx) anymore.**
+**You also wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx) any more.**
 You should be aware of that. Therefore you can use avr-dude instead.
-You can flash the old DFU bootloader with an ISP or the installation 328/2560 sketch
+You can flash the old DFU bootloader back with an ISP or the installation 328/2560 sketch
 as long as you can access the Serial or Softserial (read installing instructions again carefully before panic).
 
-| 8/16/32u2 | Bootloader (4kb) | Program (4/12/28kb)|
-|:---------------------------------------|:-----------------------------------|:-----------------------------------|
-| Before | DFU Bootloader | USB-Serial Firmware |
-| After | Hoodloder (CDC Bootloader + USB-Serial) | Custom Sketch/Firmware |
+| 8/16/32u2 Flash | Bootloader (4kb)                            | Program (4/12/28kb)                                                    |
+|:----------------|:--------------------------------------------|:-----------------------------------------------------------------------|
+| Before          | DFU Bootloader                              | USB-Serial Firmware                                                    |
+| After           | Hoodloader v2 (CDC Bootloader + USB-Serial) | Custom Sketch([HID Project](https://github.com/NicoHood/HID))/Firmware |
 
 Hoodloader v2 - Installation
 ============================
@@ -161,13 +169,29 @@ we use a modified version of Nick Gammon's [Atmega Board Programmmer](https://gi
 Connect all lines together like this:
 ```
 16u2  - 328/2560
-MOSI  - MOSI
+MOSI  - MOSI (pin x Uno | pin x Mega)
 MISO  - MISO
 SCK   - SCK
 RESET - PIN 10
 ```
 
 Fuses (for advanced users)
+
+Installation sketch
+-------------------
+
+First remove __all__ hardware from your Arduino to ensure nothing is messing up the upload.
+Upload the installation sketch to your Arduino Uno/Mega. The sketch can burn bootloaders to several MCUs, made by Nick Gammon.
+Its special modified to ensure high security to not brick your Arduino. The normal way is to control the uploading via Serial.
+But if anything goes wrong and you can't access the Serial via USB any more you still are able to try different methods to flash the 16u2.
+You can access the Serial programming interface also on Softserial on pin x for TX and x for RX. Short pin x to deactivate Serial0 programming.
+If you don't have a second USB-Serial adapter the only way to flash the MCU is then to connect a button to pin x to flash the Hoodloader
+or to pin x to flash the DFU + USB-Serial manually again.
+
+The led on pin 13 is for status:
+* Heartbeat: IDLE, waiting for user input/finished
+* Blinking very fast: flashing new firmware
+* Blinking every 100ms: error flashing the firmware (See Softserial output)
 
 How to get back to the DFU bootloader
 
@@ -261,6 +285,8 @@ Useful Links
 
 Nick Gammon's [Atmega Board Programmmer](https://github.com/nickgammon/arduino_sketches).
 
+See [HID Project](https://github.com/NicoHood/HID) for the Arduino IDE core files/examples.
+
 See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
 
 
@@ -301,6 +327,8 @@ add copyright information
 change pid/vid
 fuses
 isp function (4kb limit)
+pin numbers for installation sketch
+smaller headlines
 
 How to compile (on a Raspberry Pi)
 ==================================
