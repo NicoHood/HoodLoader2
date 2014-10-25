@@ -1,4 +1,4 @@
-Hoodloader v2
+Hoodloader v2 Alpha
 =============
 
 ![header](pictures/header.jpg)
@@ -146,6 +146,11 @@ You should be aware of that. Therefore you can use avr-dude instead.
 You can flash the old DFU bootloader with an ISP or the installation 328/2560 sketch
 as long as you can access the Serial or Softserial (read installing instructions again carefully before panic).
 
+| 8/16/32u2 | Bootloader (4kb) | Program (4/12/28kb)|
+|:---------------------------------------|:-----------------------------------|:-----------------------------------|
+| Before | DFU Bootloader | USB-Serial Firmware |
+| After | Hoodloder (CDC Bootloader + USB-Serial) | Custom Sketch/Firmware |
+
 Hoodloader v2 - Installation
 ============================
 
@@ -161,6 +166,8 @@ MISO  - MISO
 SCK   - SCK
 RESET - PIN 10
 ```
+
+Fuses (for advanced users)
 
 How to get back to the DFU bootloader
 
@@ -190,13 +197,14 @@ How to upload sketches to the 328/2560
 Short the 16u2's reset pin twice to enter bootloader mode. You can upload your Arduino sketch like you are used to.
 You might need to check the correct Serial port though. To start the 16u2 sketch again short reset again once.
 
-How to upload sketches to the 16u2
-----------------------------------
+How to upload sketches to the 16u2 via IDE
+------------------------------------------
 
 You can now use the 16u2 as normal Arduino USB board like a Leonardo/Micro/Teensy.
 You have to install new drivers since it will conflict with the official due to new USB functions.
 (it will use a different PID/VID)
 
+Go to the HID project to get the newest Arduino core library for the 16u2.
 
 
 How to upload/flash firmwares (hex files) to the 16u2 with avr-dude
@@ -271,7 +279,10 @@ See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
 Bugs
 ====
 
-Gamepads and RAW-HID in an HID multi report gives problems under some OS (Gamepads especially Linux)
+Gamepads and RAW-HID in an HID multi report gives problems under some OS (Gamepads especially Linux).
+This is an OS bug and has nothing to do with the Hoodloader.
+Also the Hoodloader only ensures that you can upload sketches to the MCUs. If your USB HID devices have any problems
+please check the HID Project for known bugs/updates.
 
 TODO
 ====
@@ -287,6 +298,9 @@ pinout
 2x press bootloader reset
 rename to hoodloader2
 add copyright information
+change pid/vid
+fuses
+isp function (4kb limit)
 
 How to compile (on a Raspberry Pi)
 ==================================
