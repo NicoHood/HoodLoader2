@@ -8,14 +8,15 @@ Version 2 is a __real__ bootloader  for the 16u2 (not a firmware like v1) which 
 with a custom CDC Bootloader with USB-Serial function. You can reprogram the main MCU (328/2560) and the USB MCU (16u2)
 at the same time with all its functions and no limitations.
 
-It adds fully Arduino IDE compatibility for the 16u2 to use it as standalone AVR for custom sketches too.
-Whether __USB__ function (e.g. HID: Keyboard, Mouse, Gamepad, Media Keys), sensors, leds or anything you can imagine of.
-Its fully Arduino IDE compatible now (with some i/o pins). **All you need is a normal Arduino Uno/Mega R3 + USB cable.**
+It adds **fully Arduino IDE compatibility** (with some i/o pins) for the 16u2 to use it as standalone AVR for custom sketches too.
+Whether __USB__ function (e.g. HID: Keyboard, Mouse, Gamepad, Media Keys), sensors or leds: anything you can imagine of.
+**All you need is a normal Arduino Uno/Mega R3 + USB cable + a few wires.**
 
-Before I go more into detail you need to understand how the Arduino Uno/Mega works,
-what the Hoodloader does and what it can be used for, please read the text below.
-I know its a lot of text, but you should understand the basics. 
-**Caution: read the installing instructions carefully to not brick your Arduino.**
+You should read the readme carefully to understand what the Hoodloader v2 is used for and what it can make possible.
+Also it is very important to follow the installation instructions and its warnings carefully.
+At the end is a written text about the idea, the key functions and how I got there.
+There is also a small Hoodpedia with some words you might not understand and its explanation
+to let everybody understand what USB is all about (mostly :D).
 
 See [HID Project](https://github.com/NicoHood/HID) for the Arduino IDE core files/examples.
 
@@ -24,40 +25,36 @@ See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
 HID Project
 ===========
 
-**The HID project contains 3 software solutions:**
-* Arduino Leonardo/Micro additional HID USB cores
-* [Hoodloader v1](https://github.com/NicoHood/Hoodloader) 328/2560 HID Serial Protocol functions (Uno/Mega)
-* [Hoodloader v2](https://github.com/NicoHood/Hoodloader2) 16u2 cores with USB (Uno/Mega)
-
-This project went to a lot of phases.
+This project went to a lot of phases and we now reached a library with 3 software solutions.
 The idea is to enable enhanced USB functions to almost all 'standard' Arduino boards (Uno, Mega, Leonardo, Micro).
-To make things more clear the HID Software is in this repository and the Hoodloader source in its own repositories (v1 & v2).
+To make things more clear the HID Software is in this repository and the Hoodloader (v1 & v2) sources are in their own repositories.
 
+**The HID project contains 3 software solutions:**
+* Arduino Leonardo/(Pro)Micro extended USB HID-report descriptors
+* [Hoodloader v1](https://github.com/NicoHood/Hoodloader) 328/2560 HID Serial Protocol functions (Uno/Mega)
+* [Hoodloader v2](https://github.com/NicoHood/Hoodloader2) 16u2 USB cores with HID (Uno/Mega)
 
+The API (syntax) is always the same for each project, so you can port code from one divice to another very easy.
 
 Overview: Features/Limitations
 ==============================
 
-**Normally any R3 Uno/Mega has a 16u2.** Earlier versions have an 8u2 and some online shops even sell the bigger 32u2.
-
-| 8/16/32u2 Flash | Bootloader (4kb)                            | Program (4/12/28kb)                                                    |
-|:----------------|:--------------------------------------------|:-----------------------------------------------------------------------|
-| Before          | DFU Bootloader (via Flip)                   | USB-Serial Firmware                                                    |
-| After           | Hoodloader v2 (CDC Bootloader + USB-Serial) | Custom Sketch([HID Project](https://github.com/NicoHood/HID))/Firmware |
+**Normally any R3 Uno/Mega has a 16u2.** Earlier versions had an 8u2
+and some online shops even sell the bigger 32u2 (I've got two of them *g*).
 
 **Hoodloader v2 functions:**
 * CDC Bootloader for the 16u2 (to upload .hex files via avr-dude/Arduino IDE)
 * USB-Serial programming of the 328/2560
 
-**[HID Project](https://github.com/NicoHood/HID) features:**
-* Arduino integration + programming with the 16u2
-* Self flashing sketch to burn the Hoodloader v2 to the 16u2
+**[HID Project](https://github.com/NicoHood/HID) features (for Hoodloader v2):**
+* Arduino IDE integration + programming with the 16u2
+* Self flashing sketch to burn the Hoodloader v2 to the 16u2 (modified version from Nick Gammon)
 * IDE example USB-Serial demo (equal to original firmware)
-* IDE example sketches for HID devices (directly controlled by the 16u2 sketch)
-* IDE example sketch for 16u2 - 328/2560 communication (similar to Hoodloader v1 technique)
+* IDE example sketches for 16u2 HID devices (Mouse, Keyboard, Gamepad, Media/System Keys)
+* IDE example sketch for 16u2 - 328/2560 communication (Hoodloader v1 technique)
 
-**16u2 features on a normal R3 Uno/Mega:**
-* 16kb flash (minus 4kb for the Hoodloader) (8 for a 8u2, 32 for a 32u2)
+**16u2 key parameters on a normal Uno/Mega R3:**
+* 16kb flash (minus 4kb for the Hoodloader v2) (8 for a 8u2, 32 for a 32u2)
 * 500 bytes ram 8u2 and 16u2 (1000 bytes ram for a 32u2)
 * 4 usable USB Endpoints (CDC Serial: 3, each HID device: 1 (multi report possible))
 * 176 bytes DPRAM (ram for USB endpoints, double bank possible)
@@ -67,7 +64,12 @@ Overview: Features/Limitations
 * PD7 connected to RESET of the 328/2560
 * Not all pins are broken out (SS, INT, etc)
 * No I2C (u2 series doesn't have TWI) but Serial (to 328/2560) and SPI (master only)
-* CDC baud 1200 is used for CDC self reprogramming, no USB-Serial bridge with baud 1200 possible
+* No USB-Serial bridge at baud 1200 possible, used for CDC self reprogramming
+
+| 8/16/32u2 Flash | Bootloader (4kb)                            | Program (4/12/28kb)    |
+|:----------------|:--------------------------------------------|:-----------------------|
+| Before          | DFU Bootloader (via Flip)                   | USB-Serial Firmware    |
+| After           | Hoodloader v2 (CDC Bootloader + USB-Serial) | Custom Sketch/Firmware |
 
 Hoodloader v2 is a __Bootloader__ not a firmware. It replaces the DFU bootloader with a CDC bootloader.
 **You wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx) any more.**
@@ -75,8 +77,8 @@ But this gives us the option to use avr-dude to flash the 16u2 with custom firmw
 
 The main advantage is to **flash the 16u2 with the Arduino IDE**.
 Hoodloader v2 comes with full Arduino compatible core (see [HID Project](https://github.com/NicoHood/HID))
-to create your very own custom programs on the 2nd USB chip.
-You can either use the CDC + HID, more than one HID interface without CDC or custom USB devices.
+to create your very own custom programs with the normally unused 16u2 USB chip.
+You can either use the CDC + HID, more than one HID interface without CDC or custom USB devices (similar to Teensy).
 
 **To sum up: You can flash the 16u2 with avr-dude or Arduino IDE and the 328/2560 with the Arduino IDE like you are used to.**
 
@@ -93,30 +95,29 @@ Arduino Uno Overview/Pinout
 ```
 TODO
 ```
-Note: Some pins are not connected on a standard Arduino Uno R3 but still listed so you can use them if you had a custom board.
+**Note: Some pins are not connected on a standard Arduino Uno R3** but still listed so you can use them if you had a custom board.
 You also need to solder the additional 4 pin header to access all 7 PB i/o pins.
 
 Hoodloader v2 - Installation
 ============================
 
-**Caution: We will overwrite the DFU Bootloader. Read the installing instructions carefully, double check connections and __dont panic__!**
+**Caution: You will overwrite the DFU Bootloader. Read the installing instructions carefully, double check connections and __dont panic__!**
 
 **You wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx)
 via DFU any more** (but via avr-dude instead).
-If anything goes wrong while burning the bootloader you can 'brick' your Arduino.
 
+**If anything goes wrong while burning the bootloader you can 'brick' your Arduino.**
 Bricking is a wide defined term. In this case bricking 'only' means that you cannot use your Arduino's 16u2 USB-Serial bridge
 any more without a second ISP or an [Arduino that acts as ISP](http://arduino.cc/en/Tutorial/ArduinoISP) /
-[16u2 as ISP with Hoodloader v1](https://github.com/NicoHood/Hoodloader)).
+[16u2 as ISP with Hoodloader v1](https://github.com/NicoHood/Hoodloader#16u2-as-isp-usage)).
 But there are still ways to upload the firmware to your 16u2 with a 'bricked' 16u2 Bootloader/USB-Serial firmware
 as long as the installation sketch is on your 328/2560 __or__ you have a second Arduino as ISP/ISP, see below.
 
-
 To install a bootloader in general we would need an ISP (In system programmer).
-You still can use your own ISP if you like to but for those of you who only have a standalone Arduino Uno/Mega R3
+You still can use your own ISP if you like to. For those of you who only have a standalone Arduino Uno/Mega R3
 we use a modified version of Nick Gammon's [Atmega Board Programmmer](https://github.com/nickgammon/arduino_sketches).
-In this case we use the 328/2560 as ISP with a the Hoodloader preloaded in the 328/2560's sketch.
-If you want to just use your own ISP to burn the hex file, see below.
+In this case the 328/2560 acts as ISP with a the Hoodloader .hex preloaded in PROGMEM.
+If you just want to use your own ISP to burn the hex file, see below.
 
 Installation sketch
 -------------------
@@ -135,7 +136,7 @@ MISO  - MISO
 SCK   - SCK
 RESET - PIN 10
 
-328/2560 pin functions:
+328/2560 installation sketch pin functions:
 13 status led
  Softserial TX
  Softserial RX
@@ -290,25 +291,17 @@ Hoodpedia
 
 **Some information that you might find usefull. Ask me for more help**
 
-CDC-Serial: A virtual Serial port via USB to the PC
-
-USB-HID: Human Interface Device for Keyboard, Mouse, Gamepad etc to access and controll the PC
-
-USB Endpoint: AVR (16u2 has 1 control endpoint and 4 endpoints for user functions. CDC takes 3 (Control, TX, RX), each HID 1)
-
-USB Double Bank: a doubled DPRAM buffer to fill a bank of an endpoint while the other is read from the PC
-
-DPRAM: Ram for USB communication. The 16u2 has 176 DPRAM which all endpoints share.
+* CDC-Serial: A virtual Serial port via USB to the PC
+* USB-HID: Human Interface Device for Keyboard, Mouse, Gamepad etc to access and controll the PC
+* USB Endpoint: AVR (16u2 has 1 control endpoint and 4 endpoints for user functions. CDC takes 3 (Control, TX, RX), each HID 1)
+* USB Double Bank: a doubled DPRAM buffer to fill a bank of an endpoint while the other is read from the PC
+* DPRAM: Ram for USB communication. The 16u2 has 176 DPRAM which all endpoints share.
 (USB Control Endpoint normally uses 8 bytes; CDC Control 8; CDC TX, RX, HID 8-64; double bank *2)
-
-RAW-HID: A two way data pipe with the size of the endpoint to send data from and to the USB device. Also called Generic-HID
-
-HID-Report Descriptor: Describes what devices the USB-HID should have with what functions. Very complicated and can cause errors if its not correct.
+* RAW-HID: A two way data pipe with the size of the endpoint to send data from and to the USB device. Also called Generic-HID
+* HID-Report Descriptor: Describes what devices the USB-HID should have with what functions. Very complicated and can cause errors if its not correct.
 See [this tutorial](http://eleccelerator.com/tutorial-about-usb-hid-report-descriptors/) for more information.
-
-HID-Multireport: Each HID device can have multiple devices in one endpoint. This might cause errors with RAW-HID, Gamepads and others.
-
-LUFA: a lightweight USB-API written in C by Dean Camera. Also used by the Hoodloader.
+* HID-Multireport: Each HID device can have multiple devices in one endpoint. This might cause errors with RAW-HID, Gamepads and others.
+* LUFA: a lightweight USB-API written in C by Dean Camera. Also used by the Hoodloader.
 Somehow hard to understand first but very powerful once you've got into it.
 
 Useful Links
@@ -348,7 +341,7 @@ baud 1200?
 pwm pins?
 pinout 16u2
 connection to flash
-usb-16u2-328/2560 skizze
+usb-16u2-328/2560 skizze/header
 isp flash sketch modification
 pictures, example with leds spi, ir sensor, usb function
 pinout
@@ -360,14 +353,18 @@ fuses
 isp function (4kb limit)
 pin numbers for installation sketch
 smaller headlines
+we->you replace
+links
 
-How to compile (on a Raspberry Pi)
+How to compile (with a Raspberry Pi)
 ==================================
-This instruction is for compiling with a Raspberry Pi (Debian).
-I cannot tell you how to compile Lufa with any other device, but Google can.
+This instruction is for compiling the Hoodloader on your own with a Raspberry Pi (Debian).
+I cannot tell you how to compile Lufa with any other OS, but Google can.
+Believe me: Windows is a struggle to compile.
 
-For me the easiest thing is to just code with my Windows PC and only compile with my Raspberry over ssh.
+For me the easiest thing is to code with my Windows PC only and compile with my Raspberry over ssh.
 I recommend creating a Windows share by right clicking your Arduino folder and hit "share".
+Then mount this share with your Raspberry like this:
 ``` bash
 $ cd Desktop
 $ mkdir Arduino
@@ -375,7 +372,7 @@ $ mkdir Arduino
 #Test mounting:
 sudo mount -t cifs -o username=yourusername,password=yourpass,nounix,noserverino //YOUR-PC-NAME/Arduino Arduino
 
-#run it automated at startup. If not connected this will cause a long timeout.
+#run it automated at startup. If not connected this can cause a long timeout.
 sudo nano /etc/fstab
 //YOUR-PC-NAME/Arduino /home/pi/Desktop/Arduino cifs username=yourusername,password=yourpass,nounix,noserverino 0 0
 ```
