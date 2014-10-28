@@ -73,6 +73,7 @@ and some online shops even sell the bigger 32u2 (I've got two of them *g*).
 
 
 
+
 Hoodloader v2 is a __Bootloader__ not a firmware. It replaces the DFU bootloader with a CDC bootloader.
 **You wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx) any more.**
 But this gives us the option to use avr-dude to flash the 16u2 with custom firmware.
@@ -358,6 +359,9 @@ smaller headlines
 we->you replace
 links
 check if fastled/other libs work
+make clean
+lizens!
+v2 -> 2
 
 How to compile (with a Raspberry Pi)
 ==================================
