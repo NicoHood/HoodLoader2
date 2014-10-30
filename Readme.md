@@ -27,7 +27,7 @@ HID Project
 
 This project went to a lot of phases and we now reached a library with 3 software solutions.
 The idea is to enable enhanced USB functions to almost all 'standard' Arduino boards (Uno, Mega, Leonardo, Micro).
-To make things more clear the HID Software is in this repository and the Hoodloader (v1 & v2) sources are in their own repositories.
+To make things more clear the HID Software is in this repository and the Hoodloader (v1 & v2) sources + installation instructions are in their own repositories.
 
 **The HID project contains 3 software solutions:**
 * Arduino Leonardo/(Pro)Micro extended USB HID-report descriptors
@@ -53,11 +53,13 @@ and some online shops even sell the bigger 32u2 (I've got two of them *g*).
 * IDE example sketches for 16u2 HID devices (Mouse, Keyboard, Gamepad, Media/System Keys)
 * IDE example sketch for 16u2 - 328/2560 communication (Hoodloader v1 technique)
 
-**16u2 key parameters on a normal Uno/Mega R3:**
+**16u2 features on a normal Uno/Mega R3:**
 * 16kb flash (minus 4kb for the Hoodloader v2) (8 for a 8u2, 32 for a 32u2)
 * 500 bytes ram 8u2 and 16u2 (1000 bytes ram for a 32u2)
+* 500 bytes EEPROM 8u2 and 16u2 (1000 bytes EEPROM for a 32u2)
 * 4 usable USB Endpoints (CDC Serial: 3, each HID device: 1 (multi report possible))
 * 176 bytes DPRAM (ram for USB endpoints, double bank possible)
+* 8 and 16 bit timer
 * 2 status LEDs (PD4 RX + PD5 TX)
 * 7 i/o pins with PCINT, SPI and PWM (3 pin SPI header + additional 4 pin header)
 * HW Serial connected to Serial0 of the 328/2560
@@ -70,9 +72,6 @@ and some online shops even sell the bigger 32u2 (I've got two of them *g*).
 |:----------------|:--------------------------------------------|:-----------------------|
 | Before          | DFU Bootloader (via Flip)                   | USB-Serial Firmware    |
 | After           | Hoodloader v2 (CDC Bootloader + USB-Serial) | Custom Sketch/Firmware |
-
-
-
 
 Hoodloader v2 is a __Bootloader__ not a firmware. It replaces the DFU bootloader with a CDC bootloader.
 **You wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx) any more.**
@@ -110,17 +109,14 @@ Hoodloader v2 - Installation
 via DFU any more** (but via avr-dude instead).
 
 **If anything goes wrong while burning the bootloader you can 'brick' your Arduino.**
-Bricking is a wide defined term. In this case bricking 'only' means that you cannot use your Arduino's 16u2 USB-Serial bridge
-any more without a second ISP or an [Arduino that acts as ISP](http://arduino.cc/en/Tutorial/ArduinoISP) /
-[16u2 as ISP with Hoodloader v1](https://github.com/NicoHood/Hoodloader#16u2-as-isp-usage)).
-But there are still ways to upload the firmware to your 16u2 with a 'bricked' 16u2 Bootloader/USB-Serial firmware
-as long as the installation sketch is on your 328/2560 __or__ you have a second Arduino as ISP/ISP, see below.
+In this case bricking 'only' means that you cannot use your Arduino's 16u2 USB-Serial bridge any more (and programming via USB too).
+Then you need a second working Arduino to burn the firmware again.
 
 To install a bootloader in general we would need an ISP (In system programmer).
-You still can use your own ISP if you like to. For those of you who only have a standalone Arduino Uno/Mega R3
+If you just want to use your own ISP to burn the hex file, see below.
+For those of you who only have a standalone Arduino Uno/Mega R3
 we use a modified version of Nick Gammon's [Atmega Board Programmmer](https://github.com/nickgammon/arduino_sketches).
 In this case the 328/2560 acts as ISP with a the Hoodloader .hex preloaded in PROGMEM.
-If you just want to use your own ISP to burn the hex file, see below.
 
 Installation sketch
 -------------------
@@ -152,8 +148,15 @@ Get the Arduino IDE installation sketch from the [HID Project](https://github.co
 
 Upload the installation sketch to your Arduino Uno/Mega. The sketch can burn bootloaders to several MCUs, made by Nick Gammon.
 Its special modified to ensure high security to not brick your Arduino. The normal way is to control the uploading via Serial.
-But if anything goes wrong and you can't access the Serial via USB any more you still are able to try different methods to flash the 16u2.
-You can access the Serial programming interface also on Softserial on pin x for TX and x for RX. Short pin x to deactivate Serial0 programming.
+
+Recovery options
+----------------
+
+If anything goes wrong and you can't access the Serial via USB any more you still are able to try different methods to flash the 16u2.
+You can use another Arduino and upload the installation sketch there and try the flash again.
+Or you can try to access the recovery options of the installation sketch if its still on the 328/2560:
+
+You can access the Serial programming interface also on Softserial on pin x for TX and x for RX (baud 9600). Short pin x to deactivate Serial0 programming.
 If you don't have a second USB-Serial adapter the only way to flash the MCU is then to connect a button to pin x to flash the Hoodloader
 or to pin x to flash the DFU + USB-Serial manually again.
 
@@ -362,6 +365,7 @@ check if fastled/other libs work
 make clean
 lizens!
 v2 -> 2
+midi
 
 How to compile (with a Raspberry Pi)
 ==================================
@@ -391,6 +395,11 @@ $ cd Desktop/Arduino/Hoodloader
 $ sudo make clean
 $ sudo make
 ```
+
+Additional Information
+======================
+
+USB PID/VID
 
 Version History
 ===============
