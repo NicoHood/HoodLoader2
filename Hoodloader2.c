@@ -137,6 +137,7 @@ static uint8_t BufferCount = 0; // Number of bytes currently stored in the buffe
 static uint8_t BufferIndex = 0; // position of the first buffer byte (Buffer out)
 static uint8_t BufferEnd = 0; // position of the last buffer byte (Serial in)
 
+// variable to determine if CDC baudrate is for the bootloader mode or not
 static bool CDCActive = false;
 
 /** Main program entry point. This routine configures the hardware required by the bootloader, then continuously
@@ -153,11 +154,7 @@ int main(void)
 
 	while (RunBootloader)
 	{
-
 		CDC_Task();
-		//if (!CDCActive)
-		//	USBSerialBridge_Task();
-
 		USB_USBTask();
 	}
 
@@ -189,18 +186,10 @@ static void SetupHardware(void)
 
 	/* Initialize the USB and other board hardware drivers */
 	USB_Init();
-	//TODO leds
-	LEDs_Init();
 
-	// Setup the TX Pin to OUTPUT and RX with PULLUP
-	DDRD |= (1 << 3);
-	PORTD |= (1 << 2);
-
-	/* Pull target /RESET line high */
-	//TODO merge led + reset line init
-	AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
-	AVR_RESET_LINE_DDR |= AVR_RESET_LINE_MASK;
-
+	// compacter setup for Leds, RX, TX, Reset Line
+	ARDUINO_DDR |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
+	ARDUINO_PORT |= LEDS_ALL_LEDS | (1 << 2) | AVR_RESET_LINE_MASK;
 }
 
 /** Event handler for the USB_ConfigurationChanged event. This configures the device's endpoints ready
@@ -257,9 +246,9 @@ void EVENT_USB_Device_ControlRequest(void)
 			else
 				CDCActive = false;
 
-			// TODO else part
-				EVENT_CDC_Device_LineEncodingChanged2();
-			
+			// TODO else part?
+			CDC_Device_LineEncodingChanged();
+
 		}
 
 		break;
@@ -284,7 +273,7 @@ void EVENT_USB_Device_ControlRequest(void)
 *
 *  \param[in] CDCInterfaceInfo  Pointer to the CDC class interface configuration structure being referenced
 */
-static void EVENT_CDC_Device_LineEncodingChanged2(void)
+static void CDC_Device_LineEncodingChanged(void)
 {
 	uint8_t ConfigMask = 0;
 
@@ -352,41 +341,33 @@ ISR(USART1_RX_vect, ISR_BLOCK)
 	uint8_t ReceivedByte = UDR1;
 
 	// only save the new byte if USB device is ready and buffer is not full
-	if (!CDCActive && (USB_DeviceState == DEVICE_STATE_Configured) && BufferCount <= BUFFER_SIZE){
-		// save new byte
-		USARTtoUSB_Buffer_Data[BufferEnd++] = ReceivedByte;
-
-		// increase the buffer position and wrap around if needed
-		BufferEnd %= BUFFER_SIZE;
-
-		// increase buffer count
-		BufferCount++;
-	}
+	if (!CDCActive && (USB_DeviceState == DEVICE_STATE_Configured))
+		WriteNextResponseByte(ReceivedByte);
 }
 
-static void USBSerialBridge_Task(void)
-{
-	///* Only try to read in bytes from the CDC interface if the transmit buffer is not full */
-	//if ((USB_DeviceState != DEVICE_STATE_Configured) || !(LineEncoding.BaudRateBPS))
-	//	;
-	//else{
-	//	Endpoint_SelectEndpoint(CDC_RX_EPADDR);
-
-	//	if (Endpoint_IsOUTReceived())
-	//	{
-	//		/* Store received byte into the USART transmit buffer */
-	//		if (Endpoint_BytesInEndpoint())
-	//			Serial_SendByte(Endpoint_Read_8());
-
-	//		// if endpoint is completely empty/read acknowledge that to the host
-	//		if (!(Endpoint_BytesInEndpoint()))
-	//			Endpoint_ClearOUT();
-	//	}
-	//}
-
-
-
-}
+//static void USBSerialBridge_Task(void)
+//{
+//	///* Only try to read in bytes from the CDC interface if the transmit buffer is not full */
+//	//if ((USB_DeviceState != DEVICE_STATE_Configured) || !(LineEncoding.BaudRateBPS))
+//	//	;
+//	//else{
+//	//	Endpoint_SelectEndpoint(CDC_RX_EPADDR);
+//
+//	//	if (Endpoint_IsOUTReceived())
+//	//	{
+//	//		/* Store received byte into the USART transmit buffer */
+//	//		if (Endpoint_BytesInEndpoint())
+//	//			Serial_SendByte(Endpoint_Read_8());
+//
+//	//		// if endpoint is completely empty/read acknowledge that to the host
+//	//		if (!(Endpoint_BytesInEndpoint()))
+//	//			Endpoint_ClearOUT();
+//	//	}
+//	//}
+//
+//
+//
+//}
 
 
 
@@ -423,6 +404,17 @@ static uint8_t FetchNextCommandByte(void)
  */
 static void WriteNextResponseByte(const uint8_t Response)
 {
+	if (BufferCount <= BUFFER_SIZE){
+		// save new byte
+		USARTtoUSB_Buffer_Data[BufferEnd++] = Response;
+
+		// increase the buffer position and wrap around if needed
+		BufferEnd %= BUFFER_SIZE;
+
+		// increase buffer count
+		BufferCount++;
+	}
+
 	/* Select the IN endpoint so that the next data byte can be written */
 	//Endpoint_SelectEndpoint(CDC_TX_EPADDR);
 
@@ -456,6 +448,7 @@ static void CDC_Task(void)
 		/* Read in the bootloader command (first byte sent from host) */
 		uint8_t Command = FetchNextCommandByte();
 
+		// USB-Serial Mode
 		if (!CDCActive){
 			/* Store received byte into the USART transmit buffer */
 			//if (Endpoint_BytesInEndpoint())
@@ -465,6 +458,7 @@ static void CDC_Task(void)
 			if (!(Endpoint_BytesInEndpoint()))
 				Endpoint_ClearOUT();
 		}
+		// Bootloader Mode
 		else{
 
 			if (Command == AVR109_COMMAND_ExitBootloader)
@@ -474,55 +468,55 @@ static void CDC_Task(void)
 				/* Send confirmation byte back to the host */
 				WriteNextResponseByte('\r');
 			}
-			else if ((Command == AVR109_COMMAND_SetLED) || (Command == AVR109_COMMAND_ClearLED) ||
-				(Command == AVR109_COMMAND_SelectDeviceType))
-			{
-				FetchNextCommandByte();
+			//else if ((Command == AVR109_COMMAND_SetLED) || (Command == AVR109_COMMAND_ClearLED) ||
+			//	(Command == AVR109_COMMAND_SelectDeviceType))
+			//{
+			//	FetchNextCommandByte();
 
-				/* Send confirmation byte back to the host */
-				WriteNextResponseByte('\r');
-			}
-			else if ((Command == AVR109_COMMAND_EnterProgrammingMode) || (Command == AVR109_COMMAND_LeaveProgrammingMode))
-			{
-				/* Send confirmation byte back to the host */
-				WriteNextResponseByte('\r');
-			}
-			else if (Command == AVR109_COMMAND_ReadPartCode)
-			{
-				/* Return ATMEGA128 part code - this is only to allow AVRProg to use the bootloader */
-				WriteNextResponseByte(0x44);
-				WriteNextResponseByte(0x00);
-			}
-			else if (Command == AVR109_COMMAND_ReadAutoAddressIncrement)
-			{
-				/* Indicate auto-address increment is supported */
-				WriteNextResponseByte('Y');
-			}
-			else if (Command == AVR109_COMMAND_SetCurrentAddress)
-			{
-				/* Set the current address to that given by the host (translate 16-bit word address to byte address) */
-				CurrAddress = (FetchNextCommandByte() << 9);
-				CurrAddress |= (FetchNextCommandByte() << 1);
+			//	/* Send confirmation byte back to the host */
+			//	WriteNextResponseByte('\r');
+			//}
+			//else if ((Command == AVR109_COMMAND_EnterProgrammingMode) || (Command == AVR109_COMMAND_LeaveProgrammingMode))
+			//{
+			//	/* Send confirmation byte back to the host */
+			//	WriteNextResponseByte('\r');
+			//}
+			//else if (Command == AVR109_COMMAND_ReadPartCode)
+			//{
+			//	/* Return ATMEGA128 part code - this is only to allow AVRProg to use the bootloader */
+			//	WriteNextResponseByte(0x44);
+			//	WriteNextResponseByte(0x00);
+			//}
+			//else if (Command == AVR109_COMMAND_ReadAutoAddressIncrement)
+			//{
+			//	/* Indicate auto-address increment is supported */
+			//	WriteNextResponseByte('Y');
+			//}
+			//else if (Command == AVR109_COMMAND_SetCurrentAddress)
+			//{
+			//	/* Set the current address to that given by the host (translate 16-bit word address to byte address) */
+			//	CurrAddress = (FetchNextCommandByte() << 9);
+			//	CurrAddress |= (FetchNextCommandByte() << 1);
 
-				/* Send confirmation byte back to the host */
-				WriteNextResponseByte('\r');
-			}
-			else if (Command == AVR109_COMMAND_ReadBootloaderInterface)
-			{
-				/* Indicate serial programmer back to the host */
-				WriteNextResponseByte('S');
-			}
-			else if (Command == AVR109_COMMAND_ReadBootloaderIdentifier)
-			{
-				/* Write the 7-byte software identifier to the endpoint */
-				for (uint8_t CurrByte = 0; CurrByte < 7; CurrByte++)
-					WriteNextResponseByte(SOFTWARE_IDENTIFIER[CurrByte]);
-			}
-			else if (Command == AVR109_COMMAND_ReadBootloaderSWVersion)
-			{
-				WriteNextResponseByte('0' + BOOTLOADER_VERSION_MAJOR);
-				WriteNextResponseByte('0' + BOOTLOADER_VERSION_MINOR);
-			}
+			//	/* Send confirmation byte back to the host */
+			//	WriteNextResponseByte('\r');
+			//}
+			//else if (Command == AVR109_COMMAND_ReadBootloaderInterface)
+			//{
+			//	/* Indicate serial programmer back to the host */
+			//	WriteNextResponseByte('S');
+			//}
+			//else if (Command == AVR109_COMMAND_ReadBootloaderIdentifier)
+			//{
+			//	/* Write the 7-byte software identifier to the endpoint */
+			//	for (uint8_t CurrByte = 0; CurrByte < 7; CurrByte++)
+			//		WriteNextResponseByte(SOFTWARE_IDENTIFIER[CurrByte]);
+			//}
+			//else if (Command == AVR109_COMMAND_ReadBootloaderSWVersion)
+			//{
+			//	WriteNextResponseByte('0' + BOOTLOADER_VERSION_MAJOR);
+			//	WriteNextResponseByte('0' + BOOTLOADER_VERSION_MINOR);
+			//}
 			else if (Command == AVR109_COMMAND_ReadSignature)
 			{
 				WriteNextResponseByte(AVR_SIGNATURE_3);
@@ -654,75 +648,76 @@ static void CDC_Task(void)
 				WriteNextResponseByte('?');
 			}
 
-			/* Select the IN endpoint */
-			Endpoint_SelectEndpoint(CDC_TX_EPADDR);
+			///* Select the IN endpoint */
+			//Endpoint_SelectEndpoint(CDC_TX_EPADDR);
 
-			/* Remember if the endpoint is completely full before clearing it */
-			bool IsEndpointFull = !(Endpoint_IsReadWriteAllowed());
+			///* Remember if the endpoint is completely full before clearing it */
+			//bool IsEndpointFull = !(Endpoint_IsReadWriteAllowed());
 
-			/* Send the endpoint data to the host */
+			///* Send the endpoint data to the host */
+			//Endpoint_ClearIN();
+
+			///* If a full endpoint's worth of data was sent, we need to send an empty packet afterwards to signal end of transfer */
+			//if (IsEndpointFull)
+			//{
+			//	while (!(Endpoint_IsINReady()))
+			//	{
+			//		if (USB_DeviceState == DEVICE_STATE_Unattached)
+			//			return;
+			//	}
+
+			//	Endpoint_ClearIN();
+			//}
+
+			///* Wait until the data has been sent to the host */
+			//while (!(Endpoint_IsINReady()))
+			//{
+			//	if (USB_DeviceState == DEVICE_STATE_Unattached)
+			//		return;
+			//}
+
+			///* Select the OUT endpoint */
+			//Endpoint_SelectEndpoint(CDC_RX_EPADDR);
+
+			///* Acknowledge the command from the host */
+			//Endpoint_ClearOUT();
+		}
+	}
+
+	//if (!CDCActive){
+		// Select the Serial Tx Endpoint
+		Endpoint_SelectEndpoint(CDC_TX_EPADDR);
+
+		// check if endpoint is ready for new data, last sending flushed without errors
+		if (Endpoint_IsINReady()){
+
+			// Read bytes from the USART receive buffer into the USB IN endpoint, max 1 bank size
+			while (BufferCount){
+				//TODO check later after interrupt (what if bootloader leaves bank full?)
+				// check if bank is full and try to send
+				if (!(Endpoint_IsReadWriteAllowed()))
+					break;
+
+				// Write the Data to the Endpoint */
+				Endpoint_Write_8(USARTtoUSB_Buffer_Data[BufferIndex++]);
+
+				// increase the buffer position and wrap around if needed
+				BufferIndex %= BUFFER_SIZE;
+
+				// turn off interrupts to save the value properly
+				uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
+				GlobalInterruptDisable();
+
+				// decrease buffer count
+				BufferCount--;
+
+				SetGlobalInterruptMask(CurrentGlobalInt);
+			}
+
+			// Finalize the stream transfer to send the last packet
 			Endpoint_ClearIN();
-
-			/* If a full endpoint's worth of data was sent, we need to send an empty packet afterwards to signal end of transfer */
-			if (IsEndpointFull)
-			{
-				while (!(Endpoint_IsINReady()))
-				{
-					if (USB_DeviceState == DEVICE_STATE_Unattached)
-						return;
-				}
-
-				Endpoint_ClearIN();
-			}
-
-			/* Wait until the data has been sent to the host */
-			while (!(Endpoint_IsINReady()))
-			{
-				if (USB_DeviceState == DEVICE_STATE_Unattached)
-					return;
-			}
-
-			/* Select the OUT endpoint */
-			Endpoint_SelectEndpoint(CDC_RX_EPADDR);
-
-			/* Acknowledge the command from the host */
-			Endpoint_ClearOUT();
 		}
-	}
-	if (!CDCActive){
-	// Select the Serial Tx Endpoint
-	Endpoint_SelectEndpoint(CDC_TX_EPADDR);
-
-	// check if endpoint is ready for new data, last sending flushed without errors
-	if (Endpoint_IsINReady()){
-
-		// Read bytes from the USART receive buffer into the USB IN endpoint, max 1 bank size
-		while (BufferCount){
-			//TODO check later after interrupt (what if bootloader leaves bank full?)
-			// check if bank is full and try to send
-			if (!(Endpoint_IsReadWriteAllowed()))
-				break;
-
-			// Write the Data to the Endpoint */
-			Endpoint_Write_8(USARTtoUSB_Buffer_Data[BufferIndex++]);
-
-			// increase the buffer position and wrap around if needed
-			BufferIndex %= BUFFER_SIZE;
-
-			// turn off interrupts to save the value properly
-			uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
-			GlobalInterruptDisable();
-
-			// decrease buffer count
-			BufferCount--;
-
-			SetGlobalInterruptMask(CurrentGlobalInt);
-		}
-
-		// Finalize the stream transfer to send the last packet
-		Endpoint_ClearIN();
-	}
-}
+	//}
 }
 
 #if !defined(NO_BLOCK_SUPPORT)

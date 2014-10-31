@@ -69,10 +69,13 @@ extern "C" {
 
 #define BAUDRATE_CDC_BOOTLOADER 1200
 
+#define ARDUINO_PORT PORTD
+#define ARDUINO_DDR DDRD
+
 #define AVR_RESET_LINE_PORT PORTD
 #define AVR_RESET_LINE_DDR DDRD
 #define AVR_RESET_LINE_PIN PIND
-#define AVR_RESET_LINE_MASK (1 << PB7)
+#define AVR_RESET_LINE_MASK (1 << PD7)
 
 	// hardware configuration
 #define AVR_SPI_PIN PINB

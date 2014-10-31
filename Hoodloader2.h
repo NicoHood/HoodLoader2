@@ -154,8 +154,7 @@ THE SOFTWARE.
 
 	/* Function Prototypes: */
 		static void CDC_Task(void);
-		static void EVENT_CDC_Device_LineEncodingChanged2(void);
-		static void USBSerialBridge_Task(void);
+		static void CDC_Device_LineEncodingChanged(void);
 		static void SetupHardware(void);
 
 		void Application_Jump_Check(void) ATTR_INIT_SECTION(3);
