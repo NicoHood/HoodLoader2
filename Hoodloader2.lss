@@ -1,5 +1,5 @@
 
-BootloaderCDC.elf:     file format elf32-avr
+Hoodloader2.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
@@ -25,17 +25,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
  10 .debug_aranges 000003a0  00000000  00000000  000015e8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_info   00005276  00000000  00000000  00001988  2**0
+ 11 .debug_info   0000527a  00000000  00000000  00001988  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_abbrev 00001622  00000000  00000000  00006bfe  2**0
+ 12 .debug_abbrev 00001622  00000000  00000000  00006c02  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_line   0000277f  00000000  00000000  00008220  2**0
+ 13 .debug_line   0000277c  00000000  00000000  00008224  2**0
                   CONTENTS, READONLY, DEBUGGING
  14 .debug_frame  0000098c  00000000  00000000  0000a9a0  2**2
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_str    0000259a  00000000  00000000  0000b32c  2**0
+ 15 .debug_str    00002598  00000000  00000000  0000b32c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_loc    00003aee  00000000  00000000  0000d8c6  2**0
+ 16 .debug_loc    00003aee  00000000  00000000  0000d8c4  2**0
                   CONTENTS, READONLY, DEBUGGING
  17 .debug_ranges 00000560  00000000  00000000  000113b8  2**3
                   CONTENTS, READONLY, DEBUGGING
@@ -406,9 +406,9 @@ static void USBSerialBridge_Task(void)
 				return ((UEINTX & (1 << RWAL)) ? true : false);
     3198:	85 ff       	sbrs	r24, 5
 
-		// Read bytes from the USART receive buffer into the USB IN endpoint
+		// Read bytes from the USART receive buffer into the USB IN endpoint, max 1 bank size
 		while (BufferCount){
-			//TODO check later (what if bootloader leaves bank full?)
+			//TODO check later after interrupt (what if bootloader leaves bank full?)
 			// check if bank is full and try to send
 			if (!(Endpoint_IsReadWriteAllowed()))
     319a:	1d c0       	rjmp	.+58     	; 0x31d6 <main+0xf2>
@@ -472,7 +472,7 @@ static void USBSerialBridge_Task(void)
 	// check if endpoint is ready for new data, last sending flushed without errors
 	if (Endpoint_IsINReady()){
 
-		// Read bytes from the USART receive buffer into the USB IN endpoint
+		// Read bytes from the USART receive buffer into the USB IN endpoint, max 1 bank size
 		while (BufferCount){
     31d2:	81 11       	cpse	r24, r1
     31d4:	df cf       	rjmp	.-66     	; 0x3194 <main+0xb0>

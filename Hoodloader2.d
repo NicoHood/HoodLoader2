@@ -1,4 +1,4 @@
-BootloaderCDC.o: BootloaderCDC.c BootloaderCDC.h Descriptors.h \
+Hoodloader2.o: Hoodloader2.c Hoodloader2.h Descriptors.h \
  lufa-LUFA-140928/LUFA/../LUFA/Drivers/USB/USB.h \
  lufa-LUFA-140928/LUFA/../LUFA/Drivers/USB/../../Common/Common.h \
  lufa-LUFA-140928/LUFA/../LUFA/Drivers/USB/../../Common/Architectures.h \
@@ -106,7 +106,7 @@ BootloaderCDC.o: BootloaderCDC.c BootloaderCDC.h Descriptors.h \
  lufa-LUFA-140928/LUFA/../LUFA/Drivers/Board/Buttons.h Board/Buttons.h \
  lufa-LUFA-140928/LUFA/../LUFA/Drivers/Board/Board.h Board/Board.h
 
-BootloaderCDC.h:
+Hoodloader2.h:
 
 Descriptors.h:
 
