@@ -109,9 +109,9 @@ void Application_Jump_Check(void)
 /** Underlying data buffer for \ref USARTtoUSB_Buffer, where the stored bytes are located. */
 #define BUFFER_SIZE 64
 static uint8_t      USARTtoUSB_Buffer_Data[BUFFER_SIZE];
-static volatile uint8_t BufferCount = 0;
-static volatile uint8_t BufferIndex = 0; // current position of the first buffer byte
-static volatile uint8_t BufferEnd = 0;
+static volatile uint8_t BufferCount = 0; // Number of bytes currently stored in the buffer
+static volatile uint8_t BufferIndex = 0; // position of the first buffer byte (Buffer out)
+static volatile uint8_t BufferEnd = 0; // position of the last buffer byte (Serial in)
 
 /** Main program entry point. This routine configures the hardware required by the bootloader, then continuously
  *  runs the bootloader processing routine until instructed to soft-exit, or hard-reset via the watchdog to start
@@ -330,11 +330,15 @@ ISR(USART1_RX_vect, ISR_BLOCK)
 	// read the newest byte from the UART, important to clear interrupt flag!
 	uint8_t ReceivedByte = UDR1;
 
-	if ((USB_DeviceState == DEVICE_STATE_Configured) && BufferCount != BUFFER_SIZE){
-		// save to index, increase index + count and go to 0 if needed
-		USARTtoUSB_Buffer_Data[BufferIndex] = ReceivedByte;
-		BufferIndex++;
-		BufferIndex % BUFFER_SIZE;
+	// only save the new byte if USB device is ready and buffer is not full
+	if ((USB_DeviceState == DEVICE_STATE_Configured) && BufferCount <= BUFFER_SIZE){
+		// save new byte
+		USARTtoUSB_Buffer_Data[BufferEnd++] = ReceivedByte;
+
+		// increase the buffer position and wrap around if needed
+		BufferEnd %= BUFFER_SIZE;
+
+		// increase buffer count
 		BufferCount++;
 	}
 }
@@ -359,44 +363,39 @@ static void USBSerialBridge_Task(void)
 		}
 	}
 
-	/* Read bytes from the USART receive buffer into the USB IN endpoint */
-	//if (BufferCount){
-		/* Select the Serial Tx Endpoint */
-		Endpoint_SelectEndpoint(CDC_TX_EPADDR);
 
-		// check if endpoint is ready for new data, last sending flushed without errors
-		if (Endpoint_IsINReady()){
-			while (BufferCount){
-				// check if bank is full and try to send
-				if (!(Endpoint_IsReadWriteAllowed()))
-				{
-					// send package now!
-					Endpoint_ClearIN();
+	// Select the Serial Tx Endpoint
+	Endpoint_SelectEndpoint(CDC_TX_EPADDR);
 
-					break;
+	// check if endpoint is ready for new data, last sending flushed without errors
+	if (Endpoint_IsINReady()){
 
-					// wait for the package to be sent without errors
-					if (Endpoint_WaitUntilReady() != ENDPOINT_READYWAIT_NoError)
-						break;
-				}
+		// Read bytes from the USART receive buffer into the USB IN endpoint
+		while (BufferCount){
+			//TODO check later (what if bootloader leaves bank full?)
+			// check if bank is full and try to send
+			if (!(Endpoint_IsReadWriteAllowed()))
+				break;
 
-				uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
-				GlobalInterruptDisable();
+			// Write the Data to the Endpoint */
+			Endpoint_Write_8(USARTtoUSB_Buffer_Data[BufferIndex++]);
 
-				// get the first byte from the buffer and reduce Count 
-				uint8_t b = USARTtoUSB_Buffer_Data[(BufferIndex - BufferCount - 1) % BUFFER_SIZE];
-				BufferCount--;
+			// increase the buffer position and wrap around if needed
+			BufferIndex %= BUFFER_SIZE;
 
-				SetGlobalInterruptMask(CurrentGlobalInt);
+			// turn off interrupts to save the value properly
+			uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
+			GlobalInterruptDisable();
 
-				/* Write the Data to the Endpoint */
-				Endpoint_Write_8(b);
-			}
+			// decrease buffer count
+			BufferCount--;
 
-			/* Finalize the stream transfer to send the last packet */
-			Endpoint_ClearIN();
+			SetGlobalInterruptMask(CurrentGlobalInt);
 		}
-	//}
+
+		// Finalize the stream transfer to send the last packet
+		Endpoint_ClearIN();
+	}
 }
 
 #if !defined(NO_BLOCK_SUPPORT)
