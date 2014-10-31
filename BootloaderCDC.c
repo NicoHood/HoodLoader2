@@ -106,17 +106,12 @@ void Application_Jump_Check(void)
 	}
 }
 
-/** Circular buffer to hold data from the host before it is sent to the device via the serial port. */
-//static RingBuffer_t USBtoUSART_Buffer;
-
-/** Underlying data buffer for \ref USBtoUSART_Buffer, where the stored bytes are located. */
-//static uint8_t      USBtoUSART_Buffer_Data[64];
-
-/** Circular buffer to hold data from the serial port before it is sent to the host. */
-static RingBuffer_t USARTtoUSB_Buffer;
-
 /** Underlying data buffer for \ref USARTtoUSB_Buffer, where the stored bytes are located. */
-static uint8_t      USARTtoUSB_Buffer_Data[64];
+#define BUFFER_SIZE 64
+static uint8_t      USARTtoUSB_Buffer_Data[BUFFER_SIZE];
+static volatile uint8_t BufferCount = 0;
+static volatile uint8_t BufferIndex = 0; // current position of the first buffer byte
+static volatile uint8_t BufferEnd = 0;
 
 /** Main program entry point. This routine configures the hardware required by the bootloader, then continuously
  *  runs the bootloader processing routine until instructed to soft-exit, or hard-reset via the watchdog to start
@@ -129,9 +124,6 @@ int main(void)
 
 	/* Turn on first LED on the board to indicate that the bootloader has started */
 	LEDs_SetAllLEDs(LEDS_LED1);
-
-	//RingBuffer_InitBuffer(&USBtoUSART_Buffer, USBtoUSART_Buffer_Data, sizeof(USBtoUSART_Buffer_Data));
-	RingBuffer_InitBuffer(&USARTtoUSB_Buffer, USARTtoUSB_Buffer_Data, sizeof(USARTtoUSB_Buffer_Data));
 
 	/* Enable global interrupts so that the USB stack can function */
 	GlobalInterruptEnable();
@@ -205,9 +197,10 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 	Endpoint_ConfigureEndpoint(CDC_NOTIFICATION_EPADDR, EP_TYPE_INTERRUPT,
 		CDC_NOTIFICATION_EPSIZE, 1);
 
+	//bank size
 	Endpoint_ConfigureEndpoint(CDC_TX_EPADDR, EP_TYPE_BULK, CDC_TXRX_EPSIZE, 2);
 
-	Endpoint_ConfigureEndpoint(CDC_RX_EPADDR, EP_TYPE_BULK, CDC_TXRX_EPSIZE, 2);
+	Endpoint_ConfigureEndpoint(CDC_RX_EPADDR, EP_TYPE_BULK, CDC_TXRX_EPSIZE, 1);
 }
 
 /** Event handler for the USB_ControlRequest event. This is used to catch and process control requests sent to
@@ -334,10 +327,16 @@ static void EVENT_CDC_Device_LineEncodingChanged2(void)
 */
 ISR(USART1_RX_vect, ISR_BLOCK)
 {
+	// read the newest byte from the UART, important to clear interrupt flag!
 	uint8_t ReceivedByte = UDR1;
 
-	if ((USB_DeviceState == DEVICE_STATE_Configured) && !(RingBuffer_IsFull(&USARTtoUSB_Buffer)))
-		RingBuffer_Insert(&USARTtoUSB_Buffer, ReceivedByte);
+	if ((USB_DeviceState == DEVICE_STATE_Configured) && BufferCount != BUFFER_SIZE){
+		// save to index, increase index + count and go to 0 if needed
+		USARTtoUSB_Buffer_Data[BufferIndex] = ReceivedByte;
+		BufferIndex++;
+		BufferIndex % BUFFER_SIZE;
+		BufferCount++;
+	}
 }
 
 static void USBSerialBridge_Task(void)
@@ -361,34 +360,43 @@ static void USBSerialBridge_Task(void)
 	}
 
 	/* Read bytes from the USART receive buffer into the USB IN endpoint */
-	uint8_t BufferCount = RingBuffer_GetCount(&USARTtoUSB_Buffer);
-	if (BufferCount){
+	//if (BufferCount){
 		/* Select the Serial Tx Endpoint */
 		Endpoint_SelectEndpoint(CDC_TX_EPADDR);
 
 		// check if endpoint is ready for new data, last sending flushed without errors
 		if (Endpoint_IsINReady()){
-			while (BufferCount--){
+			while (BufferCount){
 				// check if bank is full and try to send
 				if (!(Endpoint_IsReadWriteAllowed()))
 				{
 					// send package now!
 					Endpoint_ClearIN();
 
+					break;
+
 					// wait for the package to be sent without errors
 					if (Endpoint_WaitUntilReady() != ENDPOINT_READYWAIT_NoError)
 						break;
 				}
 
+				uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
+				GlobalInterruptDisable();
+
+				// get the first byte from the buffer and reduce Count 
+				uint8_t b = USARTtoUSB_Buffer_Data[(BufferIndex - BufferCount - 1) % BUFFER_SIZE];
+				BufferCount--;
+
+				SetGlobalInterruptMask(CurrentGlobalInt);
+
 				/* Write the Data to the Endpoint */
-				uint8_t b = RingBuffer_Remove(&USARTtoUSB_Buffer);
 				Endpoint_Write_8(b);
 			}
 
 			/* Finalize the stream transfer to send the last packet */
 			Endpoint_ClearIN();
 		}
-	}
+	//}
 }
 
 #if !defined(NO_BLOCK_SUPPORT)

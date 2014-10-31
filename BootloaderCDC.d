@@ -104,8 +104,7 @@ BootloaderCDC.o: BootloaderCDC.c BootloaderCDC.h Descriptors.h \
  lufa-LUFA-140928/LUFA/../LUFA/Drivers/Misc/RingBuffer.h \
  lufa-LUFA-140928/LUFA/../LUFA/Drivers/Misc/../../Common/Common.h \
  lufa-LUFA-140928/LUFA/../LUFA/Drivers/Board/Buttons.h Board/Buttons.h \
- lufa-LUFA-140928/LUFA/../LUFA/Drivers/Board/Board.h Board/Board.h \
- LightweightRingBuff.h
+ lufa-LUFA-140928/LUFA/../LUFA/Drivers/Board/Board.h Board/Board.h
 
 BootloaderCDC.h:
 
@@ -330,5 +329,3 @@ Board/Buttons.h:
 lufa-LUFA-140928/LUFA/../LUFA/Drivers/Board/Board.h:
 
 Board/Board.h:
-
-LightweightRingBuff.h:

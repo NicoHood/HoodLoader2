@@ -58,8 +58,6 @@
 		#include <LUFA/Drivers/Board/Buttons.h>
 		#include <LUFA/Drivers/Board/Board.h>
 
-		#include "LightweightRingBuff.h"
-
 	/* Preprocessor Checks: */
 		#if !defined(__OPTIMIZE_SIZE__)
 			#error This bootloader requires that it be optimized for size, not speed, to fit into the target device. Change optimization settings and try again.

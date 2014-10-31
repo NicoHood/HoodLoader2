@@ -295,7 +295,7 @@ So you can do that too, I believe in you :)
 Hoodpedia
 =========
 
-**Some information that you might find usefull. Ask me for more help**
+**Some information that you might find useful. Ask me for more help**
 
 * CDC-Serial: A virtual Serial port via USB to the PC
 * USB-HID: Human Interface Device for Keyboard, Mouse, Gamepad etc to access and controll the PC
