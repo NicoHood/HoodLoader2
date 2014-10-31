@@ -361,7 +361,7 @@ LOAD /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a
 .rela.plt
  *(.rela.plt)
 
-.text           0x00003000      0xebe
+.text           0x00003000      0xeea
  *(.vectors)
  .vectors       0x00003000       0x74 /usr/lib/gcc/avr/4.7.2/../../../avr/lib/avr35/crtm16u2.o
                 0x00003000                __vectors
@@ -397,14 +397,14 @@ LOAD /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a
  .init2         0x00003074        0xc /usr/lib/gcc/avr/4.7.2/../../../avr/lib/avr35/crtm16u2.o
  *(.init2)
  *(.init3)
- .init3         0x00003080       0x38 Hoodloader2.o
+ .init3         0x00003080        0x0 Hoodloader2.o
                 0x00003080                Application_Jump_Check
  *(.init3)
  *(.init4)
- .init4         0x000030b8       0x16 /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a(_copy_data.o)
-                0x000030b8                __do_copy_data
- .init4         0x000030ce       0x10 /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a(_clear_bss.o)
-                0x000030ce                __do_clear_bss
+ .init4         0x00003080       0x16 /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a(_copy_data.o)
+                0x00003080                __do_copy_data
+ .init4         0x00003096       0x10 /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a(_clear_bss.o)
+                0x00003096                __do_clear_bss
  *(.init4)
  *(.init5)
  *(.init5)
@@ -415,136 +415,136 @@ LOAD /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x000030de        0x4 /usr/lib/gcc/avr/4.7.2/../../../avr/lib/avr35/crtm16u2.o
+ .init9         0x000030a6        0x4 /usr/lib/gcc/avr/4.7.2/../../../avr/lib/avr35/crtm16u2.o
  *(.init9)
  *(.text)
- .text          0x000030e2        0x2 /usr/lib/gcc/avr/4.7.2/../../../avr/lib/avr35/crtm16u2.o
-                0x000030e2                __vector_22
-                0x000030e2                __vector_28
-                0x000030e2                __vector_1
-                0x000030e2                __vector_24
-                0x000030e2                __vector_12
-                0x000030e2                __bad_interrupt
-                0x000030e2                __vector_6
-                0x000030e2                __vector_3
-                0x000030e2                __vector_25
-                0x000030e2                __vector_13
-                0x000030e2                __vector_17
-                0x000030e2                __vector_19
-                0x000030e2                __vector_7
-                0x000030e2                __vector_27
-                0x000030e2                __vector_5
-                0x000030e2                __vector_4
-                0x000030e2                __vector_9
-                0x000030e2                __vector_2
-                0x000030e2                __vector_21
-                0x000030e2                __vector_15
-                0x000030e2                __vector_8
-                0x000030e2                __vector_26
-                0x000030e2                __vector_14
-                0x000030e2                __vector_10
-                0x000030e2                __vector_16
-                0x000030e2                __vector_18
-                0x000030e2                __vector_20
-                0x000030e4                . = ALIGN (0x2)
+ .text          0x000030aa        0x2 /usr/lib/gcc/avr/4.7.2/../../../avr/lib/avr35/crtm16u2.o
+                0x000030aa                __vector_22
+                0x000030aa                __vector_28
+                0x000030aa                __vector_1
+                0x000030aa                __vector_24
+                0x000030aa                __vector_12
+                0x000030aa                __bad_interrupt
+                0x000030aa                __vector_6
+                0x000030aa                __vector_3
+                0x000030aa                __vector_25
+                0x000030aa                __vector_13
+                0x000030aa                __vector_17
+                0x000030aa                __vector_19
+                0x000030aa                __vector_7
+                0x000030aa                __vector_27
+                0x000030aa                __vector_5
+                0x000030aa                __vector_4
+                0x000030aa                __vector_9
+                0x000030aa                __vector_2
+                0x000030aa                __vector_21
+                0x000030aa                __vector_15
+                0x000030aa                __vector_8
+                0x000030aa                __vector_26
+                0x000030aa                __vector_14
+                0x000030aa                __vector_10
+                0x000030aa                __vector_16
+                0x000030aa                __vector_18
+                0x000030aa                __vector_20
+                0x000030ac                . = ALIGN (0x2)
  *(.text.*)
  .text.FetchNextCommandByte
-                0x000030e4       0x34 Hoodloader2.o
- .text.WriteNextResponseByte
-                0x00003118       0x28 Hoodloader2.o
+                0x000030ac       0x34 Hoodloader2.o
+ .text.BufferInsert
+                0x000030e0       0x28 Hoodloader2.o
  .text.startup.main
-                0x00003140      0x4a0 Hoodloader2.o
-                0x00003140                main
+                0x00003108      0x4f8 Hoodloader2.o
+                0x00003108                main
  .text.EVENT_USB_Device_ConfigurationChanged
-                0x000035e0       0x18 Hoodloader2.o
-                0x000035e0                EVENT_USB_Device_ConfigurationChanged
+                0x00003600       0x18 Hoodloader2.o
+                0x00003600                EVENT_USB_Device_ConfigurationChanged
  .text.EVENT_USB_Device_ControlRequest
-                0x000035f8      0x140 Hoodloader2.o
-                0x000035f8                EVENT_USB_Device_ControlRequest
+                0x00003618      0x14c Hoodloader2.o
+                0x00003618                EVENT_USB_Device_ControlRequest
  .text.__vector_23
-                0x00003738       0x58 Hoodloader2.o
-                0x00003738                __vector_23
+                0x00003764       0x58 Hoodloader2.o
+                0x00003764                __vector_23
  .text.CALLBACK_USB_GetDescriptor
-                0x00003790       0x6a Descriptors.o
-                0x00003790                CALLBACK_USB_GetDescriptor
+                0x000037bc       0x6a Descriptors.o
+                0x000037bc                CALLBACK_USB_GetDescriptor
  .text.BootloaderAPI_ErasePage
-                0x000037fa       0x24 BootloaderAPI.o
-                0x000037fa                BootloaderAPI_ErasePage
+                0x00003826       0x24 BootloaderAPI.o
+                0x00003826                BootloaderAPI_ErasePage
  .text.BootloaderAPI_WritePage
-                0x0000381e       0x24 BootloaderAPI.o
-                0x0000381e                BootloaderAPI_WritePage
+                0x0000384a       0x24 BootloaderAPI.o
+                0x0000384a                BootloaderAPI_WritePage
  .text.BootloaderAPI_FillWord
-                0x00003842       0x1a BootloaderAPI.o
-                0x00003842                BootloaderAPI_FillWord
+                0x0000386e       0x1a BootloaderAPI.o
+                0x0000386e                BootloaderAPI_FillWord
  .text.BootloaderAPI_ReadSignature
-                0x0000385c        0xc BootloaderAPI.o
-                0x0000385c                BootloaderAPI_ReadSignature
+                0x00003888        0xc BootloaderAPI.o
+                0x00003888                BootloaderAPI_ReadSignature
  .text.BootloaderAPI_ReadFuse
-                0x00003868        0xc BootloaderAPI.o
-                0x00003868                BootloaderAPI_ReadFuse
+                0x00003894        0xc BootloaderAPI.o
+                0x00003894                BootloaderAPI_ReadFuse
  .text.BootloaderAPI_ReadLock
-                0x00003874        0xe BootloaderAPI.o
-                0x00003874                BootloaderAPI_ReadLock
+                0x000038a0        0xe BootloaderAPI.o
+                0x000038a0                BootloaderAPI_ReadLock
  .text.BootloaderAPI_WriteLock
-                0x00003882       0x1c BootloaderAPI.o
-                0x00003882                BootloaderAPI_WriteLock
+                0x000038ae       0x1c BootloaderAPI.o
+                0x000038ae                BootloaderAPI_WriteLock
  .text.Endpoint_Write_Control_Stream_LE
-                0x0000389e       0xc4 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
-                0x0000389e                Endpoint_Write_Control_Stream_LE
+                0x000038ca       0xc4 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
+                0x000038ca                Endpoint_Write_Control_Stream_LE
  .text.Endpoint_Read_Control_Stream_LE
-                0x00003962       0x7c lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
-                0x00003962                Endpoint_Read_Control_Stream_LE
+                0x0000398e       0x7c lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
+                0x0000398e                Endpoint_Read_Control_Stream_LE
  .text.Endpoint_ConfigureEndpoint_Prv
-                0x000039de       0x28 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Endpoint_AVR8.o
-                0x000039de                Endpoint_ConfigureEndpoint_Prv
+                0x00003a0a       0x28 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Endpoint_AVR8.o
+                0x00003a0a                Endpoint_ConfigureEndpoint_Prv
  .text.Endpoint_ClearStatusStage
-                0x00003a06       0x3e lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Endpoint_AVR8.o
-                0x00003a06                Endpoint_ClearStatusStage
+                0x00003a32       0x3e lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Endpoint_AVR8.o
+                0x00003a32                Endpoint_ClearStatusStage
  .text.USB_ResetInterface
-                0x00003a44       0x68 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBController_AVR8.o
-                0x00003a44                USB_ResetInterface
+                0x00003a70       0x68 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBController_AVR8.o
+                0x00003a70                USB_ResetInterface
  .text.USB_Init
-                0x00003aac       0x12 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBController_AVR8.o
-                0x00003aac                USB_Init
+                0x00003ad8       0x12 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBController_AVR8.o
+                0x00003ad8                USB_Init
  .text.USB_INT_DisableAllInterrupts
-                0x00003abe        0x6 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
-                0x00003abe                USB_INT_DisableAllInterrupts
+                0x00003aea        0x6 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
+                0x00003aea                USB_INT_DisableAllInterrupts
  .text.USB_INT_ClearAllInterrupts
-                0x00003ac4        0x6 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
-                0x00003ac4                USB_INT_ClearAllInterrupts
+                0x00003af0        0x6 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
+                0x00003af0                USB_INT_ClearAllInterrupts
  .text.__vector_11
-                0x00003aca      0x126 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
-                0x00003aca                __vector_11
+                0x00003af6      0x126 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
+                0x00003af6                __vector_11
  .text.USB_Device_ProcessControlRequest
-                0x00003bf0      0x222 lufa-LUFA-140928/LUFA/Drivers/USB/Core/DeviceStandardReq.o
-                0x00003bf0                USB_Device_ProcessControlRequest
+                0x00003c1c      0x222 lufa-LUFA-140928/LUFA/Drivers/USB/Core/DeviceStandardReq.o
+                0x00003c1c                USB_Device_ProcessControlRequest
  .text.USB_Event_Stub
-                0x00003e12        0x2 lufa-LUFA-140928/LUFA/Drivers/USB/Core/Events.o
-                0x00003e12                EVENT_USB_Device_Connect
-                0x00003e12                EVENT_USB_Device_WakeUp
-                0x00003e12                USB_Event_Stub
-                0x00003e12                EVENT_USB_Device_Suspend
-                0x00003e12                EVENT_USB_Device_StartOfFrame
-                0x00003e12                EVENT_USB_Device_Disconnect
-                0x00003e12                EVENT_USB_Device_Reset
+                0x00003e3e        0x2 lufa-LUFA-140928/LUFA/Drivers/USB/Core/Events.o
+                0x00003e3e                EVENT_USB_Device_Connect
+                0x00003e3e                EVENT_USB_Device_WakeUp
+                0x00003e3e                USB_Event_Stub
+                0x00003e3e                EVENT_USB_Device_Suspend
+                0x00003e3e                EVENT_USB_Device_StartOfFrame
+                0x00003e3e                EVENT_USB_Device_Disconnect
+                0x00003e3e                EVENT_USB_Device_Reset
  .text.USB_USBTask
-                0x00003e14       0x36 lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o
-                0x00003e14                USB_USBTask
+                0x00003e40       0x36 lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o
+                0x00003e40                USB_USBTask
  .text.libgcc.div
-                0x00003e4a       0x44 /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a(_udivmodsi4.o)
-                0x00003e4a                __udivmodsi4
+                0x00003e76       0x44 /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a(_udivmodsi4.o)
+                0x00003e76                __udivmodsi4
  .text.avr-libc
-                0x00003e8e       0x10 /usr/lib/gcc/avr/4.7.2/../../../avr/lib/avr35/libc.a(eerd_byte_atmega16u2.o)
-                0x00003e8e                __eerd_byte_m16u2
+                0x00003eba       0x10 /usr/lib/gcc/avr/4.7.2/../../../avr/lib/avr35/libc.a(eerd_byte_atmega16u2.o)
+                0x00003eba                __eerd_byte_m16u2
  .text.avr-libc
-                0x00003e9e       0x1c /usr/lib/gcc/avr/4.7.2/../../../avr/lib/avr35/libc.a(eewr_byte_atmega16u2.o)
-                0x00003e9e                __eewr_byte_m16u2
-                0x00003ea0                __eewr_r18_m16u2
-                0x00003eba                . = ALIGN (0x2)
+                0x00003eca       0x1c /usr/lib/gcc/avr/4.7.2/../../../avr/lib/avr35/libc.a(eewr_byte_atmega16u2.o)
+                0x00003eca                __eewr_byte_m16u2
+                0x00003ecc                __eewr_r18_m16u2
+                0x00003ee6                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00003eba        0x0 /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a(_exit.o)
-                0x00003eba                exit
-                0x00003eba                _exit
+ .fini9         0x00003ee6        0x0 /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a(_exit.o)
+                0x00003ee6                exit
+                0x00003ee6                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -563,11 +563,11 @@ LOAD /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00003eba        0x4 /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a(_exit.o)
+ .fini0         0x00003ee6        0x4 /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a(_exit.o)
  *(.fini0)
-                0x00003ebe                _etext = .
+                0x00003eea                _etext = .
 
-.data           0x00800100       0x8c load address 0x00003ebe
+.data           0x00800100       0x94 load address 0x00003eea
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x8 Hoodloader2.o
@@ -581,34 +581,34 @@ LOAD /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a
                 0x0080013c                ConfigurationDescriptor
                 0x0080017a                DeviceDescriptor
  *(.rodata*)
+ .rodata.str1.1
+                0x0080018c        0x8 Hoodloader2.o
  *(.gnu.linkonce.d*)
-                0x0080018c                . = ALIGN (0x2)
-                0x0080018c                _edata = .
-                0x0080018c                PROVIDE (__data_end, .)
+                0x00800194                . = ALIGN (0x2)
+                0x00800194                _edata = .
+                0x00800194                PROVIDE (__data_end, .)
 
-.bss            0x0080018c       0x52
-                0x0080018c                PROVIDE (__bss_start, .)
+.bss            0x00800194       0x52
+                0x00800194                PROVIDE (__bss_start, .)
  *(.bss)
- .bss           0x0080018c       0x48 Hoodloader2.o
+ .bss           0x00800194       0x48 Hoodloader2.o
  *(.bss*)
  *(COMMON)
- COMMON         0x008001d4        0x1 lufa-LUFA-140928/LUFA/Drivers/USB/Core/DeviceStandardReq.o
-                0x008001d4                USB_Device_ConfigurationNumber
- COMMON         0x008001d5        0x9 lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o
-                0x008001d5                USB_IsInitialized
-                0x008001d6                USB_ControlRequest
-                0x008001de                PROVIDE (__bss_end, .)
-                0x00003ebe                __data_load_start = LOADADDR (.data)
-                0x00003f4a                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x008001dc        0x1 lufa-LUFA-140928/LUFA/Drivers/USB/Core/DeviceStandardReq.o
+                0x008001dc                USB_Device_ConfigurationNumber
+ COMMON         0x008001dd        0x9 lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o
+                0x008001dd                USB_IsInitialized
+                0x008001de                USB_ControlRequest
+                0x008001e6                PROVIDE (__bss_end, .)
+                0x00003eea                __data_load_start = LOADADDR (.data)
+                0x00003f7e                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008001de        0x2
-                0x008001de                PROVIDE (__noinit_start, .)
+.noinit         0x008001e6        0x0
+                0x008001e6                PROVIDE (__noinit_start, .)
  *(.noinit*)
- .noinit        0x008001de        0x2 Hoodloader2.o
-                0x008001de                MagicBootKey
-                0x008001e0                PROVIDE (__noinit_end, .)
-                0x008001e0                _end = .
-                0x008001e0                PROVIDE (__heap_start, .)
+                0x008001e6                PROVIDE (__noinit_end, .)
+                0x008001e6                _end = .
+                0x008001e6                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -727,48 +727,48 @@ LOAD /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x5703
+.debug_info     0x00000000     0x572a
  *(.debug_info)
- .debug_info    0x00000000      0xf1a Hoodloader2.o
- .debug_info    0x00000f1a      0x693 Descriptors.o
- .debug_info    0x000015ad      0x240 BootloaderAPI.o
- .debug_info    0x000017ed       0x72 BootloaderAPITable.o
- .debug_info    0x0000185f      0x73a lufa-LUFA-140928/LUFA/Drivers/USB/Class/Common/HIDParser.o
- .debug_info    0x00001f99       0xd2 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Device_AVR8.o
- .debug_info    0x0000206b     0x180a lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
- .debug_info    0x00003875      0x595 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Endpoint_AVR8.o
- .debug_info    0x00003e0a       0x56 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Host_AVR8.o
- .debug_info    0x00003e60       0x56 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/PipeStream_AVR8.o
- .debug_info    0x00003eb6       0x56 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Pipe_AVR8.o
- .debug_info    0x00003f0c      0x43e lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBController_AVR8.o
- .debug_info    0x0000434a      0x53d lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
- .debug_info    0x00004887      0x3cd lufa-LUFA-140928/LUFA/Drivers/USB/Core/ConfigDescriptors.o
- .debug_info    0x00004c54      0x78b lufa-LUFA-140928/LUFA/Drivers/USB/Core/DeviceStandardReq.o
- .debug_info    0x000053df       0x78 lufa-LUFA-140928/LUFA/Drivers/USB/Core/Events.o
- .debug_info    0x00005457       0x56 lufa-LUFA-140928/LUFA/Drivers/USB/Core/HostStandardReq.o
- .debug_info    0x000054ad      0x256 lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o
+ .debug_info    0x00000000      0xf41 Hoodloader2.o
+ .debug_info    0x00000f41      0x693 Descriptors.o
+ .debug_info    0x000015d4      0x240 BootloaderAPI.o
+ .debug_info    0x00001814       0x72 BootloaderAPITable.o
+ .debug_info    0x00001886      0x73a lufa-LUFA-140928/LUFA/Drivers/USB/Class/Common/HIDParser.o
+ .debug_info    0x00001fc0       0xd2 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Device_AVR8.o
+ .debug_info    0x00002092     0x180a lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
+ .debug_info    0x0000389c      0x595 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Endpoint_AVR8.o
+ .debug_info    0x00003e31       0x56 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Host_AVR8.o
+ .debug_info    0x00003e87       0x56 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/PipeStream_AVR8.o
+ .debug_info    0x00003edd       0x56 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Pipe_AVR8.o
+ .debug_info    0x00003f33      0x43e lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBController_AVR8.o
+ .debug_info    0x00004371      0x53d lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
+ .debug_info    0x000048ae      0x3cd lufa-LUFA-140928/LUFA/Drivers/USB/Core/ConfigDescriptors.o
+ .debug_info    0x00004c7b      0x78b lufa-LUFA-140928/LUFA/Drivers/USB/Core/DeviceStandardReq.o
+ .debug_info    0x00005406       0x78 lufa-LUFA-140928/LUFA/Drivers/USB/Core/Events.o
+ .debug_info    0x0000547e       0x56 lufa-LUFA-140928/LUFA/Drivers/USB/Core/HostStandardReq.o
+ .debug_info    0x000054d4      0x256 lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev   0x00000000     0x1685
+.debug_abbrev   0x00000000     0x1671
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x41c Hoodloader2.o
- .debug_abbrev  0x0000041c      0x124 Descriptors.o
- .debug_abbrev  0x00000540       0xbb BootloaderAPI.o
- .debug_abbrev  0x000005fb       0x12 BootloaderAPITable.o
- .debug_abbrev  0x0000060d      0x22b lufa-LUFA-140928/LUFA/Drivers/USB/Class/Common/HIDParser.o
- .debug_abbrev  0x00000838       0x80 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Device_AVR8.o
- .debug_abbrev  0x000008b8      0x224 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
- .debug_abbrev  0x00000adc      0x203 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Endpoint_AVR8.o
- .debug_abbrev  0x00000cdf       0x26 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Host_AVR8.o
- .debug_abbrev  0x00000d05       0x26 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/PipeStream_AVR8.o
- .debug_abbrev  0x00000d2b       0x26 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Pipe_AVR8.o
- .debug_abbrev  0x00000d51      0x18d lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBController_AVR8.o
- .debug_abbrev  0x00000ede      0x1ce lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
- .debug_abbrev  0x000010ac      0x183 lufa-LUFA-140928/LUFA/Drivers/USB/Core/ConfigDescriptors.o
- .debug_abbrev  0x0000122f      0x282 lufa-LUFA-140928/LUFA/Drivers/USB/Core/DeviceStandardReq.o
- .debug_abbrev  0x000014b1       0x44 lufa-LUFA-140928/LUFA/Drivers/USB/Core/Events.o
- .debug_abbrev  0x000014f5       0x26 lufa-LUFA-140928/LUFA/Drivers/USB/Core/HostStandardReq.o
- .debug_abbrev  0x0000151b      0x16a lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o
+ .debug_abbrev  0x00000000      0x408 Hoodloader2.o
+ .debug_abbrev  0x00000408      0x124 Descriptors.o
+ .debug_abbrev  0x0000052c       0xbb BootloaderAPI.o
+ .debug_abbrev  0x000005e7       0x12 BootloaderAPITable.o
+ .debug_abbrev  0x000005f9      0x22b lufa-LUFA-140928/LUFA/Drivers/USB/Class/Common/HIDParser.o
+ .debug_abbrev  0x00000824       0x80 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Device_AVR8.o
+ .debug_abbrev  0x000008a4      0x224 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
+ .debug_abbrev  0x00000ac8      0x203 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Endpoint_AVR8.o
+ .debug_abbrev  0x00000ccb       0x26 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Host_AVR8.o
+ .debug_abbrev  0x00000cf1       0x26 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/PipeStream_AVR8.o
+ .debug_abbrev  0x00000d17       0x26 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Pipe_AVR8.o
+ .debug_abbrev  0x00000d3d      0x18d lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBController_AVR8.o
+ .debug_abbrev  0x00000eca      0x1ce lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
+ .debug_abbrev  0x00001098      0x183 lufa-LUFA-140928/LUFA/Drivers/USB/Core/ConfigDescriptors.o
+ .debug_abbrev  0x0000121b      0x282 lufa-LUFA-140928/LUFA/Drivers/USB/Core/DeviceStandardReq.o
+ .debug_abbrev  0x0000149d       0x44 lufa-LUFA-140928/LUFA/Drivers/USB/Core/Events.o
+ .debug_abbrev  0x000014e1       0x26 lufa-LUFA-140928/LUFA/Drivers/USB/Core/HostStandardReq.o
+ .debug_abbrev  0x00001507      0x16a lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o
 
 .debug_line     0x00000000     0x282f
  *(.debug_line)
@@ -807,55 +807,55 @@ LOAD /usr/lib/gcc/avr/4.7.2/avr35/libgcc.a
  .debug_frame   0x0000095c       0x24 lufa-LUFA-140928/LUFA/Drivers/USB/Core/Events.o
  .debug_frame   0x00000980       0x2c lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o
 
-.debug_str      0x00000000     0x29e0
+.debug_str      0x00000000     0x29c1
  *(.debug_str)
- .debug_str     0x00000000      0xc64 Hoodloader2.o
-                                0xcf0 (size before relaxing)
- .debug_str     0x00000c64      0x6b0 Descriptors.o
+ .debug_str     0x00000000      0xc45 Hoodloader2.o
+                                0xcd1 (size before relaxing)
+ .debug_str     0x00000c45      0x6b0 Descriptors.o
                                 0x7f4 (size before relaxing)
- .debug_str     0x00001314       0xc2 BootloaderAPI.o
+ .debug_str     0x000012f5       0xc2 BootloaderAPI.o
                                 0x1a4 (size before relaxing)
- .debug_str     0x000013d6      0x4b0 lufa-LUFA-140928/LUFA/Drivers/USB/Class/Common/HIDParser.o
+ .debug_str     0x000013b7      0x4b0 lufa-LUFA-140928/LUFA/Drivers/USB/Class/Common/HIDParser.o
                                 0x609 (size before relaxing)
- .debug_str     0x00001886       0x82 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Device_AVR8.o
+ .debug_str     0x00001867       0x82 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Device_AVR8.o
                                 0x145 (size before relaxing)
- .debug_str     0x00001908      0x4b7 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
+ .debug_str     0x000018e9      0x4b7 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
                                 0x7a4 (size before relaxing)
- .debug_str     0x00001dbf      0x239 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Endpoint_AVR8.o
+ .debug_str     0x00001da0      0x239 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Endpoint_AVR8.o
                                 0x534 (size before relaxing)
- .debug_str     0x00001ff8       0x38 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Host_AVR8.o
+ .debug_str     0x00001fd9       0x38 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Host_AVR8.o
                                  0xe4 (size before relaxing)
- .debug_str     0x00002030       0x3e lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/PipeStream_AVR8.o
+ .debug_str     0x00002011       0x3e lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/PipeStream_AVR8.o
                                  0xea (size before relaxing)
- .debug_str     0x0000206e       0x38 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Pipe_AVR8.o
+ .debug_str     0x0000204f       0x38 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Pipe_AVR8.o
                                  0xe4 (size before relaxing)
- .debug_str     0x000020a6      0x1f9 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBController_AVR8.o
+ .debug_str     0x00002087      0x1f9 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBController_AVR8.o
                                 0x42e (size before relaxing)
- .debug_str     0x0000229f       0xf5 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
+ .debug_str     0x00002280       0xf5 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
                                 0x3fa (size before relaxing)
- .debug_str     0x00002394      0x232 lufa-LUFA-140928/LUFA/Drivers/USB/Core/ConfigDescriptors.o
+ .debug_str     0x00002375      0x232 lufa-LUFA-140928/LUFA/Drivers/USB/Core/ConfigDescriptors.o
                                 0x32d (size before relaxing)
- .debug_str     0x000025c6      0x339 lufa-LUFA-140928/LUFA/Drivers/USB/Core/DeviceStandardReq.o
+ .debug_str     0x000025a7      0x339 lufa-LUFA-140928/LUFA/Drivers/USB/Core/DeviceStandardReq.o
                                 0x6a2 (size before relaxing)
- .debug_str     0x000028ff       0x3f lufa-LUFA-140928/LUFA/Drivers/USB/Core/Events.o
+ .debug_str     0x000028e0       0x3f lufa-LUFA-140928/LUFA/Drivers/USB/Core/Events.o
                                  0xeb (size before relaxing)
- .debug_str     0x0000293e       0x39 lufa-LUFA-140928/LUFA/Drivers/USB/Core/HostStandardReq.o
+ .debug_str     0x0000291f       0x39 lufa-LUFA-140928/LUFA/Drivers/USB/Core/HostStandardReq.o
                                  0xe5 (size before relaxing)
- .debug_str     0x00002977       0x69 lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o
+ .debug_str     0x00002958       0x69 lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o
                                 0x2bc (size before relaxing)
 
-.debug_loc      0x00000000     0x3d54
+.debug_loc      0x00000000     0x3d58
  *(.debug_loc)
- .debug_loc     0x00000000      0x43d Hoodloader2.o
- .debug_loc     0x0000043d      0x17f Descriptors.o
- .debug_loc     0x000005bc       0x92 BootloaderAPI.o
- .debug_loc     0x0000064e      0x9c5 lufa-LUFA-140928/LUFA/Drivers/USB/Class/Common/HIDParser.o
- .debug_loc     0x00001013     0x2095 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
- .debug_loc     0x000030a8      0x2e3 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Endpoint_AVR8.o
- .debug_loc     0x0000338b      0x1f7 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
- .debug_loc     0x00003582      0x5bd lufa-LUFA-140928/LUFA/Drivers/USB/Core/ConfigDescriptors.o
- .debug_loc     0x00003b3f      0x1cc lufa-LUFA-140928/LUFA/Drivers/USB/Core/DeviceStandardReq.o
- .debug_loc     0x00003d0b       0x49 lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o
+ .debug_loc     0x00000000      0x441 Hoodloader2.o
+ .debug_loc     0x00000441      0x17f Descriptors.o
+ .debug_loc     0x000005c0       0x92 BootloaderAPI.o
+ .debug_loc     0x00000652      0x9c5 lufa-LUFA-140928/LUFA/Drivers/USB/Class/Common/HIDParser.o
+ .debug_loc     0x00001017     0x2095 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
+ .debug_loc     0x000030ac      0x2e3 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/Endpoint_AVR8.o
+ .debug_loc     0x0000338f      0x1f7 lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/USBInterrupt_AVR8.o
+ .debug_loc     0x00003586      0x5bd lufa-LUFA-140928/LUFA/Drivers/USB/Core/ConfigDescriptors.o
+ .debug_loc     0x00003b43      0x1cc lufa-LUFA-140928/LUFA/Drivers/USB/Core/DeviceStandardReq.o
+ .debug_loc     0x00003d0f       0x49 lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -972,7 +972,6 @@ Endpoint_Write_PStream_LE                         lufa-LUFA-140928/LUFA/Drivers/
 Endpoint_Write_Stream_BE                          lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
 Endpoint_Write_Stream_LE                          lufa-LUFA-140928/LUFA/Drivers/USB/Core/AVR8/EndpointStream_AVR8.o
 LanguageString                                    Descriptors.o
-MagicBootKey                                      Hoodloader2.o
 ManufacturerString                                Descriptors.o
 ProductString                                     Descriptors.o
 USB_ControlRequest                                lufa-LUFA-140928/LUFA/Drivers/USB/Core/USBTask.o

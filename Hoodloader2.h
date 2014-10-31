@@ -166,7 +166,7 @@ THE SOFTWARE.
 			static void    ReadWriteMemoryBlock(const uint8_t Command);
 			#endif
 			static uint8_t FetchNextCommandByte(void);
-			static void    WriteNextResponseByte(const uint8_t Response);
+			static void    BufferInsert(const uint8_t Response);
 		#endif
 
 #endif
