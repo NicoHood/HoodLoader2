@@ -227,6 +227,7 @@ void EVENT_USB_Device_ControlRequest(void)
 			Endpoint_ClearSETUP();
 
 			/* Write the line coding data to the control endpoint */
+			// this one is not inline because its already used somewhere in the usb core, so it will dupe code
 			Endpoint_Write_Control_Stream_LE(&LineEncoding, sizeof(CDC_LineEncoding_t));
 			Endpoint_ClearOUT();
 		}
@@ -267,13 +268,13 @@ void EVENT_USB_Device_ControlRequest(void)
 			}
 
 			if (!skip)
-			while (!(Endpoint_IsINReady()))
-			{
+				while (!(Endpoint_IsINReady()))
+				{
 				uint8_t USB_DeviceState_LCL = USB_DeviceState;
 
 				if ((USB_DeviceState_LCL == DEVICE_STATE_Unattached) || (USB_DeviceState_LCL == DEVICE_STATE_Suspended))
 					break;
-			}
+				}
 
 			// end of inline Endpoint_Read_Control_Stream_LE
 
@@ -467,30 +468,30 @@ static void CDC_Task(void)
 				/* Send confirmation byte back to the host */
 				BufferInsert('\r');
 			}
-			//else if ((Command == AVR109_COMMAND_SetLED) || (Command == AVR109_COMMAND_ClearLED) ||
-			//	(Command == AVR109_COMMAND_SelectDeviceType))
-			//{
-			//	FetchNextCommandByte();
+			else if ((Command == AVR109_COMMAND_SetLED) || (Command == AVR109_COMMAND_ClearLED) ||
+				(Command == AVR109_COMMAND_SelectDeviceType))
+			{
+				FetchNextCommandByte();
 
-			//	/* Send confirmation byte back to the host */
-			//	BufferInsert('\r');
-			//}
-			//else if ((Command == AVR109_COMMAND_EnterProgrammingMode) || (Command == AVR109_COMMAND_LeaveProgrammingMode))
-			//{
-			//	/* Send confirmation byte back to the host */
-			//	BufferInsert('\r');
-			//}
-			//else if (Command == AVR109_COMMAND_ReadPartCode)
-			//{
-			//	/* Return ATMEGA128 part code - this is only to allow AVRProg to use the bootloader */
-			//	BufferInsert(0x44);
-			//	BufferInsert(0x00);
-			//}
-			//else if (Command == AVR109_COMMAND_ReadAutoAddressIncrement)
-			//{
-			//	/* Indicate auto-address increment is supported */
-			//	BufferInsert('Y');
-			//}
+				/* Send confirmation byte back to the host */
+				BufferInsert('\r');
+			}
+			else if ((Command == AVR109_COMMAND_EnterProgrammingMode) || (Command == AVR109_COMMAND_LeaveProgrammingMode))
+			{
+				/* Send confirmation byte back to the host */
+				BufferInsert('\r');
+			}
+			else if (Command == AVR109_COMMAND_ReadPartCode)
+			{
+				/* Return ATMEGA128 part code - this is only to allow AVRProg to use the bootloader */
+				BufferInsert(0x44);
+				BufferInsert(0x00);
+			}
+			else if (Command == AVR109_COMMAND_ReadAutoAddressIncrement)
+			{
+				/* Indicate auto-address increment is supported */
+				BufferInsert('Y');
+			}
 			else if (Command == AVR109_COMMAND_SetCurrentAddress)
 			{
 				/* Set the current address to that given by the host (translate 16-bit word address to byte address) */
