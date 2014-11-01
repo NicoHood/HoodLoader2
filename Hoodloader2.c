@@ -315,67 +315,7 @@ void EVENT_USB_Device_ControlRequest(void)
 	}
 }
 
-/** Event handler for the CDC Class driver Line Encoding Changed event.
-*
-*  \param[in] CDCInterfaceInfo  Pointer to the CDC class interface configuration structure being referenced
-*/
-static void CDC_Device_LineEncodingChanged(void)
-{
-	uint8_t ConfigMask = 0;
 
-	switch (LineEncoding.ParityType)
-	{
-	case CDC_PARITY_Odd:
-		ConfigMask = ((1 << UPM11) | (1 << UPM10));
-		break;
-	case CDC_PARITY_Even:
-		ConfigMask = (1 << UPM11);
-		break;
-	}
-
-	if (LineEncoding.CharFormat == CDC_LINEENCODING_TwoStopBits)
-		ConfigMask |= (1 << USBS1);
-
-	switch (LineEncoding.DataBits)
-	{
-	case 6:
-		ConfigMask |= (1 << UCSZ10);
-		break;
-	case 7:
-		ConfigMask |= (1 << UCSZ11);
-		break;
-	case 8:
-		ConfigMask |= ((1 << UCSZ11) | (1 << UCSZ10));
-		break;
-	}
-
-	/* Keep the TX line held high (idle) while the USART is reconfigured */
-	PORTD |= (1 << 3);
-
-	/* Must turn off USART before reconfiguring it, otherwise incorrect operation may occur */
-	UCSR1B = 0;
-	UCSR1A = 0;
-	UCSR1C = 0;
-
-	/* Set the new baud rate before configuring the USART */
-	UBRR1 = SERIAL_2X_UBBRVAL(LineEncoding.BaudRateBPS);
-
-	//TODO needed?
-	/* Set the new baud rate before configuring the USART */
-	/* Special case 57600 baud for compatibility with the ATmega328 bootloader. */
-	//UBRR1 = (LineEncoding.BaudRateBPS == 57600)
-	//	? SERIAL_UBBRVAL(LineEncoding.BaudRateBPS)
-	//	: SERIAL_2X_UBBRVAL(LineEncoding.BaudRateBPS);
-
-	/* Reconfigure the USART in double speed mode for a wider baud rate range at the expense of accuracy */
-	UCSR1C = ConfigMask;
-	UCSR1A = (1 << U2X1);
-	//UCSR1A = (LineEncoding.BaudRateBPS == 57600) ? 0 : (1 << U2X1);
-	UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1));
-
-	/* Release the TX line after the USART has been reconfigured */
-	PORTD &= ~(1 << 3);
-}
 
 
 /** ISR to manage the reception of data from the serial port, placing received bytes into a circular buffer
@@ -451,12 +391,13 @@ static void WriteNextResponseByte(const uint8_t Response)
 	Endpoint_Write_8(Response);
 }
 
-
 /** Task to read in AVR109 commands from the CDC data OUT endpoint, process them, perform the required actions
  *  and send the appropriate response back to the host.
  */
 static void CDC_Task(void)
 {
+	CDCActive = true;
+
 	/* Select the OUT endpoint */
 	Endpoint_SelectEndpoint(CDC_RX_EPADDR);
 
@@ -469,10 +410,7 @@ static void CDC_Task(void)
 		// USB-Serial Mode
 		if (!CDCActive){
 			/* Store received byte into the USART transmit buffer */
-			//if (Endpoint_BytesInEndpoint())
 			Serial_SendByte(Command);
-			//if (Endpoint_BytesInEndpoint())
-			//	Serial_SendByte(Endpoint_Read_8());
 
 			// if endpoint is completely empty/read acknowledge that to the host
 			if (!(Endpoint_BytesInEndpoint()))
@@ -480,250 +418,66 @@ static void CDC_Task(void)
 		}
 
 		// Bootloader Mode
-		else{
-
-			if (Command == AVR109_COMMAND_ExitBootloader)
-			{
-				RunBootloader = false;
-
-				/* Send confirmation byte back to the host */
-				WriteNextResponseByte('\r');
-			}
-			//else if ((Command == AVR109_COMMAND_SetLED) || (Command == AVR109_COMMAND_ClearLED) ||
-			//	(Command == AVR109_COMMAND_SelectDeviceType))
-			//{
-			//	FetchNextCommandByte();
-
-			//	/* Send confirmation byte back to the host */
-			//	WriteNextResponseByte('\r');
-			//}
-			//else if ((Command == AVR109_COMMAND_EnterProgrammingMode) || (Command == AVR109_COMMAND_LeaveProgrammingMode))
-			//{
-			//	/* Send confirmation byte back to the host */
-			//	WriteNextResponseByte('\r');
-			//}
-			//else if (Command == AVR109_COMMAND_ReadPartCode)
-			//{
-			//	//TODO needed?
-			//	/* Return ATMEGA128 part code - this is only to allow AVRProg to use the bootloader */
-			//	WriteNextResponseByte(0x44);
-			//	WriteNextResponseByte(0x00);
-			//}
-			//else if (Command == AVR109_COMMAND_ReadAutoAddressIncrement)
-			//{
-			//	/* Indicate auto-address increment is supported */
-			//	WriteNextResponseByte('Y');
-			//}
-			//else if (Command == AVR109_COMMAND_SetCurrentAddress)
-			//{
-			//	/* Set the current address to that given by the host (translate 16-bit word address to byte address) */
-			//	CurrAddress = (FetchNextCommandByte() << 9);
-			//	CurrAddress |= (FetchNextCommandByte() << 1);
-
-			//	/* Send confirmation byte back to the host */
-			//	WriteNextResponseByte('\r');
-			//}
-			//else if (Command == AVR109_COMMAND_ReadBootloaderInterface)
-			//{
-			//	/* Indicate serial programmer back to the host */
-			//	WriteNextResponseByte('S');
-			//}
-			//else if (Command == AVR109_COMMAND_ReadBootloaderIdentifier)
-			//{
-			//	/* Write the 7-byte software identifier to the endpoint */
-			//	for (uint8_t CurrByte = 0; CurrByte < 7; CurrByte++)
-			//		WriteNextResponseByte(SOFTWARE_IDENTIFIER[CurrByte]);
-			//}
-			//else if (Command == AVR109_COMMAND_ReadBootloaderSWVersion)
-			//{
-			//	WriteNextResponseByte('0' + BOOTLOADER_VERSION_MAJOR);
-			//	WriteNextResponseByte('0' + BOOTLOADER_VERSION_MINOR);
-			//}
-			//else if (Command == AVR109_COMMAND_ReadSignature)
-			//{
-			//	WriteNextResponseByte(AVR_SIGNATURE_3);
-			//	WriteNextResponseByte(AVR_SIGNATURE_2);
-			//	WriteNextResponseByte(AVR_SIGNATURE_1);
-			//}
-			else if (Command == AVR109_COMMAND_EraseFLASH)
-			{
-				/* Clear the application section of flash */
-				for (uint32_t CurrFlashAddress = 0; CurrFlashAddress < (uint32_t)BOOT_START_ADDR; CurrFlashAddress += SPM_PAGESIZE)
-				{
-					boot_page_erase(CurrFlashAddress);
-					boot_spm_busy_wait();
-					boot_page_write(CurrFlashAddress);
-					boot_spm_busy_wait();
-				}
-
-				/* Send confirmation byte back to the host */
-				WriteNextResponseByte('\r');
-			}
-#if !defined(NO_LOCK_BYTE_WRITE_SUPPORT)
-			else if (Command == AVR109_COMMAND_WriteLockbits)
-			{
-				/* Set the lock bits to those given by the host */
-				boot_lock_bits_set(FetchNextCommandByte());
-
-				/* Send confirmation byte back to the host */
-				WriteNextResponseByte('\r');
-			}
-#endif
-			//else if (Command == AVR109_COMMAND_ReadLockbits)
-			//{
-			//	WriteNextResponseByte(boot_lock_fuse_bits_get(GET_LOCK_BITS));
-			//}
-			//else if (Command == AVR109_COMMAND_ReadLowFuses)
-			//{
-			//	WriteNextResponseByte(boot_lock_fuse_bits_get(GET_LOW_FUSE_BITS));
-			//}
-			//else if (Command == AVR109_COMMAND_ReadHighFuses)
-			//{
-			//	WriteNextResponseByte(boot_lock_fuse_bits_get(GET_HIGH_FUSE_BITS));
-			//}
-			//else if (Command == AVR109_COMMAND_ReadExtendedFuses)
-			//{
-			//	WriteNextResponseByte(boot_lock_fuse_bits_get(GET_EXTENDED_FUSE_BITS));
-			//}
-#if !defined(NO_BLOCK_SUPPORT)
-			else if (Command == AVR109_COMMAND_GetBlockWriteSupport)
-			{
-				WriteNextResponseByte('Y');
-
-				/* Send block size to the host */
-				WriteNextResponseByte(SPM_PAGESIZE >> 8);
-				WriteNextResponseByte(SPM_PAGESIZE & 0xFF);
-			}
-			else if ((Command == AVR109_COMMAND_BlockWrite) || (Command == AVR109_COMMAND_BlockRead))
-			{
-				/* Delegate the block write/read to a separate function for clarity */
-				ReadWriteMemoryBlock(Command);
-			}
-#endif
-#if !defined(NO_FLASH_BYTE_SUPPORT)
-			else if (Command == AVR109_COMMAND_FillFlashPageWordHigh)
-			{
-				/* Write the high byte to the current flash page */
-				boot_page_fill(CurrAddress, FetchNextCommandByte());
-
-				/* Send confirmation byte back to the host */
-				WriteNextResponseByte('\r');
-			}
-			else if (Command == AVR109_COMMAND_FillFlashPageWordLow)
-			{
-				/* Write the low byte to the current flash page */
-				boot_page_fill(CurrAddress | 0x01, FetchNextCommandByte());
-
-				/* Increment the address */
-				CurrAddress += 2;
-
-				/* Send confirmation byte back to the host */
-				WriteNextResponseByte('\r');
-			}
-			else if (Command == AVR109_COMMAND_WriteFlashPage)
-			{
-				/* Commit the flash page to memory */
-				boot_page_write(CurrAddress);
-
-				/* Wait until write operation has completed */
-				boot_spm_busy_wait();
-
-				/* Send confirmation byte back to the host */
-				WriteNextResponseByte('\r');
-			}
-			else if (Command == AVR109_COMMAND_ReadFLASHWord)
-			{
-#if (FLASHEND > 0xFFFF)
-				uint16_t ProgramWord = pgm_read_word_far(CurrAddress);
-#else
-				uint16_t ProgramWord = pgm_read_word(CurrAddress);
-#endif
-
-				WriteNextResponseByte(ProgramWord >> 8);
-				WriteNextResponseByte(ProgramWord & 0xFF);
-			}
-#endif
-#if !defined(NO_EEPROM_BYTE_SUPPORT)
-			else if (Command == AVR109_COMMAND_WriteEEPROM)
-			{
-				/* Read the byte from the endpoint and write it to the EEPROM */
-				eeprom_write_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
-
-				/* Increment the address after use */
-				CurrAddress += 2;
-
-				/* Send confirmation byte back to the host */
-				WriteNextResponseByte('\r');
-			}
-			else if (Command == AVR109_COMMAND_ReadEEPROM)
-			{
-				/* Read the EEPROM byte and write it to the endpoint */
-				WriteNextResponseByte(eeprom_read_byte((uint8_t*)((intptr_t)(CurrAddress >> 1))));
-
-				/* Increment the address after use */
-				CurrAddress += 2;
-			}
-#endif
-			else if (Command != AVR109_COMMAND_Sync)
-			{
-				/* Unknown (non-sync) command, return fail code */
-				WriteNextResponseByte('?');
-			}
-		}
+		else
+			Bootloader_Task(Command);
 	}
 	// nothing received in Bootloader mode
 	else if (CDCActive)
 		return;
 
+	// get the number of bytes in the USB-Serial Buffer
+	uint8_t BytesToSend;
 
+	uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
+	GlobalInterruptDisable();
+
+	// Buffercount is 0 in Bootloader mode
+	BytesToSend = BufferCount;
+
+	SetGlobalInterruptMask(CurrentGlobalInt);
+
+
+	// dont try to flush data in USB-Serial mode if there is no data. This will block the USB
+	if (!CDCActive && !BytesToSend)
+		return;
+
+	// Read bytes from the USART receive buffer into the USB IN endpoint, max 1 bank size
+	while (BytesToSend--){
+		// Write the Data to the Endpoint */
+		WriteNextResponseByte(USARTtoUSB_Buffer_Data[BufferIndex++]);
+
+		//	// increase the buffer position and wrap around if needed
+		//	BufferIndex %= BUFFER_SIZE;
+
+		//	// turn off interrupts to save the value properly
+		//	uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
+		//	GlobalInterruptDisable();
+
+		//	// decrease buffer count
+		//	BufferCount--;
+
+		//	SetGlobalInterruptMask(CurrentGlobalInt);
+	}
+
+	FlushCDC();
+
+	// in Bootloader mode clear the Out endpoint
+	if (CDCActive){
+
+		/* Select the OUT endpoint */
+		Endpoint_SelectEndpoint(CDC_RX_EPADDR);
+
+		/* Acknowledge the command from the host */
+		Endpoint_ClearOUT();
+	}
+}
+
+static void FlushCDC(void){
 	// Select the Serial Tx Endpoint
 	Endpoint_SelectEndpoint(CDC_TX_EPADDR);
 
-	bool IsEndpointFull;
-
-	// USB-Serial
-	if (!CDCActive){
-		IsEndpointFull = false;
-
-		// check if endpoint is ready for new data, last sending flushed without errors
-		if (BufferCount && Endpoint_IsINReady()){
-
-			// Read bytes from the USART receive buffer into the USB IN endpoint, max 1 bank size
-			while (BufferCount && !IsEndpointFull){
-				// Write the Data to the Endpoint */
-				//Endpoint_Write_8(USARTtoUSB_Buffer_Data[BufferIndex++]);
-				WriteNextResponseByte(USARTtoUSB_Buffer_Data[BufferIndex++]);
-
-				// increase the buffer position and wrap around if needed
-				BufferIndex %= BUFFER_SIZE;
-
-				// turn off interrupts to save the value properly
-				uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
-				GlobalInterruptDisable();
-
-				// decrease buffer count
-				BufferCount--;
-
-				SetGlobalInterruptMask(CurrentGlobalInt);
-
-				// Remember if the endpoint is completely full before clearing it
-				IsEndpointFull = !(Endpoint_IsReadWriteAllowed());
-			}
-		}
-		// no input / USB not ready
-		else return;
-	}
-
-	// Bootloader mode
-	else{
-		// Remember if the endpoint is completely full before clearing it
-		IsEndpointFull = !(Endpoint_IsReadWriteAllowed());
-	}
-
-	// flush the data if there was any
-
 	// Remember if the endpoint is completely full before clearing it
-	//bool IsEndpointFull = !(Endpoint_IsReadWriteAllowed());
+	bool IsEndpointFull = !(Endpoint_IsReadWriteAllowed());
 
 	// Send the endpoint data to the host */
 	Endpoint_ClearIN();
@@ -741,21 +495,201 @@ static void CDC_Task(void)
 		Endpoint_ClearIN();
 	}
 
-
 	// Wait until the data has been sent to the host
 	while (!(Endpoint_IsINReady()))
 	{
 		if (USB_DeviceState == DEVICE_STATE_Unattached)
 			return;
 	}
+}
 
-	if (CDCActive){
+static void Bootloader_Task(const uint8_t Command){
+	if (Command == AVR109_COMMAND_ExitBootloader)
+	{
+		RunBootloader = false;
 
-		/* Select the OUT endpoint */
-		Endpoint_SelectEndpoint(CDC_RX_EPADDR);
+		/* Send confirmation byte back to the host */
+		WriteNextResponseByte('\r');
+	}
+	else if ((Command == AVR109_COMMAND_SetLED) || (Command == AVR109_COMMAND_ClearLED) ||
+		(Command == AVR109_COMMAND_SelectDeviceType))
+	{
+		FetchNextCommandByte();
 
-		/* Acknowledge the command from the host */
-		Endpoint_ClearOUT();
+		/* Send confirmation byte back to the host */
+		WriteNextResponseByte('\r');
+	}
+	else if ((Command == AVR109_COMMAND_EnterProgrammingMode) || (Command == AVR109_COMMAND_LeaveProgrammingMode))
+	{
+		/* Send confirmation byte back to the host */
+		WriteNextResponseByte('\r');
+	}
+	else if (Command == AVR109_COMMAND_ReadPartCode)
+	{
+		//TODO needed?
+		/* Return ATMEGA128 part code - this is only to allow AVRProg to use the bootloader */
+		WriteNextResponseByte(0x44);
+		WriteNextResponseByte(0x00);
+	}
+	else if (Command == AVR109_COMMAND_ReadAutoAddressIncrement)
+	{
+		/* Indicate auto-address increment is supported */
+		WriteNextResponseByte('Y');
+	}
+	else if (Command == AVR109_COMMAND_SetCurrentAddress)
+	{
+		/* Set the current address to that given by the host (translate 16-bit word address to byte address) */
+		CurrAddress = (FetchNextCommandByte() << 9);
+		CurrAddress |= (FetchNextCommandByte() << 1);
+
+		/* Send confirmation byte back to the host */
+		WriteNextResponseByte('\r');
+	}
+	else if (Command == AVR109_COMMAND_ReadBootloaderInterface)
+	{
+		/* Indicate serial programmer back to the host */
+		WriteNextResponseByte('S');
+	}
+	else if (Command == AVR109_COMMAND_ReadBootloaderIdentifier)
+	{
+		/* Write the 7-byte software identifier to the endpoint */
+		for (uint8_t CurrByte = 0; CurrByte < 7; CurrByte++)
+			WriteNextResponseByte(SOFTWARE_IDENTIFIER[CurrByte]);
+	}
+	else if (Command == AVR109_COMMAND_ReadBootloaderSWVersion)
+	{
+		WriteNextResponseByte('0' + BOOTLOADER_VERSION_MAJOR);
+		WriteNextResponseByte('0' + BOOTLOADER_VERSION_MINOR);
+	}
+	else if (Command == AVR109_COMMAND_ReadSignature)
+	{
+		WriteNextResponseByte(AVR_SIGNATURE_3);
+		WriteNextResponseByte(AVR_SIGNATURE_2);
+		WriteNextResponseByte(AVR_SIGNATURE_1);
+	}
+	else if (Command == AVR109_COMMAND_EraseFLASH)
+	{
+		/* Clear the application section of flash */
+		for (uint32_t CurrFlashAddress = 0; CurrFlashAddress < (uint32_t)BOOT_START_ADDR; CurrFlashAddress += SPM_PAGESIZE)
+		{
+			boot_page_erase(CurrFlashAddress);
+			boot_spm_busy_wait();
+			boot_page_write(CurrFlashAddress);
+			boot_spm_busy_wait();
+		}
+
+		/* Send confirmation byte back to the host */
+		WriteNextResponseByte('\r');
+	}
+#if !defined(NO_LOCK_BYTE_WRITE_SUPPORT)
+	else if (Command == AVR109_COMMAND_WriteLockbits)
+	{
+		/* Set the lock bits to those given by the host */
+		boot_lock_bits_set(FetchNextCommandByte());
+
+		/* Send confirmation byte back to the host */
+		WriteNextResponseByte('\r');
+	}
+#endif
+	else if (Command == AVR109_COMMAND_ReadLockbits)
+	{
+		WriteNextResponseByte(boot_lock_fuse_bits_get(GET_LOCK_BITS));
+	}
+	else if (Command == AVR109_COMMAND_ReadLowFuses)
+	{
+		WriteNextResponseByte(boot_lock_fuse_bits_get(GET_LOW_FUSE_BITS));
+	}
+	else if (Command == AVR109_COMMAND_ReadHighFuses)
+	{
+		WriteNextResponseByte(boot_lock_fuse_bits_get(GET_HIGH_FUSE_BITS));
+	}
+	else if (Command == AVR109_COMMAND_ReadExtendedFuses)
+	{
+		WriteNextResponseByte(boot_lock_fuse_bits_get(GET_EXTENDED_FUSE_BITS));
+	}
+#if !defined(NO_BLOCK_SUPPORT)
+	else if (Command == AVR109_COMMAND_GetBlockWriteSupport)
+	{
+		WriteNextResponseByte('Y');
+
+		/* Send block size to the host */
+		WriteNextResponseByte(SPM_PAGESIZE >> 8);
+		WriteNextResponseByte(SPM_PAGESIZE & 0xFF);
+	}
+	else if ((Command == AVR109_COMMAND_BlockWrite) || (Command == AVR109_COMMAND_BlockRead))
+	{
+		/* Delegate the block write/read to a separate function for clarity */
+		ReadWriteMemoryBlock(Command);
+	}
+#endif
+#if !defined(NO_FLASH_BYTE_SUPPORT)
+	else if (Command == AVR109_COMMAND_FillFlashPageWordHigh)
+	{
+		/* Write the high byte to the current flash page */
+		boot_page_fill(CurrAddress, FetchNextCommandByte());
+
+		/* Send confirmation byte back to the host */
+		WriteNextResponseByte('\r');
+	}
+	else if (Command == AVR109_COMMAND_FillFlashPageWordLow)
+	{
+		/* Write the low byte to the current flash page */
+		boot_page_fill(CurrAddress | 0x01, FetchNextCommandByte());
+
+		/* Increment the address */
+		CurrAddress += 2;
+
+		/* Send confirmation byte back to the host */
+		WriteNextResponseByte('\r');
+	}
+	else if (Command == AVR109_COMMAND_WriteFlashPage)
+	{
+		/* Commit the flash page to memory */
+		boot_page_write(CurrAddress);
+
+		/* Wait until write operation has completed */
+		boot_spm_busy_wait();
+
+		/* Send confirmation byte back to the host */
+		WriteNextResponseByte('\r');
+	}
+	else if (Command == AVR109_COMMAND_ReadFLASHWord)
+	{
+#if (FLASHEND > 0xFFFF)
+		uint16_t ProgramWord = pgm_read_word_far(CurrAddress);
+#else
+		uint16_t ProgramWord = pgm_read_word(CurrAddress);
+#endif
+
+		WriteNextResponseByte(ProgramWord >> 8);
+		WriteNextResponseByte(ProgramWord & 0xFF);
+	}
+#endif
+#if !defined(NO_EEPROM_BYTE_SUPPORT)
+	//else if (Command == AVR109_COMMAND_WriteEEPROM)
+	//{
+	//	/* Read the byte from the endpoint and write it to the EEPROM */
+	//	eeprom_write_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
+
+	//	/* Increment the address after use */
+	//	CurrAddress += 2;
+
+	//	/* Send confirmation byte back to the host */
+	//	WriteNextResponseByte('\r');
+	//}
+	//else if (Command == AVR109_COMMAND_ReadEEPROM)
+	//{
+	//	/* Read the EEPROM byte and write it to the endpoint */
+	//	WriteNextResponseByte(eeprom_read_byte((uint8_t*)((intptr_t)(CurrAddress >> 1))));
+
+	//	/* Increment the address after use */
+	//	CurrAddress += 2;
+	//}
+#endif
+	else if (Command != AVR109_COMMAND_Sync)
+	{
+		/* Unknown (non-sync) command, return fail code */
+		WriteNextResponseByte('?');
 	}
 }
 
@@ -874,3 +808,65 @@ static void ReadWriteMemoryBlock(const uint8_t Command)
 	}
 }
 #endif
+
+/** Event handler for the CDC Class driver Line Encoding Changed event.
+*
+*  \param[in] CDCInterfaceInfo  Pointer to the CDC class interface configuration structure being referenced
+*/
+static void CDC_Device_LineEncodingChanged(void)
+{
+	uint8_t ConfigMask = 0;
+
+	switch (LineEncoding.ParityType)
+	{
+	case CDC_PARITY_Odd:
+		ConfigMask = ((1 << UPM11) | (1 << UPM10));
+		break;
+	case CDC_PARITY_Even:
+		ConfigMask = (1 << UPM11);
+		break;
+	}
+
+	if (LineEncoding.CharFormat == CDC_LINEENCODING_TwoStopBits)
+		ConfigMask |= (1 << USBS1);
+
+	switch (LineEncoding.DataBits)
+	{
+	case 6:
+		ConfigMask |= (1 << UCSZ10);
+		break;
+	case 7:
+		ConfigMask |= (1 << UCSZ11);
+		break;
+	case 8:
+		ConfigMask |= ((1 << UCSZ11) | (1 << UCSZ10));
+		break;
+	}
+
+	/* Keep the TX line held high (idle) while the USART is reconfigured */
+	PORTD |= (1 << 3);
+
+	/* Must turn off USART before reconfiguring it, otherwise incorrect operation may occur */
+	UCSR1B = 0;
+	UCSR1A = 0;
+	UCSR1C = 0;
+
+	/* Set the new baud rate before configuring the USART */
+	UBRR1 = SERIAL_2X_UBBRVAL(LineEncoding.BaudRateBPS);
+
+	//TODO needed?
+	/* Set the new baud rate before configuring the USART */
+	/* Special case 57600 baud for compatibility with the ATmega328 bootloader. */
+	//UBRR1 = (LineEncoding.BaudRateBPS == 57600)
+	//	? SERIAL_UBBRVAL(LineEncoding.BaudRateBPS)
+	//	: SERIAL_2X_UBBRVAL(LineEncoding.BaudRateBPS);
+
+	/* Reconfigure the USART in double speed mode for a wider baud rate range at the expense of accuracy */
+	UCSR1C = ConfigMask;
+	UCSR1A = (1 << U2X1);
+	//UCSR1A = (LineEncoding.BaudRateBPS == 57600) ? 0 : (1 << U2X1);
+	UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1));
+
+	/* Release the TX line after the USART has been reconfigured */
+	PORTD &= ~(1 << 3);
+}

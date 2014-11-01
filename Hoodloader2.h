@@ -152,8 +152,10 @@ THE SOFTWARE.
 
 	/* Function Prototypes: */
 		static void CDC_Task(void);
+		static void Bootloader_Task(const uint8_t Command);
 		static void CDC_Device_LineEncodingChanged(void);
 		static void SetupHardware(void);
+		static void FlushCDC(void);
 
 		void Application_Jump_Check(void) ATTR_INIT_SECTION(3);
 
