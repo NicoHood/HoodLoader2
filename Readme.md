@@ -367,6 +367,7 @@ lizens! gnu whatever?
 v2 -> 2
 midi
 windows key?
+uploading baud rate
 
 How to compile (with a Raspberry Pi)
 ==================================

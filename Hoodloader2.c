@@ -93,29 +93,9 @@ uint8_t MagicBootKey ATTR_NO_INIT; //TODO
  */
 void Application_Jump_Check(void)
 {
-	bool JumpToApplication = false;
-
-#if ((BOARD == BOARD_XPLAIN) || (BOARD == BOARD_XPLAIN_REV1))
-	/* Disable JTAG debugging */
-	JTAG_DISABLE();
-
-	/* Enable pull-up on the JTAG TCK pin so we can use it to select the mode */
-	PORTF |= (1 << 4);
-	Delay_MS(10);
-
-	/* If the TCK pin is not jumpered to ground, start the user application instead */
-	JumpToApplication |= ((PINF & (1 << 4)) != 0);
-
-	/* Re-enable JTAG debugging */
-	JTAG_ENABLE();
-#endif
-
 	/* If the reset source was the bootloader and the key is correct, clear it and jump to the application */
 	if ((MCUSR & (1 << WDRF)) && (MagicBootKey == MAGIC_BOOT_KEY))
-		JumpToApplication |= true;
-
 	/* If a request has been made to jump to the user application, honor it */
-	if (JumpToApplication)
 	{
 		/* Turn off the watchdog */
 		MCUSR &= ~(1 << WDRF);
@@ -125,7 +105,8 @@ void Application_Jump_Check(void)
 		MagicBootKey = 0;
 
 		// cppcheck-suppress constStatement
-		((void(*)(void))0x0000)();
+		//((void(*)(void))0x0000)();
+		__asm__ volatile("jmp 0x0000");
 	}
 }
 
@@ -156,7 +137,6 @@ int main(void)
 	while (RunBootloader)
 	{
 		//TODO remove
-		CDCActive = true;
 		CDC_Task();
 		USB_USBTask();
 	}
@@ -663,25 +643,25 @@ static void Bootloader_Task(const uint8_t Command){
 	}
 #endif
 #if !defined(NO_EEPROM_BYTE_SUPPORT)
-	//else if (Command == AVR109_COMMAND_WriteEEPROM)
-	//{
-	//	/* Read the byte from the endpoint and write it to the EEPROM */
-	//	eeprom_write_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
+	else if (Command == AVR109_COMMAND_WriteEEPROM)
+	{
+		/* Read the byte from the endpoint and write it to the EEPROM */
+		eeprom_write_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
 
-	//	/* Increment the address after use */
-	//	CurrAddress += 2;
+		/* Increment the address after use */
+		CurrAddress += 2;
 
-	//	/* Send confirmation byte back to the host */
-	//	WriteNextResponseByte('\r');
-	//}
-	//else if (Command == AVR109_COMMAND_ReadEEPROM)
-	//{
-	//	/* Read the EEPROM byte and write it to the endpoint */
-	//	WriteNextResponseByte(eeprom_read_byte((uint8_t*)((intptr_t)(CurrAddress >> 1))));
+		/* Send confirmation byte back to the host */
+		WriteNextResponseByte('\r');
+	}
+	else if (Command == AVR109_COMMAND_ReadEEPROM)
+	{
+		/* Read the EEPROM byte and write it to the endpoint */
+		WriteNextResponseByte(eeprom_read_byte((uint8_t*)((intptr_t)(CurrAddress >> 1))));
 
-	//	/* Increment the address after use */
-	//	CurrAddress += 2;
-	//}
+		/* Increment the address after use */
+		CurrAddress += 2;
+	}
 #endif
 	else if (Command != AVR109_COMMAND_Sync)
 	{

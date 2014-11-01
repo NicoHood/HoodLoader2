@@ -67,7 +67,10 @@ extern "C" {
 	/** Indicates the board has hardware LEDs mounted. */
 #define BOARD_HAS_LEDS
 
-#define BAUDRATE_CDC_BOOTLOADER 1200
+// 1200 is the baud to load the Bootloader from an Arduino sketch, 57600 turns out to be the actual baud rate for uploading
+//TODO change baud rate to something people wont normally use
+//#define BAUDRATE_CDC_BOOTLOADER 1200
+#define BAUDRATE_CDC_BOOTLOADER 57600
 
 #define ARDUINO_PORT PORTD
 #define ARDUINO_DDR DDRD
