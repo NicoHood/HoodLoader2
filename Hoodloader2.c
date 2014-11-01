@@ -93,40 +93,40 @@ static bool RunBootloader = true;
  */
 void Application_Jump_Check(void)
 {
-//	bool JumpToApplication = false;
-//
-//#if ((BOARD == BOARD_XPLAIN) || (BOARD == BOARD_XPLAIN_REV1))
-//	/* Disable JTAG debugging */
-//	JTAG_DISABLE();
-//
-//	/* Enable pull-up on the JTAG TCK pin so we can use it to select the mode */
-//	PORTF |= (1 << 4);
-//	Delay_MS(10);
-//
-//	/* If the TCK pin is not jumpered to ground, start the user application instead */
-//	JumpToApplication |= ((PINF & (1 << 4)) != 0);
-//
-//	/* Re-enable JTAG debugging */
-//	JTAG_ENABLE();
-//#endif
-//
-//	/* If the reset source was the bootloader and the key is correct, clear it and jump to the application */
-//	if ((MCUSR & (1 << WDRF)) && (MagicBootKey == MAGIC_BOOT_KEY))
-//		JumpToApplication |= true;
-//
-//	/* If a request has been made to jump to the user application, honor it */
-//	if (JumpToApplication)
-//	{
-//		/* Turn off the watchdog */
-//		MCUSR &= ~(1 << WDRF);
-//		wdt_disable();
-//
-//		/* Clear the boot key and jump to the user application */
-//		MagicBootKey = 0;
-//
-//		// cppcheck-suppress constStatement
-//		((void(*)(void))0x0000)();
-//	}
+	//	bool JumpToApplication = false;
+	//
+	//#if ((BOARD == BOARD_XPLAIN) || (BOARD == BOARD_XPLAIN_REV1))
+	//	/* Disable JTAG debugging */
+	//	JTAG_DISABLE();
+	//
+	//	/* Enable pull-up on the JTAG TCK pin so we can use it to select the mode */
+	//	PORTF |= (1 << 4);
+	//	Delay_MS(10);
+	//
+	//	/* If the TCK pin is not jumpered to ground, start the user application instead */
+	//	JumpToApplication |= ((PINF & (1 << 4)) != 0);
+	//
+	//	/* Re-enable JTAG debugging */
+	//	JTAG_ENABLE();
+	//#endif
+	//
+	//	/* If the reset source was the bootloader and the key is correct, clear it and jump to the application */
+	//	if ((MCUSR & (1 << WDRF)) && (MagicBootKey == MAGIC_BOOT_KEY))
+	//		JumpToApplication |= true;
+	//
+	//	/* If a request has been made to jump to the user application, honor it */
+	//	if (JumpToApplication)
+	//	{
+	//		/* Turn off the watchdog */
+	//		MCUSR &= ~(1 << WDRF);
+	//		wdt_disable();
+	//
+	//		/* Clear the boot key and jump to the user application */
+	//		MagicBootKey = 0;
+	//
+	//		// cppcheck-suppress constStatement
+	//		((void(*)(void))0x0000)();
+	//	}
 }
 
 /** Underlying data buffer for \ref USARTtoUSB_Buffer, where the stored bytes are located. */
@@ -237,8 +237,46 @@ void EVENT_USB_Device_ControlRequest(void)
 		{
 			Endpoint_ClearSETUP();
 
-			/* Read the line coding data in from the host into the global struct */
-			Endpoint_Read_Control_Stream_LE(&LineEncoding, sizeof(CDC_LineEncoding_t));
+			// Read the line coding data in from the host into the global struct (made inline)
+			//Endpoint_Read_Control_Stream_LE(&LineEncoding, sizeof(CDC_LineEncoding_t));
+
+			uint8_t Length = sizeof(CDC_LineEncoding_t);
+			uint8_t* DataStream = (uint8_t*)&LineEncoding;
+
+			bool skip = false;
+			while (Length)
+			{
+				uint8_t USB_DeviceState_LCL = USB_DeviceState;
+
+				if ((USB_DeviceState_LCL == DEVICE_STATE_Unattached) || (USB_DeviceState_LCL == DEVICE_STATE_Suspended) || (Endpoint_IsSETUPReceived())){
+					skip = true;
+					break;
+				}
+
+				if (Endpoint_IsOUTReceived())
+				{
+					while (Length && Endpoint_BytesInEndpoint())
+					{
+						*DataStream = Endpoint_Read_8();
+						DataStream++;
+						Length--;
+					}
+
+					Endpoint_ClearOUT();
+				}
+			}
+
+			if (!skip)
+			while (!(Endpoint_IsINReady()))
+			{
+				uint8_t USB_DeviceState_LCL = USB_DeviceState;
+
+				if ((USB_DeviceState_LCL == DEVICE_STATE_Unattached) || (USB_DeviceState_LCL == DEVICE_STATE_Suspended))
+					break;
+			}
+
+			// end of inline Endpoint_Read_Control_Stream_LE
+
 			Endpoint_ClearIN();
 
 			if (LineEncoding.BaudRateBPS == BAUDRATE_CDC_BOOTLOADER)
@@ -645,38 +683,38 @@ static void CDC_Task(void)
 		}
 	}
 
-		// Select the Serial Tx Endpoint
-		Endpoint_SelectEndpoint(CDC_TX_EPADDR);
+	// Select the Serial Tx Endpoint
+	Endpoint_SelectEndpoint(CDC_TX_EPADDR);
 
-		// check if endpoint is ready for new data, last sending flushed without errors
-		if (Endpoint_IsINReady()){
+	// check if endpoint is ready for new data, last sending flushed without errors
+	if (Endpoint_IsINReady()){
 
-			// Read bytes from the USART receive buffer into the USB IN endpoint, max 1 bank size
-			while (BufferCount){
-				//TODO check later after interrupt (what if bootloader leaves bank full?)
-				// check if bank is full and try to send
-				if (!(Endpoint_IsReadWriteAllowed()))
-					break;
+		// Read bytes from the USART receive buffer into the USB IN endpoint, max 1 bank size
+		while (BufferCount){
+			//TODO check later after interrupt (what if bootloader leaves bank full?)
+			// check if bank is full and try to send
+			if (!(Endpoint_IsReadWriteAllowed()))
+				break;
 
-				// Write the Data to the Endpoint */
-				Endpoint_Write_8(USARTtoUSB_Buffer_Data[BufferIndex++]);
+			// Write the Data to the Endpoint */
+			Endpoint_Write_8(USARTtoUSB_Buffer_Data[BufferIndex++]);
 
-				// increase the buffer position and wrap around if needed
-				BufferIndex %= BUFFER_SIZE;
+			// increase the buffer position and wrap around if needed
+			BufferIndex %= BUFFER_SIZE;
 
-				// turn off interrupts to save the value properly
-				uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
-				GlobalInterruptDisable();
+			// turn off interrupts to save the value properly
+			uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
+			GlobalInterruptDisable();
 
-				// decrease buffer count
-				BufferCount--;
+			// decrease buffer count
+			BufferCount--;
 
-				SetGlobalInterruptMask(CurrentGlobalInt);
-			}
-
-			// Finalize the stream transfer to send the last packet
-			Endpoint_ClearIN();
+			SetGlobalInterruptMask(CurrentGlobalInt);
 		}
+
+		// Finalize the stream transfer to send the last packet
+		Endpoint_ClearIN();
+	}
 }
 
 #if !defined(NO_BLOCK_SUPPORT)
