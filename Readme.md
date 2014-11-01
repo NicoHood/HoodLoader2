@@ -363,9 +363,10 @@ we->you replace
 links
 check if fastled/other libs work
 make clean
-lizens!
+lizens! gnu whatever?
 v2 -> 2
 midi
+windows key?
 
 How to compile (with a Raspberry Pi)
 ==================================

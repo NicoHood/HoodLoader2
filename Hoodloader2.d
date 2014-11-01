@@ -101,9 +101,6 @@ Hoodloader2.o: Hoodloader2.c Hoodloader2.h Descriptors.h \
  lufa-LUFA-140928/LUFA/../LUFA/Drivers/Peripheral/AVR8/Serial_AVR8.h \
  lufa-LUFA-140928/LUFA/../LUFA/Drivers/Peripheral/AVR8/../../../Common/Common.h \
  lufa-LUFA-140928/LUFA/../LUFA/Drivers/Peripheral/AVR8/../../Misc/TerminalCodes.h \
- lufa-LUFA-140928/LUFA/../LUFA/Drivers/Misc/RingBuffer.h \
- lufa-LUFA-140928/LUFA/../LUFA/Drivers/Misc/../../Common/Common.h \
- lufa-LUFA-140928/LUFA/../LUFA/Drivers/Board/Buttons.h Board/Buttons.h \
  lufa-LUFA-140928/LUFA/../LUFA/Drivers/Board/Board.h Board/Board.h
 
 Hoodloader2.h:
@@ -317,14 +314,6 @@ lufa-LUFA-140928/LUFA/../LUFA/Drivers/Peripheral/AVR8/Serial_AVR8.h:
 lufa-LUFA-140928/LUFA/../LUFA/Drivers/Peripheral/AVR8/../../../Common/Common.h:
 
 lufa-LUFA-140928/LUFA/../LUFA/Drivers/Peripheral/AVR8/../../Misc/TerminalCodes.h:
-
-lufa-LUFA-140928/LUFA/../LUFA/Drivers/Misc/RingBuffer.h:
-
-lufa-LUFA-140928/LUFA/../LUFA/Drivers/Misc/../../Common/Common.h:
-
-lufa-LUFA-140928/LUFA/../LUFA/Drivers/Board/Buttons.h:
-
-Board/Buttons.h:
 
 lufa-LUFA-140928/LUFA/../LUFA/Drivers/Board/Board.h:
 

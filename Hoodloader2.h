@@ -77,8 +77,6 @@ THE SOFTWARE.
 		#include <LUFA/Platform/Platform.h>
 
 		#include <LUFA/Drivers/Peripheral/Serial.h>
-		#include <LUFA/Drivers/Misc/RingBuffer.h>
-		#include <LUFA/Drivers/Board/Buttons.h>
 		#include <LUFA/Drivers/Board/Board.h>
 
 	/* Preprocessor Checks: */
@@ -166,7 +164,7 @@ THE SOFTWARE.
 			static void    ReadWriteMemoryBlock(const uint8_t Command);
 			#endif
 			static uint8_t FetchNextCommandByte(void);
-			static void    BufferInsert(const uint8_t Response);
+			static void    WriteNextResponseByte(const uint8_t Response);
 		#endif
 
 #endif

@@ -124,7 +124,7 @@ THE SOFTWARE.
 
 		/** Size of the CDC data interface TX and RX data endpoint banks, in bytes. */
 		#define CDC_TX_EPSIZE                16
-#define CDC_TX_BANK_SIZE 2
+#define CDC_TX_BANK_SIZE 1
 		#define CDC_RX_EPSIZE                16
 #define CDC_RX_BANK_SIZE 1
 
