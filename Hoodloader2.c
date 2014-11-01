@@ -84,7 +84,7 @@ static bool RunBootloader = true;
  *  low when the application attempts to start via a watchdog reset, the bootloader will re-start. If set to the value
  *  \ref MAGIC_BOOT_KEY the special init function \ref Application_Jump_Check() will force the application to start.
  */
-uint16_t MagicBootKey ATTR_NO_INIT;
+uint8_t MagicBootKey ATTR_NO_INIT; //TODO
 
 
 /** Special startup routine to check if the bootloader was started via a watchdog reset, and if the magic application
@@ -133,7 +133,7 @@ void Application_Jump_Check(void)
 #define BUFFER_SIZE 64 // 2^x is for better performence (32,64,128,256)
 static uint8_t      USARTtoUSB_Buffer_Data[BUFFER_SIZE];
 //TODO volatile count?
-static uint8_t BufferCount = 0; // Number of bytes currently stored in the buffer
+static volatile uint8_t BufferCount = 0; // Number of bytes currently stored in the buffer
 static uint8_t BufferIndex = 0; // position of the first buffer byte (Buffer out)
 static uint8_t BufferEnd = 0; // position of the last buffer byte (Serial in)
 
@@ -155,6 +155,8 @@ int main(void)
 
 	while (RunBootloader)
 	{
+		//TODO remove
+		CDCActive = true;
 		CDC_Task();
 		USB_USBTask();
 	}
@@ -315,9 +317,6 @@ void EVENT_USB_Device_ControlRequest(void)
 	}
 }
 
-
-
-
 /** ISR to manage the reception of data from the serial port, placing received bytes into a circular buffer
 *  for later transmission to the host.
 */
@@ -396,8 +395,6 @@ static void WriteNextResponseByte(const uint8_t Response)
  */
 static void CDC_Task(void)
 {
-	CDCActive = true;
-
 	/* Select the OUT endpoint */
 	Endpoint_SelectEndpoint(CDC_RX_EPADDR);
 
@@ -446,17 +443,17 @@ static void CDC_Task(void)
 		// Write the Data to the Endpoint */
 		WriteNextResponseByte(USARTtoUSB_Buffer_Data[BufferIndex++]);
 
-		//	// increase the buffer position and wrap around if needed
-		//	BufferIndex %= BUFFER_SIZE;
+		// increase the buffer position and wrap around if needed
+		BufferIndex %= BUFFER_SIZE;
 
-		//	// turn off interrupts to save the value properly
-		//	uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
-		//	GlobalInterruptDisable();
+		// turn off interrupts to save the value properly
+		uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
+		GlobalInterruptDisable();
 
-		//	// decrease buffer count
-		//	BufferCount--;
+		// decrease buffer count
+		BufferCount--;
 
-		//	SetGlobalInterruptMask(CurrentGlobalInt);
+		SetGlobalInterruptMask(CurrentGlobalInt);
 	}
 
 	FlushCDC();

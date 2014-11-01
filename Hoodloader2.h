@@ -98,10 +98,10 @@ THE SOFTWARE.
 		#define BOOTLOADER_HWVERSION_MINOR   0x00
 
 		/** Eight character bootloader firmware identifier reported to the host when requested. */
-		#define SOFTWARE_IDENTIFIER          "LUFACDC"
+		#define SOFTWARE_IDENTIFIER          "HL2-CDC"
 
 		/** Magic bootloader key to unlock forced application start mode. */
-		#define MAGIC_BOOT_KEY               0xDC42
+		#define MAGIC_BOOT_KEY               0x42
 
 	/* Enums: */
 		/** Possible memory types that can be addressed via the bootloader. */
