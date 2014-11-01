@@ -101,15 +101,10 @@ static bool RunBootloader = true;
  */
 uint8_t MagicBootKey ATTR_NO_INIT; //TODO
 
-// MAH 8/15/12- let's make this an 8-bit value instead of 16- that saves on memory because 16-bit addition and
-//  comparison compiles to bulkier code. Note that this does *not* require a change to the Arduino core- we're 
-//  just sort of ignoring the extra byte that the Arduino core puts at the next location.
-//#define bootKey 0x77
-uint8_t bootKey = 0x77;
-volatile uint8_t *const bootKeyPtr = (volatile uint8_t *)0x0800;
 #define CPU_PRESCALE(n)	(CLKPR = 0x80, CLKPR = (n))
+
 // Bootloader timeout timer in ms
-#define EXT_RESET_TIMEOUT_PERIOD	750
+#define EXT_RESET_TIMEOUT_PERIOD 750
 
 /** Special startup routine to check if the bootloader was started via a watchdog reset, and if the magic application
  *  start key has been loaded into \ref MagicBootKey. If the bootloader started via the watchdog and the key is valid,
@@ -118,8 +113,8 @@ volatile uint8_t *const bootKeyPtr = (volatile uint8_t *)0x0800;
 void Application_Jump_Check(void)
 {
 	// Save the value of the boot key memory before it is overwritten
-	uint8_t bootKeyPtrVal = *bootKeyPtr;
-	*bootKeyPtr = 0;
+	uint8_t bootKeyPtrVal = MagicBootKey;
+	MagicBootKey = 0;
 
 	// Check the reason for the reset so we can act accordingly
 	uint8_t  mcusr_state = MCUSR;		// store the initial state of the Status register
@@ -138,13 +133,15 @@ void Application_Jump_Check(void)
 	MCUCR = (1 << IVCE);
 	MCUCR = (1 << IVSEL);
 
+	//TODO needed??
 	CPU_PRESCALE(0);
 
 	// MAH 8/15/12- added this flag to replace the bulky program memory reads to check for the presence of a sketch
 	//   at the top of the memory space.
 	bool sketchPresent = false;
 	// MAH 8/15/12- this replaces bulky pgm_read_word(0) calls later on, to save memory.
-	if (pgm_read_word(0) != 0xFFFF) sketchPresent = true;
+	if (pgm_read_word(0) != 0xFFFF)
+		sketchPresent = true;
 
 	// MAH 8/15/12- quite a bit changed in this section- let's just pretend nothing has been reserved
 	//  and all comments throughout are from me.
@@ -152,23 +149,30 @@ void Application_Jump_Check(void)
 	//  our wheels for about 750ms, then proceed to the sketch, if there is one. If, during that 750ms,
 	//  another external reset occurs, on the next pass through this decision tree, execution will fall
 	//  through to the bootloader.
-	if ((mcusr_state & (1 << EXTRF)) && (bootKeyPtrVal != bootKey)) {
-		*bootKeyPtr = bootKey;
 
-		_delay_ms(EXT_RESET_TIMEOUT_PERIOD);
-
-		*bootKeyPtr = 0;
-		if (sketchPresent) StartSketch();
-	}
 	// check what to do if we have a sketch in the memory
-	else if (sketchPresent){
+	if (sketchPresent){
+		// external reset
+		if ((mcusr_state & (1 << EXTRF))) {
+			if ((bootKeyPtrVal != MAGIC_BOOT_KEY)){
+				// set the Bootkey and give the user a few ms chance to enter Bootloader mode
+				MagicBootKey = MAGIC_BOOT_KEY;
+
+				_delay_ms(EXT_RESET_TIMEOUT_PERIOD);
+
+				// user was too slow/normal reset, start sketch now
+				MagicBootKey = 0;
+				StartSketch();
+			}
+		}
+
 		// On a power-on reset, we ALWAYS want to go to the sketch. If there is one.
-		if ((mcusr_state & (1 << PORF))) {
+		else if ((mcusr_state & (1 << PORF))) {
 			StartSketch();
 		}
 		// On a watchdog reset, if the bootKey isn't set, and there's a sketch, we should just
 		//  go straight to the sketch.
-		else if ((mcusr_state & (1 << WDRF)) && (bootKeyPtrVal != bootKey)) {
+		else if ((mcusr_state & (1 << WDRF)) && (bootKeyPtrVal != MAGIC_BOOT_KEY)) {
 			// If it looks like an "accidental" watchdog reset then start the sketch.
 			StartSketch();
 		}
@@ -223,13 +227,13 @@ int main(void)
 			// reset the timer
 			TIFR0 |= (1 << TOV0);
 
-			//	// Turn off TX LED(s) once the TX pulse period has elapsed
-			//	if (TxLEDPulse && !(--TxLEDPulse))
-			//		LEDs_TurnOffLEDs(LEDMASK_TX);
+				// Turn off TX LED(s) once the TX pulse period has elapsed
+				if (TxLEDPulse && !(--TxLEDPulse))
+					LEDs_TurnOffLEDs(LEDMASK_TX);
 
-			//	// Turn off RX LED(s) once the RX pulse period has elapsed
-			//	if (RxLEDPulse && !(--RxLEDPulse))
-			//		LEDs_TurnOffLEDs(LEDMASK_RX);
+				// Turn off RX LED(s) once the RX pulse period has elapsed
+				if (RxLEDPulse && !(--RxLEDPulse))
+					LEDs_TurnOffLEDs(LEDMASK_RX);
 		}
 
 		USB_USBTask();
@@ -240,14 +244,6 @@ int main(void)
 
 	/* Jump to beginning of application space to run the sketch - do not reset */
 	StartSketch();
-
-	///* Unlock the forced application start mode of the bootloader if it is restarted */
-	//MagicBootKey = MAGIC_BOOT_KEY;
-
-	///* Enable the watchdog and force a timeout to reset the AVR */
-	//wdt_enable(WDTO_250MS);
-
-	//for (;;);
 }
 
 
@@ -256,15 +252,16 @@ static void StartSketch(void)
 	cli();
 
 	/* Undo TIMER1 setup and clear the count before running the sketch */
-	TIMSK1 = 0;
-	TCCR1B = 0;
+	//TIMSK1 = 0;
+	//TCCR1B = 0;
 	// MAH 8/15/12 this clear is removed to save memory. Okay, it
 	//   introduces some inaccuracy in the timer in the sketch, but
 	//   not enough that it really matters.
-	TCNT1H = 0;		// 16-bit write to TCNT1 requires high byte be written first
-	TCNT1L = 0;
+	//TCNT1H = 0;		// 16-bit write to TCNT1 requires high byte be written first
+	//TCNT1L = 0;
 
 	/* Relocate the interrupt vector table to the application section */
+	//TODO double?
 	MCUCR = (1 << IVCE);
 	MCUCR = 0;
 
@@ -272,17 +269,17 @@ static void StartSketch(void)
 
 	//TODO turn off UART?
 
-	/* Unlock the forced application start mode of the bootloader if it is restarted */
-	MagicBootKey = MAGIC_BOOT_KEY;
-
 	/* Enable the watchdog and force a timeout to reset the AVR */
+	//TODO this seems to be the only way to get the leds working properly after a reset
 	wdt_enable(WDTO_250MS);
 
 	for (;;);
 
 	/* jump to beginning of application space */
-	__asm__ volatile("jmp 0x0000");
+	//__asm__ volatile("jmp 0x0000");
 
+	// cppcheck-suppress constStatement
+	//((void(*)(void))0x0000)();
 }
 
 ///** Configures all hardware required for the bootloader. */
