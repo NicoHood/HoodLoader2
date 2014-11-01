@@ -78,6 +78,7 @@ THE SOFTWARE.
 
 		#include <LUFA/Drivers/Peripheral/Serial.h>
 		#include <LUFA/Drivers/Board/Board.h>
+		#include <util/delay.h>
 
 	/* Preprocessor Checks: */
 		#if !defined(__OPTIMIZE_SIZE__)
@@ -156,6 +157,7 @@ THE SOFTWARE.
 		static void CDC_Device_LineEncodingChanged(void);
 		static void SetupHardware(void);
 		static void FlushCDC(void);
+		static void StartSketch(void);
 
 		void Application_Jump_Check(void) ATTR_INIT_SECTION(3);
 

@@ -67,6 +67,21 @@ static CDC_LineEncoding_t LineEncoding = { .BaudRateBPS = 0,
 .ParityType = CDC_PARITY_None,
 .DataBits = 8 };
 
+/** Underlying data buffer for \ref USARTtoUSB_Buffer, where the stored bytes are located. */
+#define BUFFER_SIZE 64 // 2^x is for better performence (32,64,128,256)
+static uint8_t      USARTtoUSB_Buffer_Data[BUFFER_SIZE];
+static volatile uint8_t BufferCount = 0; // Number of bytes currently stored in the buffer
+static uint8_t BufferIndex = 0; // position of the first buffer byte (Buffer out)
+static uint8_t BufferEnd = 0; // position of the last buffer byte (Serial in)
+
+// Led Pulse count
+static uint8_t TxLEDPulse = 0;
+static uint8_t RxLEDPulse = 0;
+
+// variable to determine if CDC baudrate is for the bootloader mode or not
+//TODO volatile CDCAvtive?
+static bool CDCActive = false;
+
 /** Current address counter. This stores the current address of the FLASH or EEPROM as set by the host,
  *  and is used when reading or writing to the AVRs memory (either FLASH or EEPROM depending on the issued
  *  command.)
@@ -86,6 +101,15 @@ static bool RunBootloader = true;
  */
 uint8_t MagicBootKey ATTR_NO_INIT; //TODO
 
+// MAH 8/15/12- let's make this an 8-bit value instead of 16- that saves on memory because 16-bit addition and
+//  comparison compiles to bulkier code. Note that this does *not* require a change to the Arduino core- we're 
+//  just sort of ignoring the extra byte that the Arduino core puts at the next location.
+//#define bootKey 0x77
+uint8_t bootKey = 0x77;
+volatile uint8_t *const bootKeyPtr = (volatile uint8_t *)0x0800;
+#define CPU_PRESCALE(n)	(CLKPR = 0x80, CLKPR = (n))
+// Bootloader timeout timer in ms
+#define EXT_RESET_TIMEOUT_PERIOD	750
 
 /** Special startup routine to check if the bootloader was started via a watchdog reset, and if the magic application
  *  start key has been loaded into \ref MagicBootKey. If the bootloader started via the watchdog and the key is valid,
@@ -93,37 +117,83 @@ uint8_t MagicBootKey ATTR_NO_INIT; //TODO
  */
 void Application_Jump_Check(void)
 {
-	/* If the reset source was the bootloader and the key is correct, clear it and jump to the application */
-	if ((MCUSR & (1 << WDRF)) && (MagicBootKey == MAGIC_BOOT_KEY))
-		/* If a request has been made to jump to the user application, honor it */
-	{
-		/* Turn off the watchdog */
-		MCUSR &= ~(1 << WDRF);
-		wdt_disable();
+	// Save the value of the boot key memory before it is overwritten
+	uint8_t bootKeyPtrVal = *bootKeyPtr;
+	*bootKeyPtr = 0;
 
-		/* Clear the boot key and jump to the user application */
-		MagicBootKey = 0;
+	// Check the reason for the reset so we can act accordingly
+	uint8_t  mcusr_state = MCUSR;		// store the initial state of the Status register
+	MCUSR = 0;							// clear all reset flags	
 
-		// cppcheck-suppress constStatement
-		//((void(*)(void))0x0000)();
-		__asm__ volatile("jmp 0x0000");
+	/* Setup hardware required for the bootloader */
+	// MAH 8/15/12- Moved this up to before the bootloader go/no-go decision tree so I could use the
+	//  timer in that decision tree. Removed the USBInit() call from it; if I'm not going to stay in
+	//  the bootloader, there's no point spending the time initializing the USB.
+	wdt_disable();
+
+	// Disable clock division 
+	clock_prescale_set(clock_div_1);
+
+	// Relocate the interrupt vector table to the bootloader section
+	MCUCR = (1 << IVCE);
+	MCUCR = (1 << IVSEL);
+
+	CPU_PRESCALE(0);
+
+	// MAH 8/15/12- added this flag to replace the bulky program memory reads to check for the presence of a sketch
+	//   at the top of the memory space.
+	bool sketchPresent = false;
+	// MAH 8/15/12- this replaces bulky pgm_read_word(0) calls later on, to save memory.
+	if (pgm_read_word(0) != 0xFFFF) sketchPresent = true;
+
+	// MAH 8/15/12- quite a bit changed in this section- let's just pretend nothing has been reserved
+	//  and all comments throughout are from me.
+	// First case: external reset, bootKey NOT in memory. We'll put the bootKey in memory, then spin
+	//  our wheels for about 750ms, then proceed to the sketch, if there is one. If, during that 750ms,
+	//  another external reset occurs, on the next pass through this decision tree, execution will fall
+	//  through to the bootloader.
+	if ((mcusr_state & (1 << EXTRF)) && (bootKeyPtrVal != bootKey)) {
+		*bootKeyPtr = bootKey;
+
+		_delay_ms(EXT_RESET_TIMEOUT_PERIOD);
+
+		*bootKeyPtr = 0;
+		if (sketchPresent) StartSketch();
 	}
+	// check what to do if we have a sketch in the memory
+	else if (sketchPresent){
+		// On a power-on reset, we ALWAYS want to go to the sketch. If there is one.
+		if ((mcusr_state & (1 << PORF))) {
+			StartSketch();
+		}
+		// On a watchdog reset, if the bootKey isn't set, and there's a sketch, we should just
+		//  go straight to the sketch.
+		else if ((mcusr_state & (1 << WDRF)) && (bootKeyPtrVal != bootKey)) {
+			// If it looks like an "accidental" watchdog reset then start the sketch.
+			StartSketch();
+		}
+	}
+
+
+
+///* If the reset source was the bootloader and the key is correct, clear it and jump to the application */
+//if ((MCUSR & (1 << WDRF)) && (MagicBootKey == MAGIC_BOOT_KEY))
+//	/* If a request has been made to jump to the user application, honor it */
+//{
+//	/* Turn off the watchdog */
+//	MCUSR &= ~(1 << WDRF);
+//	wdt_disable();
+
+//	/* Clear the boot key and jump to the user application */
+//	MagicBootKey = 0;
+
+//	// cppcheck-suppress constStatement
+//	((void(*)(void))0x0000)();
+//}
 }
 
-/** Underlying data buffer for \ref USARTtoUSB_Buffer, where the stored bytes are located. */
-#define BUFFER_SIZE 64 // 2^x is for better performence (32,64,128,256)
-static uint8_t      USARTtoUSB_Buffer_Data[BUFFER_SIZE];
-//TODO volatile count?
-static volatile uint8_t BufferCount = 0; // Number of bytes currently stored in the buffer
-static uint8_t BufferIndex = 0; // position of the first buffer byte (Buffer out)
-static uint8_t BufferEnd = 0; // position of the last buffer byte (Serial in)
 
-static uint8_t TxLEDPulse = 0;
-static uint8_t RxLEDPulse = 0;
 
-// variable to determine if CDC baudrate is for the bootloader mode or not
-//TODO volatile CDCAvtive?
-static bool CDCActive = false;
 
 /** Main program entry point. This routine configures the hardware required by the bootloader, then continuously
  *  runs the bootloader processing routine until instructed to soft-exit, or hard-reset via the watchdog to start
@@ -131,8 +201,15 @@ static bool CDCActive = false;
  */
 int main(void)
 {
-	/* Setup hardware required for the bootloader */
-	SetupHardware();
+	/* Initialize the USB and other board hardware drivers */
+	USB_Init();
+
+	/* Start the flush timer so that overflows occur rapidly to push received bytes to the USB interface */
+	TCCR0B = (1 << CS02);
+
+	// compacter setup for Leds, RX, TX, Reset Line
+	ARDUINO_DDR |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
+	ARDUINO_PORT |= LEDS_ALL_LEDS | (1 << 2) | AVR_RESET_LINE_MASK;
 
 	/* Enable global interrupts so that the USB stack can function */
 	GlobalInterruptEnable();
@@ -142,24 +219,58 @@ int main(void)
 		//TODO remove
 		CDC_Task();
 
-		//if (TIFR0 & (1 << TOV0)){
-		//	// reset the timer
-		//	TIFR0 |= (1 << TOV0);
+		if (TIFR0 & (1 << TOV0)){
+			// reset the timer
+			TIFR0 |= (1 << TOV0);
 
-		//	// Turn off TX LED(s) once the TX pulse period has elapsed
-		//	if (TxLEDPulse && !(--TxLEDPulse))
-		//		LEDs_TurnOffLEDs(LEDMASK_TX);
+			//	// Turn off TX LED(s) once the TX pulse period has elapsed
+			//	if (TxLEDPulse && !(--TxLEDPulse))
+			//		LEDs_TurnOffLEDs(LEDMASK_TX);
 
-		//	// Turn off RX LED(s) once the RX pulse period has elapsed
-		//	if (RxLEDPulse && !(--RxLEDPulse))
-		//		LEDs_TurnOffLEDs(LEDMASK_RX);
-		//}
+			//	// Turn off RX LED(s) once the RX pulse period has elapsed
+			//	if (RxLEDPulse && !(--RxLEDPulse))
+			//		LEDs_TurnOffLEDs(LEDMASK_RX);
+		}
 
 		USB_USBTask();
 	}
 
 	/* Disconnect from the host - USB interface will be reset later along with the AVR */
 	USB_Detach();
+
+	/* Jump to beginning of application space to run the sketch - do not reset */
+	StartSketch();
+
+	///* Unlock the forced application start mode of the bootloader if it is restarted */
+	//MagicBootKey = MAGIC_BOOT_KEY;
+
+	///* Enable the watchdog and force a timeout to reset the AVR */
+	//wdt_enable(WDTO_250MS);
+
+	//for (;;);
+}
+
+
+static void StartSketch(void)
+{
+	cli();
+
+	/* Undo TIMER1 setup and clear the count before running the sketch */
+	TIMSK1 = 0;
+	TCCR1B = 0;
+	// MAH 8/15/12 this clear is removed to save memory. Okay, it
+	//   introduces some inaccuracy in the timer in the sketch, but
+	//   not enough that it really matters.
+	TCNT1H = 0;		// 16-bit write to TCNT1 requires high byte be written first
+	TCNT1L = 0;
+
+	/* Relocate the interrupt vector table to the application section */
+	MCUCR = (1 << IVCE);
+	MCUCR = 0;
+
+	LEDs_TurnOffLEDs(LEDS_ALL_LEDS);
+
+	//TODO turn off UART?
 
 	/* Unlock the forced application start mode of the bootloader if it is restarted */
 	MagicBootKey = MAGIC_BOOT_KEY;
@@ -168,56 +279,60 @@ int main(void)
 	wdt_enable(WDTO_250MS);
 
 	for (;;);
+
+	/* jump to beginning of application space */
+	__asm__ volatile("jmp 0x0000");
+
 }
 
-/** Configures all hardware required for the bootloader. */
-static void SetupHardware(void)
-{
-	/* Disable watchdog if enabled by bootloader/fuses */
-	MCUSR &= ~(1 << WDRF);
-	wdt_disable();
+///** Configures all hardware required for the bootloader. */
+//static void SetupHardware(void)
+//{
+//	/* Disable watchdog if enabled by bootloader/fuses */
+//	MCUSR &= ~(1 << WDRF);
+//	wdt_disable();
+//
+//	/* Disable clock division */
+//	clock_prescale_set(clock_div_1);
+//
+//	/* Relocate the interrupt vector table to the bootloader section */
+//	MCUCR = (1 << IVCE);
+//	MCUCR = (1 << IVSEL);
+//
+//	/* Initialize the USB and other board hardware drivers */
+//	USB_Init();
+//
+//	/* Start the flush timer so that overflows occur rapidly to push received bytes to the USB interface */
+//	//TCCR0B = (1 << CS02);
+//
+//	OCR1AH = 0;
+//	OCR1AL = 250;
+//	TIMSK1 = (1 << OCIE1A);					// enable timer 1 output compare A match interrupt
+//	TCCR1B = ((1 << CS11) | (1 << CS10));	// 1/64 prescaler on timer 1 input
+//
+//	// compacter setup for Leds, RX, TX, Reset Line
+//	ARDUINO_DDR |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
+//	ARDUINO_PORT |= LEDS_ALL_LEDS | (1 << 2) | AVR_RESET_LINE_MASK;
+//}
 
-	/* Disable clock division */
-	clock_prescale_set(clock_div_1);
-
-	/* Relocate the interrupt vector table to the bootloader section */
-	MCUCR = (1 << IVCE);
-	MCUCR = (1 << IVSEL);
-
-	/* Initialize the USB and other board hardware drivers */
-	USB_Init();
-
-	/* Start the flush timer so that overflows occur rapidly to push received bytes to the USB interface */
-	//TCCR0B = (1 << CS02);
-
-	OCR1AH = 0;
-	OCR1AL = 250;
-	TIMSK1 = (1 << OCIE1A);					// enable timer 1 output compare A match interrupt
-	TCCR1B = ((1 << CS11) | (1 << CS10));	// 1/64 prescaler on timer 1 input
-
-	// compacter setup for Leds, RX, TX, Reset Line
-	ARDUINO_DDR |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
-	ARDUINO_PORT |= LEDS_ALL_LEDS | (1 << 2) | AVR_RESET_LINE_MASK;
-}
-
-ISR(TIMER1_COMPA_vect, ISR_BLOCK)
-{
-	/* Reset counter */
-	TCNT1H = 0;
-	TCNT1L = 0;
-
-	// Turn off TX LED(s) once the TX pulse period has elapsed
-	if (TxLEDPulse && !(--TxLEDPulse))
-		LEDs_TurnOffLEDs(LEDMASK_TX);
-
-	// Turn off RX LED(s) once the RX pulse period has elapsed
-	if (RxLEDPulse && !(--RxLEDPulse))
-		LEDs_TurnOffLEDs(LEDMASK_RX);
-
-	//resetTimeout++;
-	//if (pgm_read_word(0) != 0xFFFF)
-	//	Timeout++;
-}
+//ISR(TIMER1_COMPA_vect, ISR_BLOCK)
+//{
+//	/* Reset counter */
+//	TCNT1H = 0;
+//	TCNT1L = 0;
+//
+//	// Turn off TX LED(s) once the TX pulse period has elapsed
+//	if (TxLEDPulse && !(--TxLEDPulse))
+//		LEDs_TurnOffLEDs(LEDMASK_TX);
+//
+//	// Turn off RX LED(s) once the RX pulse period has elapsed
+//	if (RxLEDPulse && !(--RxLEDPulse))
+//		LEDs_TurnOffLEDs(LEDMASK_RX);
+//
+//	//resetTimeout++;
+//	//if (pgm_read_word(0) != 0xFFFF)
+//	//	Timeout++;
+//}
 
 /** Event handler for the USB_ConfigurationChanged event. This configures the device's endpoints ready
  *  to relay data to and from the attached USB host.
