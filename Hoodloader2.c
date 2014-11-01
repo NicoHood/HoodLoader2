@@ -95,7 +95,7 @@ void Application_Jump_Check(void)
 {
 	/* If the reset source was the bootloader and the key is correct, clear it and jump to the application */
 	if ((MCUSR & (1 << WDRF)) && (MagicBootKey == MAGIC_BOOT_KEY))
-	/* If a request has been made to jump to the user application, honor it */
+		/* If a request has been made to jump to the user application, honor it */
 	{
 		/* Turn off the watchdog */
 		MCUSR &= ~(1 << WDRF);
@@ -118,6 +118,9 @@ static volatile uint8_t BufferCount = 0; // Number of bytes currently stored in 
 static uint8_t BufferIndex = 0; // position of the first buffer byte (Buffer out)
 static uint8_t BufferEnd = 0; // position of the last buffer byte (Serial in)
 
+static uint8_t TxLEDPulse = 0;
+static uint8_t RxLEDPulse = 0;
+
 // variable to determine if CDC baudrate is for the bootloader mode or not
 //TODO volatile CDCAvtive?
 static bool CDCActive = false;
@@ -138,6 +141,20 @@ int main(void)
 	{
 		//TODO remove
 		CDC_Task();
+
+		//if (TIFR0 & (1 << TOV0)){
+		//	// reset the timer
+		//	TIFR0 |= (1 << TOV0);
+
+		//	// Turn off TX LED(s) once the TX pulse period has elapsed
+		//	if (TxLEDPulse && !(--TxLEDPulse))
+		//		LEDs_TurnOffLEDs(LEDMASK_TX);
+
+		//	// Turn off RX LED(s) once the RX pulse period has elapsed
+		//	if (RxLEDPulse && !(--RxLEDPulse))
+		//		LEDs_TurnOffLEDs(LEDMASK_RX);
+		//}
+
 		USB_USBTask();
 	}
 
@@ -170,9 +187,36 @@ static void SetupHardware(void)
 	/* Initialize the USB and other board hardware drivers */
 	USB_Init();
 
+	/* Start the flush timer so that overflows occur rapidly to push received bytes to the USB interface */
+	//TCCR0B = (1 << CS02);
+
+	OCR1AH = 0;
+	OCR1AL = 250;
+	TIMSK1 = (1 << OCIE1A);					// enable timer 1 output compare A match interrupt
+	TCCR1B = ((1 << CS11) | (1 << CS10));	// 1/64 prescaler on timer 1 input
+
 	// compacter setup for Leds, RX, TX, Reset Line
 	ARDUINO_DDR |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
 	ARDUINO_PORT |= LEDS_ALL_LEDS | (1 << 2) | AVR_RESET_LINE_MASK;
+}
+
+ISR(TIMER1_COMPA_vect, ISR_BLOCK)
+{
+	/* Reset counter */
+	TCNT1H = 0;
+	TCNT1L = 0;
+
+	// Turn off TX LED(s) once the TX pulse period has elapsed
+	if (TxLEDPulse && !(--TxLEDPulse))
+		LEDs_TurnOffLEDs(LEDMASK_TX);
+
+	// Turn off RX LED(s) once the RX pulse period has elapsed
+	if (RxLEDPulse && !(--RxLEDPulse))
+		LEDs_TurnOffLEDs(LEDMASK_RX);
+
+	//resetTimeout++;
+	//if (pgm_read_word(0) != 0xFFFF)
+	//	Timeout++;
 }
 
 /** Event handler for the USB_ConfigurationChanged event. This configures the device's endpoints ready
@@ -392,6 +436,10 @@ static void CDC_Task(void)
 			// if endpoint is completely empty/read acknowledge that to the host
 			if (!(Endpoint_BytesInEndpoint()))
 				Endpoint_ClearOUT();
+
+			// Turn on RX LED
+			LEDs_TurnOnLEDs(LEDMASK_RX);
+			RxLEDPulse = TX_RX_LED_PULSE_MS;
 		}
 
 		// Bootloader Mode
@@ -408,15 +456,21 @@ static void CDC_Task(void)
 	uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
 	GlobalInterruptDisable();
 
-	// Buffercount is 0 in Bootloader mode
+	// Buffercount is 0 in Bootloader mode!
 	BytesToSend = BufferCount;
 
 	SetGlobalInterruptMask(CurrentGlobalInt);
 
-
 	// dont try to flush data in USB-Serial mode if there is no data. This will block the USB
-	if (!CDCActive && !BytesToSend)
-		return;
+	if (!CDCActive){
+		if (!BytesToSend)
+			return;
+		else{
+			// Turn on TX LED
+			LEDs_TurnOnLEDs(LEDMASK_TX);
+			TxLEDPulse = TX_RX_LED_PULSE_MS;
+		}
+	}
 
 	// Read bytes from the USART receive buffer into the USB IN endpoint, max 1 bank size
 	while (BytesToSend--){

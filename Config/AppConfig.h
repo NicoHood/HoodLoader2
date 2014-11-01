@@ -44,7 +44,7 @@
 
 //	#define NO_BLOCK_SUPPORT
 	#define NO_EEPROM_BYTE_SUPPORT
-//	#define NO_FLASH_BYTE_SUPPORT
+	#define NO_FLASH_BYTE_SUPPORT
 	#define NO_LOCK_BYTE_WRITE_SUPPORT
 
 #endif
