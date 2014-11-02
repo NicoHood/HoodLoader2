@@ -6,13 +6,13 @@ Hoodloader2 Beta
 *Caution: This is a Beta, please read everything carefully to not brick your Arduino!
 Some things might be added later and you might wonder where to find them.*
 
-**Hoodloader2 takes Arduino Uno's and Mega's USB functions to a whole new level.**
+**Hoodloader2 takes Arduino Uno's and Mega's functions to a whole new level.**
 Version 2 is a __real__ bootloader  for the 16u2 (not a firmware like v1) which replaces the DFU Bootloader
 with a custom CDC Bootloader with USB-Serial function. You can reprogram the main MCU (328/2560) and the USB MCU (16u2)
 at the same time with all its functions and no limitations.
 
 It adds **fully Arduino IDE compatibility** (with some i/o pins) for the 16u2 to use it as standalone AVR for custom sketches too.
-Whether __USB__ function (e.g. HID: Keyboard, Mouse, Gamepad, Media Keys), sensors or leds: anything you can imagine of.
+Whether new __USB__ functions (CDCSerial, Midi, HID: Keyboard, Mouse, Gamepad, Media Keys), sensors or leds: anything you can imagine of.
 **All you need is a normal Arduino Uno/Mega R3 + USB cable + a few wires.**
 
 You should read the readme carefully to understand what the Hoodloader2 is used for and what it can make possible.
@@ -102,6 +102,7 @@ Arduino Uno Overview/Pinout
 ```
 TODO
 ```
+
 **Note: Some pins are not connected on a standard Arduino Uno R3** but still listed so you can use them if you had a custom board.
 You also need to solder the additional 4 pin header to access all 7 PB i/o pins.
 The Arduino Mega pinout is the same for the 16u2 MCU.
@@ -149,7 +150,7 @@ RESET - PIN 10
 
 ```
 
-Get the Arduino IDE installation sketch from the [HID Project](https://github.com/NicoHood/HID).
+The installation sketch is located in tools/Atmega_Board_Programmer/Atmega_Board_Programmer.ino
 
 Upload the installation sketch to your Arduino Uno/Mega. The sketch can burn bootloaders to several MCUs, made by Nick Gammon.
 Its special modified to ensure high security to not brick your Arduino. The normal way is to control the uploading via Serial.
@@ -325,7 +326,10 @@ Version History
 * Added Arduino IDE Integration
 * Added HID examples
 
-2.0.0 Beta Release (02.11.2014)
+2.0.0 Beta-2 Release (02.11.2014)
+* Added Atmega Bootloader code (no DFU back possible)
+
+2.0.0 Beta-1 Release (02.11.2014)
 * Added CDC Bootloader
 * Added USB-Serial function
 * Made Repository Public
@@ -442,11 +446,12 @@ end_addresses = {
 You need to download the MUSHclient as described in his instructions.
 He provides a simple, [ready to use zip file](http://www.gammon.com.au/downloads/dlmushclient.htm).
 
-### How to compile (with a Raspberry Pi)
+### How to compile with a Raspberry Pi (avr-gcc 4.7.2)
 
 This instruction is for compiling the Hoodloader on your own with a Raspberry Pi (Debian).
 I cannot tell you how to compile Lufa with any other OS, but Google can.
 Believe me: Windows is a struggle to compile.
+**On a raspberry you can only use the older avr-gcc 4.7.2 toolchain. Please tell me how to upgrade if you know how.**
 
 For me the easiest thing is to code with my Windows PC only and compile with my Raspberry over ssh.
 I recommend creating a Windows share by right clicking your Arduino folder and hit "share".
@@ -470,6 +475,23 @@ $ cd Desktop/Arduino/Hoodloader
 $ sudo make clean
 $ sudo make
 ```
+
+### How to compile with Ubuntu (avr-gcc 4.8.1)
+
+On Ubuntu you can use the newer toolchain which saves ~50 bytes of memory.
+
+You need to install the gcc-avr toolchain, avr-libc and compile with:
+``` bash
+$ sudo add-apt-repository ppa:pmjdebruijn/gcc-avr-release
+$ sudo apt-get update
+$ sudo apt-cache search gcc-avr
+$ sudo apt-get install gcc-avr avr-libc
+$ cd Desktop/Arduino/Hoodloader
+$ sudo make clean
+$ sudo make
+```
+
+[Package information](https://launchpad.net/~pmjdebruijn/+archive/ubuntu/gcc-avr-release)
 
 Licence and Copyright
 =====================

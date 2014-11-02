@@ -230,15 +230,15 @@ signatureType signatures [] =
 //        0x0000,                   // start address (0x0000-0x4000)
 //        sizeof UNO_dfu_and_usbserial_combined_hex, 
   
-//  { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   4*kb,
-//        Hoodloader2_Uno_Beta_hex,   // loader image
-//        0x3000,                   // start address (0x3000-0x4000)
-//        sizeof Hoodloader2_Uno_Beta_hex, 
-
   { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   4*kb,
-        at90usb162_bl_usb_1_0_5_hex,   // loader image
+        Hoodloader2_Uno_Beta_hex,   // loader image
         0x3000,                   // start address (0x3000-0x4000)
-        sizeof at90usb162_bl_usb_1_0_5_hex, 
+        sizeof Hoodloader2_Uno_Beta_hex, 
+
+//  { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   4*kb,
+//        at90usb162_bl_usb_1_0_5_hex,   // loader image
+//        0x3000,                   // start address (0x3000-0x4000)
+//        sizeof at90usb162_bl_usb_1_0_5_hex, 
         
         128,           // page size in bytes (for committing)
         0xFF,         // fuse low byte:
