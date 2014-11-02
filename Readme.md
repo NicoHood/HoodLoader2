@@ -269,8 +269,79 @@ avrdude.exe -C avrdude.conf -p at90usb162 -c avr109 -b 57600 -P COM1 -e
 pause
 ```
 
-Two Microcontrollers are better than one
-=========================================
+
+
+Useful Links
+============
+
+* [HID Project](https://github.com/NicoHood/HID) for the Arduino IDE core files/examples.
+* [Lufa from Dean Camera](http://www.fourwalledcubicle.com/LUFA.php)
+* [The Original Arduino Sources](https://github.com/arduino/Arduino/tree/master/hardware/arduino/firmwares/atmegaxxu2/arduino-usbserial)
+* [Sparkfun 32u4 Bootloader](https://github.com/sparkfun/SF32u4_boards)
+* Nick Gammon's [Atmega Board Programmmer](https://github.com/nickgammon/arduino_sketches), [Website](http://www.gammon.com.au/forum/?id=11635).
+* [How to use AVR-Dude](http://www.ladyada.net/learn/avr/avrdude.html)
+* [Installing a bootloader in general](https://learn.sparkfun.com/tutorials/installing-an-arduino-bootloader)
+* See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
+
+FAQ
+===
+
+Questions might be added here. Feel free to contact me for any questions!
+
+See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
+
+Bugs
+====
+
+Gamepads and RAW-HID in an HID multi report gives problems under some OS (Gamepads especially Linux).
+This is an OS bug and has nothing to do with the Hoodloader.
+
+Also the Hoodloader only ensures that you can upload sketches to the MCUs. If your USB HID devices have any problems
+please check the HID Project for known bugs/updates.
+
+TODO
+====
+(ignore this, its just for me)
+
+pwm pins?
+pinout 16u2
+isp flash sketch modification
+pictures, example with leds spi, ir sensor, usb function
+add copyright information
+pin numbers for installation sketch
+check if fastled/other libs work
+lizens! gnu whatever?
+windows key?
+uploading baud rate
+bank, epsize, buffer size
+migrate at90usb162 to atmega16u2
+add 8u2/32u2/32u4 version
+
+Version History
+===============
+```
+2.0.0 Release (xx.11.2014)
+* HID Project updated:
+* Added Arduino IDE Integration
+* Added HID examples
+
+2.0.0 Beta Release (02.11.2014)
+* Added CDC Bootloader
+* Added USB-Serial function
+* Made Repository Public
+
+2.0.0 Alpha Release (22.10.2014)
+* Added private Github repository with readme
+* Added basic functions with dev states
+```
+
+Additional Information
+======================
+
+This section gives optional information about this project that might be useful
+if you want to modify it or understand how it works.
+
+### Two Microcontrollers are better than one
 
 **This section describes how the whole thing works together and gives some background information.
 For better understanding I recommend to read this.**
@@ -323,8 +394,8 @@ But I am not perfect neither. I learned everything on my own. Learning by doing.
 **I started from scratch at the end of Jan 2014 with Arduino/Electronics!**
 So you can do that too, I believe in you :)
 
-Hoodpedia
-=========
+
+### Hoodpedia
 
 **Some information that you might find useful. Ask me for more help**
 
@@ -341,52 +412,38 @@ See [this tutorial](http://eleccelerator.com/tutorial-about-usb-hid-report-descr
 * LUFA: a lightweight USB-API written in C by Dean Camera. Also used by the Hoodloader.
 Somehow hard to understand first but very powerful once you've got into it.
 
-Useful Links
-============
+### Changes to the Atmega Bootloader Programmer
 
-* [HID Project](https://github.com/NicoHood/HID) for the Arduino IDE core files/examples.
-* [Lufa from Dean Camera](http://www.fourwalledcubicle.com/LUFA.php)
-* [The Original Arduino Sources](https://github.com/arduino/Arduino/tree/master/hardware/arduino/firmwares/atmegaxxu2/arduino-usbserial)
-* [Sparkfun 32u4 Bootloader](https://github.com/sparkfun/SF32u4_boards)
-* Nick Gammon's [Atmega Board Programmmer](https://github.com/nickgammon/arduino_sketches).
-* [How to use AVR-Dude](http://www.ladyada.net/learn/avr/avrdude.html)
-* [Installing a bootloader in general](https://learn.sparkfun.com/tutorials/installing-an-arduino-bootloader)
-* See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
+To upload the Hoodloader2 I used a modification of Nick Gammon's Atmega Bootloader Programmer.
+Instructions can be found [here](http://www.gammon.com.au/forum/?id=11635).
 
-FAQ
-===
+One of the change was to add new bootloader files. You can convert your hex file as described with Nick's Lua script.
+One thing to add is the address of the 16u2 in the end_addresses array (line 16).
 
-Questions might be added here. Feel free to contact me for any questions!
+```
+end_addresses = {
+  [0x0000] = 0x4000,
+  [0x1C00] = 0x2000,
+  [0x1D00] = 0x2000,
+  [0x1E00] = 0x2000,
+  [0x3000] = 0x4000,
+  [0x3800] = 0x4000,
+  [0x3E00] = 0x4000,
+  [0x7000] = 0x8000,
+  [0x7800] = 0x8000,
+  [0x7E00] = 0x8000,
+  [0xF800] = 0x10000,
+  [0x1F000] = 0x20000,
+  [0x1FC00] = 0x20000,
+  [0x3E000] = 0x40000,
+  }
+```
 
-See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
+You need to download the MUSHclient as described in his instructions.
+He provides a simple, [ready to use zip file](http://www.gammon.com.au/downloads/dlmushclient.htm).
 
-Bugs
-====
+### How to compile (with a Raspberry Pi)
 
-Gamepads and RAW-HID in an HID multi report gives problems under some OS (Gamepads especially Linux).
-This is an OS bug and has nothing to do with the Hoodloader.
-
-Also the Hoodloader only ensures that you can upload sketches to the MCUs. If your USB HID devices have any problems
-please check the HID Project for known bugs/updates.
-
-TODO
-====
-pwm pins?
-pinout 16u2
-isp flash sketch modification
-pictures, example with leds spi, ir sensor, usb function
-add copyright information
-pin numbers for installation sketch
-check if fastled/other libs work
-lizens! gnu whatever?
-windows key?
-uploading baud rate
-bank, epsize, buffer size
-migrate at90usb162 to atmega16u2
-add 8u2/32u2/32u4 version
-
-How to compile (with a Raspberry Pi)
-==================================
 This instruction is for compiling the Hoodloader on your own with a Raspberry Pi (Debian).
 I cannot tell you how to compile Lufa with any other OS, but Google can.
 Believe me: Windows is a struggle to compile.
@@ -412,24 +469,6 @@ $ sudo apt-get install gcc-avr avr-libc
 $ cd Desktop/Arduino/Hoodloader
 $ sudo make clean
 $ sudo make
-```
-
-Version History
-===============
-```
-2.0.0 Release (xx.11.2014)
-* HID Project updated:
-* Added Arduino IDE Integration
-* Added HID examples
-
-2.0.0 Beta Release (02.11.2014)
-* Added CDC Bootloader
-* Added USB-Serial function
-* Made Repository Public
-
-2.0.0 Alpha Release (22.10.2014)
-* Added private Github repository with readme
-* Added basic functions with dev states
 ```
 
 Licence and Copyright
