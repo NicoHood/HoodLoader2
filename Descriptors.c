@@ -60,6 +60,14 @@ THE SOFTWARE.
 
 #include "Descriptors.h"
 
+#define LUFA_VID					0x03EB
+#define LUFA_PID					0x204A
+
+#define ARDUINO_VID					0x2341
+#define ARDUINO_UNO_PID				0x0043 // R3 (0001 R1)
+#define ARDUINO_MEGA_PID			0x0042 // R3 (0010 R1)
+#define ARDUINO_MEGA_ADK_PID		0x0044 // R3 (003F R1)
+
 /** Device descriptor structure. This descriptor, located in SRAM memory, describes the overall
  *  device characteristics, including the supported USB version, control endpoint size and the
  *  number of device configurations. The descriptor is read out by the USB host when the enumeration
@@ -76,8 +84,9 @@ const USB_Descriptor_Device_t DeviceDescriptor =
 
 	.Endpoint0Size          = FIXED_CONTROL_ENDPOINT_SIZE,
 
-	.VendorID               = 0x03EB,
-	.ProductID              = 0x204A,
+	// passed through makefile
+	.VendorID = VENDORID,
+	.ProductID = PRODUCTID,
 	.ReleaseNumber          = VERSION_BCD(2,0,0),
 
 	.ManufacturerStrIndex   = STRING_ID_Manufacturer,
@@ -207,13 +216,21 @@ const USB_Descriptor_String_t LanguageString = USB_STRING_DESCRIPTOR_ARRAY(LANGU
  *  form, and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
  *  Descriptor.
  */
-const USB_Descriptor_String_t ManufacturerString = USB_STRING_DESCRIPTOR(L"NicoHood");
+const USB_Descriptor_String_t ManufacturerString = USB_STRING_DESCRIPTOR(L"Nico");
 
 /** Product descriptor string. This is a Unicode string containing the product's details in human readable form,
  *  and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
  *  Descriptor.
  */
-const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"Hoodloader2");
+#if (PRODUCTID == ARDUINO_UNO_PID)
+const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"Hoodloader2 Uno");
+#elif (PRODUCTID == ARDUINO_MEGA_PID)
+const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"Hoodloader2 Mega");
+#elif (PRODUCTID == ARDUINO_ADK_PID)
+const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"Hoodloader2 ADK");
+#else
+const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"Hoodloader2 Lufa");
+#endif
 
 /** This function is called by the library when in device mode, and must be overridden (see LUFA library "USB Descriptors"
  *  documentation) by the application code so that the address and size of a requested descriptor can be given

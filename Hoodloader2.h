@@ -102,7 +102,7 @@ THE SOFTWARE.
 		#define SOFTWARE_IDENTIFIER          "HL2-CDC"
 
 		/** Magic bootloader key to unlock forced application start mode. */
-		#define MAGIC_BOOT_KEY               0x42
+		#define MAGIC_BOOT_KEY               'N'
 
 	/* Enums: */
 		/** Possible memory types that can be addressed via the bootloader. */

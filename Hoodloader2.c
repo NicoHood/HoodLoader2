@@ -80,7 +80,7 @@ static uint8_t RxLEDPulse = 0;
 
 // variable to determine if CDC baudrate is for the bootloader mode or not
 //TODO volatile CDCAvtive?
-static bool CDCActive = false;
+static volatile bool CDCActive = false;
 
 /** Current address counter. This stores the current address of the FLASH or EEPROM as set by the host,
  *  and is used when reading or writing to the AVRs memory (either FLASH or EEPROM depending on the issued
@@ -99,7 +99,7 @@ static bool RunBootloader = true;
  *  low when the application attempts to start via a watchdog reset, the bootloader will re-start. If set to the value
  *  \ref MAGIC_BOOT_KEY the special init function \ref Application_Jump_Check() will force the application to start.
  */
-uint8_t MagicBootKey ATTR_NO_INIT; //TODO
+uint8_t MagicBootKey ATTR_NO_INIT;
 
 // Bootloader timeout timer in ms
 #define EXT_RESET_TIMEOUT_PERIOD 750
@@ -347,9 +347,7 @@ void EVENT_USB_Device_ControlRequest(void)
 			BufferIndex = 0;
 			BufferEnd = 0;
 
-			// TODO else part?
 			CDC_Device_LineEncodingChanged();
-
 		}
 
 		break;
@@ -586,7 +584,6 @@ static void Bootloader_Task(const uint8_t Command){
 	}
 	else if (Command == AVR109_COMMAND_ReadPartCode)
 	{
-		//TODO needed?
 		/* Return ATMEGA128 part code - this is only to allow AVRProg to use the bootloader */
 		WriteNextResponseByte(0x44);
 		WriteNextResponseByte(0x00);

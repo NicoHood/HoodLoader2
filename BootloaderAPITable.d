@@ -1,1 +1,0 @@
-BootloaderAPITable.o: BootloaderAPITable.S

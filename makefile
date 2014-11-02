@@ -21,8 +21,19 @@ OPTIMIZATION = s
 TARGET       = Hoodloader2
 SRC          = $(TARGET).c Descriptors.c BootloaderAPI.c BootloaderAPITable.S $(LUFA_SRC_USB)
 LUFA_PATH    = ./lufa-LUFA-140928/LUFA
-CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/ -DBOOT_START_ADDR=$(BOOT_START_OFFSET)
+CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_START_ADDR=$(BOOT_START_OFFSET)
 LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS)
+
+#define LUFA_VID					0x03EB
+#define LUFA_PID					0x204A
+
+#define ARDUINO_VID					0x2341
+#define ARDUINO_UNO_PID				0x0043 // R3 (0001 R1)
+#define ARDUINO_MEGA_PID			0x0042 // R3 (0010 R1)
+#define ARDUINO_MEGA_ADK_PID		0x0044 // R3 (003F R1)
+
+HOODLOADER2_OPTS  = -DVENDORID=ARDUINO_VID
+HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_MEGA_PID
 
 # Flash size and bootloader section sizes of the target, in KB. These must
 # match the target's total FLASH size and the bootloader size set in the
