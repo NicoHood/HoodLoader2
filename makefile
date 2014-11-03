@@ -33,7 +33,7 @@ LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAG
 #define ARDUINO_MEGA_ADK_PID		0x0044 // R3 (003F R1)
 
 HOODLOADER2_OPTS  = -DVENDORID=ARDUINO_VID
-HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_MEGA_PID
+HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID
 
 # Flash size and bootloader section sizes of the target, in KB. These must
 # match the target's total FLASH size and the bootloader size set in the

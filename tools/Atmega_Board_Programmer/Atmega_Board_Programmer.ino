@@ -1,5 +1,25 @@
+/*
+Copyright(c) 2014 NicoHood
+See the readme for credit to other people.
+
+This file is part of Hoodloader2.
+
+Hoodloader2 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Hoodloader2 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 // Atmega chip programmer
-// Author: Nick Gammon
+// Author: Nick Gammon, modified by NicoHood
 // Date: 22nd May 2012
 // Version: 1.23
 
@@ -26,8 +46,24 @@
 // Version 1.21: Automatically clear "divide by 8" fuse bit
 // Version 1.22: Fixed compiling problems under IDE 1.5.8
 // Version 1.23: Added support for Leonardo bootloader
+// Version 1.23-A: Removed unnecessary Bootloaders, added Hoodloader
 
-#define VERSION "1.23"
+#define VERSION "1.23-A"
+
+//================================================================================
+// HoodLoader2 definitions
+//================================================================================
+
+// depending on the uploading board decide what hex file we should use
+#ifdef __AVR_ATmega2560__
+#define HOODLOADER2_16U2_MEGA
+// by default use the file for Arduino Uno. Its no problem to upload an Uno file to a Mega though.
+#else
+#define HOODLOADER2_16U2_UNO
+#endif
+
+#define BUTTON_DFU 8
+#define BUTTON_HOODLOADER2 7
 
 /*
 
@@ -119,15 +155,8 @@ typedef struct {
 const unsigned long kb = 1024;
 
 // hex bootloader data
-#include "bootloader_atmega168.h"
-#include "bootloader_atmega328.h"
-#include "bootloader_atmega2560_v2.h"
-#include "bootloader_atmega1284.h"
-#include "bootloader_lilypad328.h"
-#include "bootloader_atmega1280.h"
-#include "bootloader_atmega8.h"
-#include "bootloader_atmega32u4.h"
 #include "bootloader_atmega16u2.h"
+#include "bootloader_atmega16u2_HoodLoader2.h"
 
 // see Atmega328 datasheet page 298
 signatureType signatures [] = 
@@ -147,40 +176,11 @@ signatureType signatures [] =
   // Atmega328 family
   { { 0x1E, 0x92, 0x0A }, "ATmega48PA",   4 * kb,         0 },
   { { 0x1E, 0x93, 0x0F }, "ATmega88PA",   8 * kb,       256 },
-  { { 0x1E, 0x94, 0x0B }, "ATmega168PA", 16 * kb,       256
-    #ifdef ATMEGA168_HEX
-  ,
-        atmega168_optiboot,   // loader image
-        0x3E00,               // start address
-        sizeof atmega168_optiboot, 
-        128,          // page size in bytes (for committing)
-        0xC6,         // fuse low byte: external full-swing crystal
-        0xDD,         // fuse high byte: SPI enable, brown-out detection at 2.7V
-        0x04,         // fuse extended byte: boot into bootloader, 512 byte bootloader
-        0x2F },       // lock bits: SPM is not allowed to write to the Boot Loader section.
-                #else
-        },
-        #endif
+  { { 0x1E, 0x94, 0x0B }, "ATmega168PA", 16 * kb,       256 },
   
-  { { 0x1E, 0x95, 0x0F }, "ATmega328P",  32 * kb,       512, 
-        atmega328_optiboot,   // loader image
-        0x7E00,               // start address
-        sizeof atmega328_optiboot, 
-        128,          // page size in bytes (for committing)
-        0xFF,         // fuse low byte: external clock, max start-up time
-        0xDE,         // fuse high byte: SPI enable, boot into bootloader, 512 byte bootloader
-        0x05,         // fuse extended byte: brown-out detection at 2.7V
-        0x2F },       // lock bits: SPM is not allowed to write to the Boot Loader section.
+  { { 0x1E, 0x95, 0x0F }, "ATmega328P",  32 * kb,       512 },
 
-  { { 0x1E, 0x95, 0x14 }, "ATmega328",  32 * kb,       512, 
-        atmega328_optiboot,   // loader image
-        0x7E00,               // start address
-        sizeof atmega328_optiboot, 
-        128,          // page size in bytes (for committing)
-        0xFF,         // fuse low byte: external clock, max start-up time
-        0xDE,         // fuse high byte: SPI enable, boot into bootloader, 512 byte bootloader
-        0x05,         // fuse extended byte: brown-out detection at 2.7V
-        0x2F },       // lock bits: SPM is not allowed to write to the Boot Loader section.
+  { { 0x1E, 0x95, 0x14 }, "ATmega328",  32 * kb,       512 },
         
   // Atmega644 family
   { { 0x1E, 0x94, 0x0A }, "ATmega164P",   16 * kb,      256 },
@@ -189,90 +189,47 @@ signatureType signatures [] =
 
   // Atmega2560 family
   { { 0x1E, 0x96, 0x08 }, "ATmega640",    64 * kb,   1 * kb },
-  { { 0x1E, 0x97, 0x03 }, "ATmega1280",  128 * kb,   1 * kb
-  
-  #ifdef ATMEGA1280_HEX
-  ,
-        optiboot_atmega1280_hex,
-        0x1FC00,      // start address
-        sizeof optiboot_atmega1280_hex,   
-        256,          // page size in bytes (for committing)
-        0xFF,         // fuse low byte: external clock, max start-up time
-        0xDE,         // fuse high byte: SPI enable, boot into bootloader, 1280 byte bootloader
-        0xF5,         // fuse extended byte: brown-out detection at 2.7V
-        0x2F },       // lock bits: SPM is not allowed to write to the Boot Loader section.
-        #else
-        },
-        #endif
+  { { 0x1E, 0x97, 0x03 }, "ATmega1280",  128 * kb,   1 * kb },
         
   { { 0x1E, 0x97, 0x04 }, "ATmega1281",  128 * kb,   1 * kb },
-  { { 0x1E, 0x98, 0x01 }, "ATmega2560",  256 * kb,   1 * kb
-    #ifdef ATMEGA2560_HEX
-  , 
-        atmega2560_bootloader_hex,// loader image
-        0x3E000,      // start address
-        sizeof atmega2560_bootloader_hex,   
-        256,          // page size in bytes (for committing)
-        0xFF,         // fuse low byte: external clock, max start-up time
-        0xD8,         // fuse high byte: SPI enable, boot into bootloader, 8192 byte bootloader
-        0xFD,         // fuse extended byte: brown-out detection at 2.7V
-        0x2F },       // lock bits: SPM is not allowed to write to the Boot Loader section.
-              #else
-        },
-        #endif
+  { { 0x1E, 0x98, 0x01 }, "ATmega2560",  256 * kb,   1 * kb },
   { { 0x1E, 0x98, 0x02 }, "ATmega2561",  256 * kb,   1 * kb },
   
   // Atmega32U2 family
   { { 0x1E, 0x93, 0x89 }, "ATmega8U2",    8 * kb,   512 },
   
-//  { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   16*kb,
-//        UNO_dfu_and_usbserial_combined_hex,   // loader image
-//        0x0000,                   // start address (0x0000-0x4000)
-//        sizeof UNO_dfu_and_usbserial_combined_hex, 
-  
-  { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   4*kb,
-        Hoodloader2_Uno_Beta_hex,   // loader image
-        0x3000,                   // start address (0x3000-0x4000)
-        sizeof Hoodloader2_Uno_Beta_hex, 
-
-//  { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   4*kb,
-//        at90usb162_bl_usb_1_0_5_hex,   // loader image
-//        0x3000,                   // start address (0x3000-0x4000)
-//        sizeof at90usb162_bl_usb_1_0_5_hex, 
+#ifdef HOODLOADER2_16U2_MEGA
+  { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   16*kb,
+        Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex,   // loader image
+        0x0000,                   // start address (0x0000-0x4000)
+        sizeof Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex, 
+        128, // page size in bytes (for committing)
+        0xEF, // fuse low byte: external clock, m
+        0xD9, // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
+        0xF4, // fuse extended byte: brown-out detection at 2.6V
+        0xCF }, // lock bits
+       
+#else // HOODLOADER2_16U2_UNO
+  { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   16*kb,
+        Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex,   // loader image
+        0x0000,                   // start address (0x0000-0x4000)
+        sizeof Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex, 
+        128, // page size in bytes (for committing)
+        0xEF, // fuse low byte: external clock, m
+        0xD9, // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
+        0xF4, // fuse extended byte: brown-out detection at 2.6V
+        0xCF }, // lock bits
         
-        128,           // page size in bytes (for committing)
-        0xFF,         // fuse low byte:
-        0xD9,         // fuse high byte: 
-        0xF4,         // fuse extended byte:
-        0x2F },       // lock bits:
-
+#endif
   
   { { 0x1E, 0x95, 0x8A }, "ATmega32U2",  32 * kb,   512 },
 
   // Atmega32U4 family
   { { 0x1E, 0x94, 0x88 }, "ATmega16U4",  16 * kb,   512 },
-  { { 0x1E, 0x95, 0x87 }, "ATmega32U4",  32 * kb,   4 * kb,
-        leonardo_hex,// loader image
-        0x7000,      // start address
-        sizeof leonardo_hex,   
-        128,          // page size in bytes (for committing) (datasheet is wrong about it being 128 words)
-        0xFF,         // fuse low byte: external clock, max start-up time
-        0xD8,         // fuse high byte: SPI enable, boot into bootloader, 1280 byte bootloader
-        0xCB,         // fuse extended byte: brown-out detection at 2.6V
-        0x2F },       // lock bits: SPM is not allowed to write to the Boot Loader section.
-          
-
-
+  { { 0x1E, 0x95, 0x87 }, "ATmega32U4",  32 * kb,   4 * kb },
+ 
   // ATmega1284P family
-  { { 0x1E, 0x97, 0x05 }, "ATmega1284P", 128 * kb,   1 * kb,
-        optiboot_atmega1284p_hex,
-        0x1FC00,      // start address
-        sizeof optiboot_atmega1284p_hex,       
-        256,          // page size in bytes (for committing)
-        0xFF,         // fuse low byte: external clock, max start-up time
-        0xDE,         // fuse high byte: SPI enable, boot into bootloader, 1024 byte bootloader
-        0xFD,         // fuse extended byte: brown-out detection at 2.7V
-        0x2F },       // lock bits: SPM is not allowed to write to the Boot Loader section.
+  { { 0x1E, 0x97, 0x05 }, "ATmega1284P", 128 * kb,   1 * kb },
   
   // ATtiny4313 family
   { { 0x1E, 0x91, 0x0A }, "ATtiny2313A", 2 * kb,   0 },
@@ -282,16 +239,7 @@ signatureType signatures [] =
   { { 0x1E, 0x90, 0x07 }, "ATtiny13A",     1 * kb, 0 },
   
   // Atmega8A family
-  { { 0x1E, 0x93, 0x07 }, "ATmega8A",     8 * kb, 256,
-        atmega8_hex,
-        0x1C00,      // start address
-        sizeof atmega8_hex,       
-        64,           // page size in bytes (for committing)
-        0xE4,         // fuse low byte: external clock, max start-up time
-        0xCA,         // fuse high byte: SPI enable, boot into bootloader, 1024 byte bootloader
-        0xFD,         // fuse extended byte: brown-out detection at 2.7V
-        0x0F,         // lock bits: SPM is not allowed to write to the Boot Loader section.
-        true },       // need to do timed writes, not polled ones
+  { { 0x1E, 0x93, 0x07 }, "ATmega8A",     8 * kb, 256 },
   
   };  // end of signatures
 
@@ -452,29 +400,51 @@ void writeBootloader ()
 
   byte subcommand = 'U';
   
-  // Atmega328P or Atmega328
+  // HoodLoader2 save mode
+  bool forceProgramming = false;
+  
+  // 16u2: DFU + USB-Serial or HoodLoader2
   if (signatures [foundSig].sig [0] == 0x1E &&
-      signatures [foundSig].sig [1] == 0x95 &&
-      (signatures [foundSig].sig [2] == 0x0F || signatures [foundSig].sig [2] == 0x14)
-      )
+      signatures [foundSig].sig [1] == 0x94 &&
+      signatures [foundSig].sig [2] == 0x89)
     {
-    Serial.println (F("Type 'L' to use Lilypad (8 MHz) loader, or 'U' for Uno (16 MHz) loader ..."));   
+    Serial.println (F("Type 'H' to use HoodLoader2, or 'D' for the original DFU + USB-Serial firmware."));   
     do
       {
       subcommand = toupper (Serial.read ());
-      } while (subcommand != 'L' && subcommand != 'U');
+      
+      // HoodLoader 2 save mode
+      if(!digitalRead(BUTTON_DFU)){
+        subcommand = 'D';
+        forceProgramming = true;
+        }
+      if(!digitalRead(BUTTON_HOODLOADER2)){
+        subcommand = 'H';
+        forceProgramming = true;
+        }
+        
+      } while (subcommand != 'H' && subcommand != 'D');
     
-    if (subcommand == 'L')  // use internal 8 MHz clock
+    if (subcommand == 'H')  // use internal 8 MHz clock
       {
-      Serial.println (F("Using Lilypad 8 MHz loader."));
-      bootloader = ATmegaBOOT_168_atmega328_pro_8MHz_hex;
-      newlFuse = 0xE2;  // internal 8 MHz oscillator
-      newhFuse = 0xDA;  //  2048 byte bootloader, SPI enabled
-      addr = 0x7800;
-      len = sizeof ATmegaBOOT_168_atmega328_pro_8MHz_hex;
-      }  // end of using the 8 MHz clock
+      //len = 4 * kb;
+      addr = 0x3000;
+#ifdef HOODLOADER2_16U2_MEGA
+      Serial.println (F("Using Hoodloader2 Mega."));
+      bootloader = Hoodloader2_Mega_Beta_hex;
+      len = sizeof Hoodloader2_Mega_Beta_hex;
+#else // HOODLOADER2_16U2_UNO
+      Serial.println (F("Using Hoodloader2 Uno."));
+      bootloader = Hoodloader2_Uno_Beta_hex;
+      len = sizeof Hoodloader2_Uno_Beta_hex;
+#endif
+      }  // end of using HoodLoader2
     else
-      Serial.println (F("Using Uno Optiboot 16 MHz loader."));
+#ifdef HOODLOADER2_16U2_MEGA
+      Serial.println (F("Using original DFU + USB-Serial loader for Mega."));
+#else // HOODLOADER2_16U2_UNO
+      Serial.println (F("Using original DFU + USB-Serial loader for Uno."));
+#endif
      }  // end of being Atmega328P
 
   unsigned long oldPage = addr & pagemask;
@@ -484,6 +454,11 @@ void writeBootloader ()
   do
     {
     command = toupper (Serial.read ());
+    
+    // HoodLoader 2 save mode
+    if(forceProgramming)
+      command = 'G';
+      
     } while (command != 'G' && command != 'V');
 
   if (command == 'G')
@@ -531,7 +506,7 @@ void writeBootloader ()
   // count errors
   unsigned int errors = 0;
   // check each byte
-  for (i = 0; i < signatures [foundSig].loaderLength; i++)
+  for (i = 0; i < len; i++)
     {
     byte found = readFlash (addr + i);
     byte expected = pgm_read_byte(bootloader + i);
@@ -644,10 +619,14 @@ void setup ()
   while (!Serial) ;  // for Leonardo, Micro etc.
   Serial.println ();
   Serial.println (F("Atmega chip programmer."));
-  Serial.println (F("Written by Nick Gammon."));
+  Serial.println (F("Written by Nick Gammon, modified by NicoHood."));
   Serial.println (F("Version " VERSION));
   Serial.println (F("Compiled on " __DATE__ " at " __TIME__));
- 
+  
+  // setup backup buttons
+  pinMode(BUTTON_DFU, INPUT_PULLUP);
+  pinMode(BUTTON_HOODLOADER2, INPUT_PULLUP);
+
   digitalWrite (RESET, HIGH);  // ensure SS stays high for now
   SPI.begin ();
   

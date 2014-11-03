@@ -1,4 +1,4 @@
-Hoodloader2 Beta
+HoodLoader2 Beta
 ================
 
 ![header](pictures/header.jpg)
@@ -6,7 +6,7 @@ Hoodloader2 Beta
 *Caution: This is a Beta, please read everything carefully to not brick your Arduino!
 Some things might be added later and you might wonder where to find them.*
 
-**Hoodloader2 takes Arduino Uno's and Mega's functions to a whole new level.**
+**HoodLoader2 takes Arduino Uno's and Mega's functions to a whole new level.**
 Version 2 is a __real__ bootloader  for the 16u2 (not a firmware like v1) which replaces the DFU Bootloader
 with a custom CDC Bootloader with USB-Serial function. You can reprogram the main MCU (328/2560) and the USB MCU (16u2)
 at the same time with all its functions and no limitations.
@@ -15,7 +15,7 @@ It adds **fully Arduino IDE compatibility** (with some i/o pins) for the 16u2 to
 Whether new __USB__ functions (CDCSerial, Midi, HID: Keyboard, Mouse, Gamepad, Media Keys), sensors or leds: anything you can imagine of.
 **All you need is a normal Arduino Uno/Mega R3 + USB cable + a few wires.**
 
-You should read the readme carefully to understand what the Hoodloader2 is used for and what it can make possible.
+You should read the readme carefully to understand what the HoodLoader2 is used for and what it can make possible.
 Also it is very important to follow the installation instructions and its warnings carefully.
 At the end is a written text about the idea, the key functions and how I got there.
 There is also a small Hoodpedia with some words you might not understand and its explanation
@@ -30,15 +30,15 @@ HID Project
 
 This project went to a lot of phases and has now reached a library with 3 software solutions.
 The idea is to enable enhanced USB functions to almost all 'standard' Arduino boards (Uno, Mega, Leonardo, Micro).
-To make things more clear the HID Software is in this repository and the Hoodloader (1 & 2) sources + installation instructions are in their own repositories.
+To make things more clear the HID Software is in this repository and the HoodLoader (1 & 2) sources + installation instructions are in their own repositories.
 
 **The [HID Project](https://github.com/NicoHood/HID) contains 3 software solutions:**
 * Arduino Leonardo/(Pro)Micro extended USB HID-report descriptors
-* [Hoodloader1](https://github.com/NicoHood/Hoodloader) 328/2560 HID Serial Protocol functions (Uno/Mega)
-* [Hoodloader2](https://github.com/NicoHood/Hoodloader2) 16u2 USB cores with HID (Uno/Mega)
+* [HoodLoader1](https://github.com/NicoHood/HoodLoader) 328/2560 HID Serial Protocol functions (Uno/Mega)
+* [HoodLoader2](https://github.com/NicoHood/HoodLoader2) 16u2 USB cores with HID (Uno/Mega)
 
 The API (syntax) is always the same for each project, so you can port code from one device to another very easy.
-To use Hoodloader1&2 you also need the HID Project.
+To use HoodLoader1&2 you also need the HID Project.
 
 Overview: Features/Limitations
 ==============================
@@ -46,20 +46,20 @@ Overview: Features/Limitations
 **Normally any R3 Uno/Mega has a 16u2.** Earlier versions had an 8u2
 and some online shops even sell the bigger 32u2 (I've got two of them *g*).
 
-**Hoodloader2 functions:**
+**HoodLoader2 functions:**
 * CDC Bootloader for the 16u2 (to upload .hex files via avr-dude/Arduino IDE)
 * USB-Serial programming of the 328/2560
-* No drivers needed for the Hoodloader itself
+* No drivers needed for the HoodLoader itself
 
-**[HID Project](https://github.com/NicoHood/HID) features (for Hoodloader2):**
+**[HID Project](https://github.com/NicoHood/HID) features (for HoodLoader2):**
 * Arduino IDE integration + programming with the 16u2
-* Self flashing sketch to burn the Hoodloader2 to the 16u2 (modified version from Nick Gammon)
+* Self flashing sketch to burn the HoodLoader2 to the 16u2 (modified version from Nick Gammon)
 * IDE example USB-Serial demo (equal to original firmware)
 * IDE example sketches for 16u2 HID devices (Mouse, Keyboard, Gamepad, Media/System Keys)
-* IDE example sketch for 16u2 - 328/2560 communication (Hoodloader1 technique)
+* IDE example sketch for 16u2 - 328/2560 communication (HoodLoader1 technique)
 
 **16u2 features on a normal Uno/Mega R3:**
-* 16kb flash (minus 4kb for the Hoodloader2) (8 for a 8u2, 32 for a 32u2)
+* 16kb flash (minus 4kb for the HoodLoader2) (8 for a 8u2, 32 for a 32u2)
 * 500 bytes ram 8u2 and 16u2 (1000 bytes ram for a 32u2)
 * 500 bytes EEPROM 8u2 and 16u2 (1000 bytes EEPROM for a 32u2)
 * 4 usable USB Endpoints: CDC Serial, HID, MIDI (not all at once)
@@ -76,14 +76,14 @@ and some online shops even sell the bigger 32u2 (I've got two of them *g*).
 | 8/16/32u2 Flash | Bootloader (4kb)                            | Program (4/12/28kb)    |
 |:----------------|:--------------------------------------------|:-----------------------|
 | Before          | DFU Bootloader (via Flip)                   | USB-Serial Firmware    |
-| After           | Hoodloader2 (CDC Bootloader + USB-Serial)   | Custom Sketch/Firmware |
+| After           | HoodLoader2 (CDC Bootloader + USB-Serial)   | Custom Sketch/Firmware |
 
-Hoodloader2 is a __Bootloader__ not a firmware. It replaces the DFU bootloader with a CDC bootloader.
+HoodLoader2 is a __Bootloader__ not a firmware. It replaces the DFU bootloader with a CDC bootloader.
 **You wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx) any more.**
 But this gives us the option to use avr-dude to flash the 16u2 with custom firmware.
 
 The main advantage is to **flash the 16u2 with the Arduino IDE**.
-Hoodloader2 comes with full Arduino compatible core (see [HID Project](https://github.com/NicoHood/HID))
+HoodLoader2 comes with full Arduino compatible core (see [HID Project](https://github.com/NicoHood/HID))
 to create your very own custom programs with the normally unused 16u2 USB chip.
 You can either use the CDC, HID, MIDI, more than one HID interface without CDC or custom USB devices (similar to Teensy).
 
@@ -107,7 +107,7 @@ TODO
 You also need to solder the additional 4 pin header to access all 7 PB i/o pins.
 The Arduino Mega pinout is the same for the 16u2 MCU.
 
-Hoodloader2 - Installation
+HoodLoader2 - Installation
 ==========================
 
 **Caution: You will overwrite the DFU Bootloader. Read the installing instructions carefully, double check connections and __dont panic__!**
@@ -123,54 +123,50 @@ To install a bootloader in general you would need an ISP (In system programmer).
 If you just want to use your own ISP to burn the hex file, see below.
 For those of you who only have a standalone Arduino Uno/Mega R3
 we use a modified version of Nick Gammon's [Atmega Board Programmmer](https://github.com/nickgammon/arduino_sketches).
-In this case the 328/2560 acts as ISP with a the Hoodloader .hex preloaded in PROGMEM.
+In this case the 328/2560 acts as ISP with a the HoodLoader .hex preloaded in PROGMEM.
 
-### Installation sketch
+### Installation sketch (standalone Arduino Uno/Mega)
+
+This installation method is designed to work with a single Arduino Uno/Mega.
+The main MCU (328/2560) gets a sketch with a preloaded firmware and is able to flash the 16u2 via ISP.
+Its a special modification of [Nick Gammon's Atmega bootloader programmer](http://www.gammon.com.au/forum/?id=11635)
+to ensure high security to not brick your Arduino.
 
 First remove __all__ hardware from your Arduino to ensure nothing is messing up the upload.
 All you need to do is to connect the SPI lines correct together like this:
 
-**TODO picture**
-
+![Connections](pictures/connections.jpg)
 
 ```
 Pin connections:
-16u2  - 328/2560
-MOSI  - MOSI (pin x Uno | pin x Mega)
-MISO  - MISO
-SCK   - SCK
-RESET - PIN 10
+328/2560 - 16u2
+MOSI     - MOSI
+MISO     - MISO
+SCK      - SCK
+PIN 10   - RESET
 
-328/2560 installation sketch pin functions:
-13 status led
- Softserial TX
- Softserial RX
- Manual Hoodloader flash
- Manual DFU bootloader flash
-
+Optional Buttons for recovery:
+PIN 8    - Force DFU upload
+PIN 7    - Force HoodLoader2 upload
 ```
 
-The installation sketch is located in tools/Atmega_Board_Programmer/Atmega_Board_Programmer.ino
+The installation sketch is located in tools/Atmega_Board_Programmer/Atmega_Board_Programmer.ino, open it with your Arduino IDE.
 
-Upload the installation sketch to your Arduino Uno/Mega. The sketch can burn bootloaders to several MCUs, made by Nick Gammon.
-Its special modified to ensure high security to not brick your Arduino. The normal way is to control the uploading via Serial.
+In the first lines of the sketch you can choose what Arduino you are uploading to. Just leave it as it is, it will automatically choose the right hex file.
+Upload the installation sketch to your Arduino Uno/Mega. The normal way is to control the uploading via Serial, so open the Serial port monitor at baud 115200.
+Follow the instructions (press H + Enter, then G + Enter). Then your Arduino should be flashed with the new firmware. Remove all the wires now.
+Once you've done this, normally you don't need to do this again, maybe if there is a new HoodLoader2 version.
 
-### Recovery options
+
+**Recovery options/how to get back to the original bootloader:**
 
 If anything goes wrong and you can't access the Serial via USB any more you still are able to try different methods to flash the 16u2.
 You can use another Arduino and upload the installation sketch there and try the flash again.
 Or you can try to access the recovery options of the installation sketch if its still on the 328/2560:
 
-You can access the Serial programming interface also on Softserial on pin x for TX and x for RX (baud 9600). Short pin x to deactivate Serial0 programming.
-If you don't have a second USB-Serial adapter the only way to flash the MCU is then to connect a button to pin x to flash the Hoodloader
-or to pin x to flash the DFU + USB-Serial manually again.
-
-The led on pin 13 is for status:
-* Heartbeat: IDLE, waiting for user input/finished
-* Blinking very fast: flashing new firmware
-* Blinking every 100ms: error flashing the firmware (See Softserial output)
-
-How to get back to the DFU bootloader
+The only way to flash the MCU without Serial access is to connect a button to pin 7 to flash the HoodLoader2
+or to pin 8 to flash the DFU + USB-Serial manually again. Therefore make sure all wires are connected properly,
+reset the MCU (328/2560) and short the pin (7 or 8) to ground.
 
 ### Burning via ISP (advanced)
 
@@ -178,11 +174,18 @@ This is for advanced users who want to burn the bootloader with an external ISP 
 You can do this with your program if choice (e.g. avr-dude) or use the Arduino IDE and select 16u2 and hit "burn bootloader".
 
 ```
+Official documentation:
 low_fuses=0xFF
 high_fuses=0xD9
 extended_fuses=0xF4
 unlock_bits=0x3F
 lock_bits=0x2F
+
+Actual fuse setting on an official R3 board:
+0xEF, // fuse low byte: external clock, m
+0xD9, // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
+0xF4, // fuse extended byte: brown-out detection at 2.6V
+0xCF }, // lock bits
 ```
 
 For your interest, how to set the boards.txt to upload the firmware directly via the IDE + ISP
@@ -191,8 +194,8 @@ For your interest, how to set the boards.txt to upload the firmware directly via
 atmega16u2.name=Atmega 16u2
 atmega16u2.upload.tool=avrdude
 atmega16u2.upload.protocol=avr109
-atmega16u2.upload.maximum_size=28672
-atmega16u2.upload.maximum_data_size=2560
+atmega16u2.upload.maximum_size=12288
+atmega16u2.upload.maximum_data_size=512
 atmega16u2.upload.speed=57600
 atmega16u2.upload.disable_flushing=true
 atmega16u2.upload.use_1200bps_touch=true
@@ -208,16 +211,14 @@ atmega16u2.bootloader.lock_bits=0x2F
 
 atmega16u2.build.mcu=atmega16u2
 atmega16u2.build.f_cpu=16000000L
-atmega16u2.build.vid=0x2341
-atmega16u2.build.pid=0x8037
 atmega16u2.build.usb_product="Atmega 16u2"
 atmega16u2.build.board=AVR_16U2
 atmega16u2.build.core=arduino
 atmega16u2.build.variant=atmega16u2
-atmega16u2.build.extra_flags={build.usb_flags}
+#atmega16u2.build.extra_flags={build.usb_flags}
 ```
 
-Hoodloader2 - How to use
+HoodLoader2 - How to use
 ==========================
 
 ![Bootloader Modes](pictures/bootloader.png)
@@ -225,7 +226,7 @@ Hoodloader2 - How to use
 **Short the reset pin once to enter the actual 16u2 program** (see picture below). Then your 16u2 firmware/sketch starts running.
 By default the program starts. If no program is presented the bootloader will run.
 
-Because the Hoodloader replaces the 16u2's bootloader you can enter it like the Arduino Leonardo bootloader.
+Because the HoodLoader replaces the 16u2's bootloader you can enter it like the Arduino Leonardo bootloader.
 **Short the reset pin twice to enter bootloader mode (manually)** to upload code to the 16u2 or the 328/2560.
 Then you have full CDC bootloader functions and USB-Serial with auto reset.
 
@@ -234,9 +235,9 @@ That might happen if you want to use more USB-HID functions which would be limit
 To enter bootloader mode to upload to one of the two MCUs (16u2 and 328/2560) short the reset pin twice again.
 
 **In bootloader mode the device enumerates as different USB device than the uploaded sketch.
-The Hoodloader2 itself just needs the standard Arduino drivers.**
+The HoodLoader2 itself just needs the standard Arduino drivers.**
 
-![16u2 Reset](pictures/ArduinoUno_R3_Front_Reset.jpg)
+![16u2 Reset](pictures/reset.jpg)
 
 ### How to upload sketches to the 328/2560
 
@@ -252,25 +253,24 @@ If not you manually have to enter bootloader mode as described above.
 
 Go to the [HID Project](https://github.com/NicoHood/HID) page to get the newest Arduino core library for the 16u2.
 
-### How to upload/flash firmwares (hex files) to the 16u2 with avr-dude
+### How to upload/flash/erase firmwares (hex files) to the 16u2 with avr-dude
 
 If you want to upload a self compiled .hex file from a LUFA project for example like the
-[Hoodloader1](https://github.com/NicoHood/HoodLoader) for example
+[HoodLoader1](https://github.com/NicoHood/HoodLoader) for example
 you wont be able to use DFU via Flip any more. But you can use avr-dude instead:
 
 Download avr-dude [here](http://download.savannah.gnu.org/releases/avrdude/) (avrdude-6.1-mingw32.zip for windows).
 Open a cmd or bash and try the following code. You can also create a .bat file for easier uploading.
+The .bat files are also located in /tools.
 
 ```
 #select com port/device and .hex file
-avrdude.exe -C avrdude.conf -p at90usb162 -c avr109 -b 57600 -P COM1 -U flash:w:Hoodloader1_8.hex
+avrdude.exe -C avrdude.conf -p at90usb162 -c avr109 -b 57600 -P COM1 -U flash:w:HoodLoader1_8.hex
 pause
 
 avrdude.exe -C avrdude.conf -p at90usb162 -c avr109 -b 57600 -P COM1 -e
 pause
 ```
-
-
 
 Useful Links
 ============
@@ -295,9 +295,9 @@ Bugs
 ====
 
 Gamepads and RAW-HID in an HID multi report gives problems under some OS (Gamepads especially Linux).
-This is an OS bug and has nothing to do with the Hoodloader.
+This is an OS bug and has nothing to do with the HoodLoader.
 
-Also the Hoodloader only ensures that you can upload sketches to the MCUs. If your USB HID devices have any problems
+Also the HoodLoader only ensures that you can upload sketches to the MCUs. If your USB HID devices have any problems
 please check the HID Project for known bugs/updates.
 
 TODO
@@ -306,25 +306,26 @@ TODO
 
 pwm pins?
 pinout 16u2
-isp flash sketch modification
 pictures, example with leds spi, ir sensor, usb function
-add copyright information
-pin numbers for installation sketch
 check if fastled/other libs work
-lizens! gnu whatever?
 windows key?
 uploading baud rate
 bank, epsize, buffer size
 migrate at90usb162 to atmega16u2
 add 8u2/32u2/32u4 version
+_delay_loop_2()
 
 Version History
 ===============
 ```
-2.0.0 Release (xx.11.2014)
+2.0.0 Release TODO! (xx.11.2014)
 * HID Project updated:
-* Added Arduino IDE Integration
-* Added HID examples
+ * Added Arduino IDE Integration
+ * Added HID examples
+*HoodLoader2 declared stable
+
+2.0.0 Beta-3 Release (03.11.2014)
+* Improved Atmega Bootloader (DFU now possible)
 
 2.0.0 Beta-2 Release (02.11.2014)
 * Added Atmega Bootloader code (no DFU back possible)
@@ -363,7 +364,7 @@ But it can be used for many different things because its a standalone AVR
 with USB functions like a 32u4 on a Leonardo/Micro board.
 For example: [Hiduino](https://github.com/ddiakopoulos/hiduino), 
 [Darrens Arduino Uno Keyboard](http://hunt.net.nz/users/darran/weblog/b3029/Arduino_UNO_Keyboard_HID_version_03.html)
-[Hoodloader1](https://github.com/NicoHood/Hoodloader) or any other custom firmware.
+[HoodLoader1](https://github.com/NicoHood/HoodLoader) or any other custom firmware.
 
 So what does this tell us? You can use the 16u2 as a normal microcontroller of course.
 The problem was that its not accessible to everybody because its a bit hard to understand
@@ -371,12 +372,12 @@ how to flash the 16u2, how to compile a program for the 16u2 (especially with [L
 and the biggest problem: How to flash the main MCU (328/2560)? Because if you change the 16u2's firmware
 you cannot simply flash the Arduinos main MCU.
 
-The [Hoodloader1](https://github.com/NicoHood/Hoodloader)
+The [HoodLoader1](https://github.com/NicoHood/HoodLoader)
 solved this problem for the first time and its still a good and usable firmware to use USB functions
 and upload sketches to the main MCU at the same time like you are used to.
 But there were a few challenges with that. The biggest problem was just that it is hard to explain
 how that complex stuff works. I think it wasn't clear all the time, also because I had two repositories
-([HID Project](https://github.com/NicoHood/HID) and [Hoodloader1](https://github.com/NicoHood/Hoodloader)).
+([HID Project](https://github.com/NicoHood/HID) and [HoodLoader1](https://github.com/NicoHood/HoodLoader)).
 
 The HID stuff always relied on a Serial communication between 16u2 and 328/2560 which wasn't perfect.
 The 16u2 got HID commands with a special [NHP](https://github.com/NicoHood/NicoHoodProtocol) from the main MCU
@@ -385,7 +386,7 @@ Because when the PC USB-HID side was slow it had no chance to wait for the USB k
 And the main MCU had no chance to get any response back from the 16u2.
 Otherwise I had to modify the normal Arduino core libraries very bad to filter out incoming back data
 (a 'flushed, next key press' signal) again and it would also blow the sketch size.
-Last but not least there were some problems with the multi report descriptor of the [Hoodloader1](https://github.com/NicoHood/Hoodloader)).
+Last but not least there were some problems with the multi report descriptor of the [HoodLoader1](https://github.com/NicoHood/HoodLoader)).
 To keep things simple for now: Some OS (linux especially with gamepads) had problems with
 too many USB-HID devices in a same report (Keyboard, Mouse, 4 gamepads, Media, etc).
 
@@ -413,12 +414,12 @@ So you can do that too, I believe in you :)
 * HID-Report Descriptor: Describes what devices the USB-HID should have with what functions. Very complicated and can cause errors if its not correct.
 See [this tutorial](http://eleccelerator.com/tutorial-about-usb-hid-report-descriptors/) for more information.
 * HID-Multireport: Each HID device can have multiple devices in one endpoint. This might cause errors with RAW-HID, Gamepads and others.
-* LUFA: a lightweight USB-API written in C by Dean Camera. Also used by the Hoodloader.
+* LUFA: a lightweight USB-API written in C by Dean Camera. Also used by the HoodLoader.
 Somehow hard to understand first but very powerful once you've got into it.
 
 ### Changes to the Atmega Bootloader Programmer
 
-To upload the Hoodloader2 I used a modification of Nick Gammon's Atmega Bootloader Programmer.
+To upload the HoodLoader2 I used a modification of Nick Gammon's Atmega Bootloader Programmer.
 Instructions can be found [here](http://www.gammon.com.au/forum/?id=11635).
 
 One of the change was to add new bootloader files. You can convert your hex file as described with Nick's Lua script.
@@ -448,7 +449,7 @@ He provides a simple, [ready to use zip file](http://www.gammon.com.au/downloads
 
 ### How to compile with a Raspberry Pi (avr-gcc 4.7.2)
 
-This instruction is for compiling the Hoodloader on your own with a Raspberry Pi (Debian).
+This instruction is for compiling the HoodLoader on your own with a Raspberry Pi (Debian).
 I cannot tell you how to compile Lufa with any other OS, but Google can.
 Believe me: Windows is a struggle to compile.
 **On a raspberry you can only use the older avr-gcc 4.7.2 toolchain. Please tell me how to upgrade if you know how.**
@@ -471,7 +472,7 @@ sudo nano /etc/fstab
 You need to install the gcc-avr toolchain, avr-libc and compile with:
 ``` bash
 $ sudo apt-get install gcc-avr avr-libc
-$ cd Desktop/Arduino/Hoodloader
+$ cd Desktop/Arduino/HoodLoader
 $ sudo make clean
 $ sudo make
 ```
@@ -486,7 +487,7 @@ $ sudo add-apt-repository ppa:pmjdebruijn/gcc-avr-release
 $ sudo apt-get update
 $ sudo apt-cache search gcc-avr
 $ sudo apt-get install gcc-avr avr-libc
-$ cd Desktop/Arduino/Hoodloader
+$ cd Desktop/Arduino/HoodLoader
 $ sudo make clean
 $ sudo make
 ```
