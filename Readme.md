@@ -257,6 +257,7 @@ You have to install new drivers since it will conflict with the official due to 
 (it will use a different PID/VID). If you have a sketch with CDC running you can use the normal upload function.
 If not you manually have to enter bootloader mode as described above.
 
+**The IDE integration is not ready yet. Please [use this core for now](https://www.mattairtech.com/index.php/development-boards/mt-db-u1.html).
 Go to the [HID Project](https://github.com/NicoHood/HID) page to get the newest Arduino core library for the 16u2.
 
 ### How to upload/flash/erase firmwares (hex files) to the 16u2 with avr-dude
