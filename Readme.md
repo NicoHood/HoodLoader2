@@ -317,7 +317,7 @@ check if fastled/other libs work
 windows key?
 uploading baud rate
 bank, epsize, buffer size
-migrate at90usb162 to atmega16u2
+migrate at90usb162 to atmega16u2 (also the bat file)
 add 8u2/32u2/32u4 version
 _delay_loop_2()
 
