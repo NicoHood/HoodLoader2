@@ -21,7 +21,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // Atmega chip programmer
 // Author: Nick Gammon, modified by NicoHood
 // Date: 22nd May 2012
-// Version: 1.23
+// Version: 1.25
 
 // Version 1.1: Reset foundSig to -1 each time around the loop.
 // Version 1.2: Put hex bootloader data into separate files
@@ -47,8 +47,12 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // Version 1.22: Fixed compiling problems under IDE 1.5.8
 // Version 1.23: Added support for Leonardo bootloader
 // Version 1.23-A: Removed unnecessary Bootloaders, added Hoodloader
+// Version 1.23-B: Fixed resetting bug when connected directly
+// Version 1.24: Added bootloader for Uno Atmega16U2 chip (the USB interface)
+// Version 1.25: Fixed bug re verifying uploaded sketch for the Lilypad
+// Version 1.25-A: Fixed uploading problems with a standalone Arduino
 
-#define VERSION "1.23-A"
+#define VERSION "1.25-A"
 
 //================================================================================
 // HoodLoader2 definitions
@@ -64,6 +68,8 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 
 #define BUTTON_DFU 8
 #define BUTTON_HOODLOADER2 7
+
+char force16u2;
 
 /*
 
@@ -96,6 +102,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 #include <SPI.h>
 #include <avr/pgmspace.h>
 
+#define SERIAL Serial
 const unsigned long BAUD_RATE = 115200;
 
 const byte CLOCKOUT = 9;
@@ -199,26 +206,26 @@ signatureType signatures [] =
   { { 0x1E, 0x93, 0x89 }, "ATmega8U2",    8 * kb,   512 },
   
 #ifdef HOODLOADER2_16U2_MEGA
-  { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   16*kb,
+  { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   512 ,
         Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex,   // loader image
         0x0000,                   // start address (0x0000-0x4000)
         sizeof Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex, 
         128, // page size in bytes (for committing)
-        0xEF, // fuse low byte: external clock, m
+        0xFF, // fuse low byte: external clock, m
         0xD9, // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
         0xF4, // fuse extended byte: brown-out detection at 2.6V
-        0xCF }, // lock bits
+        0x0F }, // lock bits
        
 #else // HOODLOADER2_16U2_UNO
-  { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   16*kb,
+  { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   512 ,
         Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex,   // loader image
         0x0000,                   // start address (0x0000-0x4000)
         sizeof Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex, 
         128, // page size in bytes (for committing)
-        0xEF, // fuse low byte: external clock, m
+        0xFF, // fuse low byte: external clock, m
         0xD9, // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
         0xF4, // fuse extended byte: brown-out detection at 2.6V
-        0xCF }, // lock bits
+        0x0F }, // lock bits
         
 #endif
   
@@ -286,27 +293,27 @@ byte writeFlash (unsigned long addr, const byte data)
 void showHex (const byte b, const boolean newline = false, const boolean show0x = true)
   {
   if (show0x)
-    Serial.print (F("0x"));
+    SERIAL.print (F("0x"));
   // try to avoid using sprintf
   char buf [4] = { ((b >> 4) & 0x0F) | '0', (b & 0x0F) | '0', ' ' , 0 };
   if (buf [0] > '9')
     buf [0] += 7;
   if (buf [1] > '9')
     buf [1] += 7;
-  Serial.print (buf);
+  SERIAL.print (buf);
   if (newline)
-    Serial.println ();
+    SERIAL.println ();
   }  // end of showHex 
  
 // convert a boolean to Yes/No 
 void showYesNo (const boolean b, const boolean newline = false)
   {
   if (b)
-    Serial.print (F("Yes"));
+    SERIAL.print (F("Yes"));
   else
-    Serial.print (F("No"));
+    SERIAL.print (F("No"));
   if (newline)
-    Serial.println ();
+    SERIAL.println ();
   }  // end of showYesNo 
   
 // poll the target device until it is ready to be programmed
@@ -324,8 +331,8 @@ void pollUntilReady ()
 // commit page
 void commitPage (unsigned long addr)
   {
-  Serial.print (F("Committing page starting at 0x"));
-  Serial.println (addr, HEX);
+  SERIAL.print (F("Committing page starting at 0x"));
+  SERIAL.println (addr, HEX);
 
   addr >>= 1;  // turn into word address
   
@@ -353,15 +360,15 @@ void writeFuse (const byte newValue, const byte instruction)
   
 void getFuseBytes ()
   {
-  Serial.print (F("LFuse = "));
+  SERIAL.print (F("LFuse = "));
   showHex (program (readLowFuseByte, readLowFuseByteArg2), true);
-  Serial.print (F("HFuse = "));
+  SERIAL.print (F("HFuse = "));
   showHex (program (readHighFuseByte, readHighFuseByteArg2), true);
-  Serial.print (F("EFuse = "));
+  SERIAL.print (F("EFuse = "));
   showHex (program (readExtendedFuseByte, readExtendedFuseByteArg2), true);
-  Serial.print (F("Lock byte = "));
+  SERIAL.print (F("Lock byte = "));
   showHex (program (readLockByte, readLockByteArg2), true);
-  Serial.print ("Clock calibration = ");
+  SERIAL.print ("Clock calibration = ");
   showHex (program (readCalibrationByte), true);  
   }  // end of getFuseBytes
 
@@ -371,7 +378,7 @@ void writeBootloader ()
 
   if (signatures [foundSig].bootloader == 0)
     {
-    Serial.println (F("No bootloader support for this device."));
+    SERIAL.println (F("No bootloader support for this device."));
     return;  
     }  // end if
 
@@ -392,71 +399,63 @@ void writeBootloader ()
   const byte * bootloader = signatures [foundSig].bootloader;
 
    
-  Serial.print (F("Bootloader address = 0x"));
-  Serial.println (addr, HEX);
-  Serial.print (F("Bootloader length = "));
-  Serial.print (len);
-  Serial.println (F(" bytes."));
+  SERIAL.print (F("Bootloader address = 0x"));
+  SERIAL.println (addr, HEX);
+  SERIAL.print (F("Bootloader length = "));
+  SERIAL.print (len);
+  SERIAL.println (F(" bytes."));
 
   byte subcommand = 'U';
   
-  // HoodLoader2 save mode
-  bool forceProgramming = false;
-  
-  // 16u2: DFU + USB-Serial or HoodLoader2
+  // 16u2: DFU + USB-SERIAL or HoodLoader2
   if (signatures [foundSig].sig [0] == 0x1E &&
       signatures [foundSig].sig [1] == 0x94 &&
       signatures [foundSig].sig [2] == 0x89)
     {
-    Serial.println (F("Type 'H' to use HoodLoader2, or 'D' for the original DFU + USB-Serial firmware."));   
-    do
-      {
-      subcommand = toupper (Serial.read ());
-      
       // HoodLoader 2 save mode
-      if(!digitalRead(BUTTON_DFU)){
-        subcommand = 'D';
-        forceProgramming = true;
-        }
-      if(!digitalRead(BUTTON_HOODLOADER2)){
-        subcommand = 'H';
-        forceProgramming = true;
-        }
-        
-      } while (subcommand != 'H' && subcommand != 'D');
+      if(force16u2 == 'H' || force16u2 == 'D')
+         subcommand = force16u2;
+      else{
+        SERIAL.println (F("Type 'H' to use HoodLoader2, or 'D' for the original DFU + USB-SERIAL firmware."));   
+        do
+          {
+          subcommand = toupper (SERIAL.read ());
+          
+          } while (subcommand != 'H' && subcommand != 'D');
+      }
     
-    if (subcommand == 'H')  // use internal 8 MHz clock
+    if (subcommand == 'H')
       {
-      //len = 4 * kb;
       addr = 0x3000;
 #ifdef HOODLOADER2_16U2_MEGA
-      Serial.println (F("Using Hoodloader2 Mega."));
+      SERIAL.println (F("Using Hoodloader2 Mega."));
       bootloader = Hoodloader2_Mega_Beta_hex;
       len = sizeof Hoodloader2_Mega_Beta_hex;
 #else // HOODLOADER2_16U2_UNO
-      Serial.println (F("Using Hoodloader2 Uno."));
+      SERIAL.println (F("Using Hoodloader2 Uno."));
       bootloader = Hoodloader2_Uno_Beta_hex;
       len = sizeof Hoodloader2_Uno_Beta_hex;
 #endif
-      }  // end of using HoodLoader2
-    else
+      }
+      
+    else if (subcommand == 'D')
 #ifdef HOODLOADER2_16U2_MEGA
-      Serial.println (F("Using original DFU + USB-Serial loader for Mega."));
+      SERIAL.println (F("Using original DFU + USB-SERIAL loader for Mega."));
 #else // HOODLOADER2_16U2_UNO
-      Serial.println (F("Using original DFU + USB-Serial loader for Uno."));
+      SERIAL.println (F("Using original DFU + USB-SERIAL loader for Uno."));
 #endif
-     }  // end of being Atmega328P
+     }
 
   unsigned long oldPage = addr & pagemask;
 
-  Serial.println (F("Type 'V' to verify, or 'G' to program the chip with the bootloader ..."));
+  SERIAL.println (F("Type 'V' to verify, or 'G' to program the chip with the bootloader ..."));
   char command;
   do
     {
-    command = toupper (Serial.read ());
+    command = toupper (SERIAL.read ());
     
     // HoodLoader 2 save mode
-    if(forceProgramming)
+    if(force16u2 == 'H' || force16u2 == 'D')
       command = 'G';
       
     } while (command != 'G' && command != 'V');
@@ -468,9 +467,9 @@ void writeBootloader ()
     if (lFuse != newlFuse)
       {
       if ((lFuse & 0x80) == 0)
-        Serial.println (F("Clearing 'Divide clock by 8' fuse bit."));
+        SERIAL.println (F("Clearing 'Divide clock by 8' fuse bit."));
       
-      Serial.println (F("Fixing low fuse setting ..."));
+      SERIAL.println (F("Fixing low fuse setting ..."));
       writeFuse (newlFuse, writeLowFuseByte);
       delay (1000);
       digitalWrite (RESET, HIGH); // latch fuse
@@ -478,11 +477,11 @@ void writeBootloader ()
       delay (1000);
       }
       
-    Serial.println (F("Erasing chip ..."));
+    SERIAL.println (F("Erasing chip ..."));
     program (progamEnable, chipErase);   // erase it
     delay (20);  // for Atmega8
     pollUntilReady (); 
-    Serial.println (F("Writing bootloader ..."));
+    SERIAL.println (F("Writing bootloader ..."));
     for (i = 0; i < len; i += 2)
       {
       unsigned long thisPage = (addr + i) & pagemask;
@@ -498,10 +497,10 @@ void writeBootloader ()
       
     // commit final page
     commitPage (oldPage);
-    Serial.println ("Written.");
+    SERIAL.println ("Written.");
     }  // end if programming
   
-  Serial.println (F("Verifying ..."));
+  SERIAL.println (F("Verifying ..."));
   
   // count errors
   unsigned int errors = 0;
@@ -514,11 +513,11 @@ void writeBootloader ()
       {
       if (errors <= 100)
         {
-        Serial.print (F("Verification error at address "));
-        Serial.print (addr + i, HEX);
-        Serial.print (F(". Got: "));
+        SERIAL.print (F("Verification error at address "));
+        SERIAL.print (addr + i, HEX);
+        SERIAL.print (F(". Got: "));
         showHex (found);
-        Serial.print (F(" Expected: "));
+        SERIAL.print (F(" Expected: "));
         showHex (expected, true);
         }  // end of haven't shown 100 errors yet
       errors++;
@@ -526,19 +525,19 @@ void writeBootloader ()
     }  // end of for
 
   if (errors == 0)
-    Serial.println (F("No errors found."));
+    SERIAL.println (F("No errors found."));
   else
     {
-    Serial.print (errors, DEC);
-    Serial.println (F(" verification error(s)."));
+    SERIAL.print (errors, DEC);
+    SERIAL.println (F(" verification error(s)."));
     if (errors > 100)
-      Serial.println (F("First 100 shown."));
+      SERIAL.println (F("First 100 shown."));
     return;  // don't change fuses if errors
     }  // end if
     
   if (command == 'G')
     {
-    Serial.println (F("Writing fuses ..."));
+    SERIAL.println (F("Writing fuses ..."));
   
     writeFuse (newlFuse, writeLowFuseByte);
     writeFuse (newhFuse, writeHighFuseByte);
@@ -549,7 +548,7 @@ void writeBootloader ()
     getFuseBytes ();
     }  // end if programming
     
-  Serial.println (F("Done."));
+  SERIAL.println (F("Done."));
 
   } // end of writeBootloader
   
@@ -577,7 +576,7 @@ void startProgramming ()
     SPI.transfer (0);  
     } while (confirm != programAcknowledge);
     
-  Serial.println (F("Entered programming mode OK."));
+  SERIAL.println (F("Entered programming mode OK."));
   }  // end of startProgramming
  
 void getSignature ()
@@ -586,42 +585,42 @@ void getSignature ()
   lastAddressMSB = 0;
     
   byte sig [3];
-  Serial.print (F("Signature = "));
+  SERIAL.print (F("Signature = "));
   for (byte i = 0; i < 3; i++)
     {
     sig [i] = program (readSignatureByte, 0, i); 
     showHex (sig [i]);
     }  // end for each signature byte
-  Serial.println ();
+  SERIAL.println ();
   
   for (int j = 0; j < NUMITEMS (signatures); j++)
     {
     if (memcmp (sig, signatures [j].sig, sizeof sig) == 0)
       {
       foundSig = j;
-      Serial.print (F("Processor = "));
-      Serial.println (signatures [j].desc);
-      Serial.print (F("Flash memory size = "));
-      Serial.print (signatures [j].flashSize, DEC);
-      Serial.println (F(" bytes."));
+      SERIAL.print (F("Processor = "));
+      SERIAL.println (signatures [j].desc);
+      SERIAL.print (F("Flash memory size = "));
+      SERIAL.print (signatures [j].flashSize, DEC);
+      SERIAL.println (F(" bytes."));
       if (signatures [foundSig].timedWrites)
-        Serial.println (F("Writes are timed, not polled."));
+        SERIAL.println (F("Writes are timed, not polled."));
       return;
       }  // end of signature found
     }  // end of for each signature
 
-  Serial.println (F("Unrecogized signature."));  
+  SERIAL.println (F("Unrecogized signature."));  
   }  // end of getSignature
 
 void setup ()
   {
-  Serial.begin (BAUD_RATE);
-  while (!Serial) ;  // for Leonardo, Micro etc.
-  Serial.println ();
-  Serial.println (F("Atmega chip programmer."));
-  Serial.println (F("Written by Nick Gammon, modified by NicoHood."));
-  Serial.println (F("Version " VERSION));
-  Serial.println (F("Compiled on " __DATE__ " at " __TIME__));
+  SERIAL.begin (BAUD_RATE);
+  while (!SERIAL) ;  // for Leonardo, Micro etc.
+  SERIAL.println ();
+  SERIAL.println (F("Atmega chip programmer."));
+  SERIAL.println (F("Written by Nick Gammon, modified by NicoHood."));
+  SERIAL.println (F("Version " VERSION));
+  SERIAL.println (F("Compiled on " __DATE__ " at " __TIME__));
   
   // setup backup buttons
   pinMode(BUTTON_DFU, INPUT_PULLUP);
@@ -644,6 +643,20 @@ void setup ()
 
 void loop () 
   {
+  SERIAL.println (F("Type 'H' to use HoodLoader2, or 'D' for the original DFU + USB-SERIAL firmware."));   
+  SERIAL.println (F("Type '0' to read other chips (advanced)."));   
+  force16u2 = 0x00;
+    do
+      {
+      force16u2 = toupper (SERIAL.read ());
+      
+      // HoodLoader 2 save mode
+      if(!digitalRead(BUTTON_DFU))
+        force16u2 = 'D';
+      if(!digitalRead(BUTTON_HOODLOADER2))
+        force16u2 = 'H';
+        
+      } while (force16u2 != 'H' && force16u2 != 'D'&& force16u2 != '0');
     
   startProgramming ();
   getSignature ();
@@ -655,10 +668,13 @@ void loop ()
 
   // release reset    
   digitalWrite (RESET, HIGH);
-    
-  Serial.println (F("Type 'C' when ready to continue with another chip ..."));
-  while (toupper (Serial.read ()) != 'C') 
-    {}
-
+  
+  SERIAL.println (F("Type 'C' when ready to continue with another chip ..."));
+  while (toupper (SERIAL.read ()) != 'C') 
+    {
+      // HoodLoader 2 save mode
+      if(!digitalRead(BUTTON_DFU) || !digitalRead(BUTTON_HOODLOADER2))
+        break;
+    }
   }  // end of loop
   

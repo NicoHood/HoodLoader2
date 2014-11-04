@@ -133,17 +133,22 @@ Its a special modification of [Nick Gammon's Atmega bootloader programmer](http:
 to ensure high security to not brick your Arduino.
 
 First remove __all__ hardware from your Arduino to ensure nothing is messing up the upload.
-All you need to do is to connect the SPI lines correct together like this:
+All you need to do is to connect the SPI lines correct together like this.
+**The 100nF Capacitor is needed to prevent the 328/2560 from not being reset.**
+Only plug it in __after__ the sketch is uploaded to the 16u2.
 
 ![Connections](pictures/connections.jpg)
 
 ```
+100nF Capacitor:
+328/2560 RESET - GND
+
 Pin connections:
 328/2560 - 16u2
 MOSI     - MOSI
 MISO     - MISO
 SCK      - SCK
-PIN 10   - RESET
+PIN 10   - 16u2 RESET
 
 Optional Buttons for recovery:
 PIN 8    - Force DFU upload
@@ -153,7 +158,8 @@ PIN 7    - Force HoodLoader2 upload
 The installation sketch is located in tools/Atmega_Board_Programmer/Atmega_Board_Programmer.ino, open it with your Arduino IDE.
 
 In the first lines of the sketch you can choose what Arduino you are uploading to. Just leave it as it is, it will automatically choose the right hex file.
-Upload the installation sketch to your Arduino Uno/Mega. The normal way is to control the uploading via Serial, so open the Serial port monitor at baud 115200.
+Upload the installation sketch to your Arduino Uno/Mega, then put in the 100nF capacitor.
+The normal way is to control the uploading via Serial, so open the Serial port monitor at baud 115200.
 Follow the instructions (press H + Enter, then G + Enter). Then your Arduino should be flashed with the new firmware. Remove all the wires now.
 Once you've done this, normally you don't need to do this again, maybe if there is a new HoodLoader2 version.
 
@@ -322,7 +328,10 @@ Version History
 * HID Project updated:
  * Added Arduino IDE Integration
  * Added HID examples
-*HoodLoader2 declared stable
+* HoodLoader2 declared stable
+
+2.0.0 Beta-4 Release (04.11.2014)
+* Improved Atmega Bootloader (Self flashing now works properly)
 
 2.0.0 Beta-3 Release (03.11.2014)
 * Improved Atmega Bootloader (DFU now possible)
@@ -423,26 +432,7 @@ To upload the HoodLoader2 I used a modification of Nick Gammon's Atmega Bootload
 Instructions can be found [here](http://www.gammon.com.au/forum/?id=11635).
 
 One of the change was to add new bootloader files. You can convert your hex file as described with Nick's Lua script.
-One thing to add is the address of the 16u2 in the end_addresses array (line 16).
-
-```
-end_addresses = {
-  [0x0000] = 0x4000,
-  [0x1C00] = 0x2000,
-  [0x1D00] = 0x2000,
-  [0x1E00] = 0x2000,
-  [0x3000] = 0x4000,
-  [0x3800] = 0x4000,
-  [0x3E00] = 0x4000,
-  [0x7000] = 0x8000,
-  [0x7800] = 0x8000,
-  [0x7E00] = 0x8000,
-  [0xF800] = 0x10000,
-  [0x1F000] = 0x20000,
-  [0x1FC00] = 0x20000,
-  [0x3E000] = 0x40000,
-  }
-```
+One thing to add is the address of the 16u2 in the end_addresses array (line 16). The new .lua script is also in the repository now.
 
 You need to download the MUSHclient as described in his instructions.
 He provides a simple, [ready to use zip file](http://www.gammon.com.au/downloads/dlmushclient.htm).
@@ -477,6 +467,8 @@ $ sudo make clean
 $ sudo make
 ```
 
+HoodLoader2 Beta compiles with exactly 4000 bytes with a Raspberry Pi.
+
 ### How to compile with Ubuntu (avr-gcc 4.8.1)
 
 On Ubuntu you can use the newer toolchain which saves ~50 bytes of memory.
@@ -493,6 +485,8 @@ $ sudo make
 ```
 
 [Package information](https://launchpad.net/~pmjdebruijn/+archive/ubuntu/gcc-avr-release)
+
+HoodLoader2 compiles with about 3950 bytes with this toolchain.
 
 Licence and Copyright
 =====================
