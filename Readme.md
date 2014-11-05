@@ -93,45 +93,6 @@ So in bootloader mode your Arduino acts like its used to (except baud 57600).
 
 See [HID Project](https://github.com/NicoHood/HID) for the Arduino IDE core files/examples.
 
-Arduino Uno Overview/Pinout
-===========================
-
-![Arduino Uno Pinout](pictures/pinout.png)
-(c) [pighixxx](http://forum.arduino.cc/index.php/topic,146315.0.html)
-
-```
-16u2 Pinout
-[NC] = Not connected on an Arduino Uno/Mega R3
-
-D0  - PB0 PCINT0
-D1  - PB1 PCINT1
-D2  - PB2 PCINT2
-D3  - PB3 PCINT3
-D4  - PB4 PCINT4
-D5  - PB5 PCINT5
-D6  - PB6 PCINT6
-D7  - PB7 PCINT7 TIMER1C
-
-D8  - [NC] PC7 INT4
-D9  - [NC] PC6 PCINT8 TIMER1A
-D10 - [NC] PC5 PCINT9 TIMER1B
-D11 - [NC] PC4 PCINT10
-D12 - [NC] PC2 PCINT11
-
-D13 - [NC] PD0 INT0 TIMER0B
-D14 - [NC] PD1 INT1 
-D15 - PD2 INT2 USART1 RX
-D16 - PD3 INT3 USART1 TX
-D17 - PD4 INT4    RXLED
-D18 - PD5 PCINT12 TXLED
-D19 - [NC] PD6 INT5 
-D20 - PD7 INT7 328/2560 RESET
-```
-
-**Note: Some pins are not connected on a standard Arduino Uno R3** but still listed so you can use them if you have a custom board.
-You also need to solder the additional 4 pin header to access all 7 PB i/o pins.
-The Arduino Uno/Mega pinout is the same for the 16u2 MCU.
-
 HoodLoader2 - Installation
 ==========================
 
@@ -306,11 +267,50 @@ avrdude.exe -C avrdude.conf -p at90usb162 -c avr109 -b 57600 -P COM1 -e
 pause
 ```
 
+Arduino Uno/Mega 16u2 Pinout
+============================
+
+![Arduino Uno Pinout](pictures/pinout.png)
+(c) [pighixxx](http://forum.arduino.cc/index.php/topic,146315.0.html)
+
+**Note: Some pins are not connected on a standard Arduino Uno R3** but still listed so you can use them if you have a custom board.
+You also need to solder the additional 4 pin header to access all 7 PB i/o pins.
+The Arduino Uno/Mega pinout is the same for the 16u2 MCU.
+
+```
+16u2 Pinout
+[NC] = Not connected on an Arduino Uno/Mega R3
+
+D0  - PB0 PCINT0
+D1  - PB1 PCINT1
+D2  - PB2 PCINT2
+D3  - PB3 PCINT3
+D4  - PB4 PCINT4
+D5  - PB5 PCINT5
+D6  - PB6 PCINT6
+D7  - PB7 PCINT7 TIMER1C
+
+D8  - [NC] PC7 INT4
+D9  - [NC] PC6 PCINT8 TIMER1A
+D10 - [NC] PC5 PCINT9 TIMER1B
+D11 - [NC] PC4 PCINT10
+D12 - [NC] PC2 PCINT11
+
+D13 - [NC] PD0 INT0 TIMER0B
+D14 - [NC] PD1 INT1 
+D15 - PD2 INT2 USART1 RX
+D16 - PD3 INT3 USART1 TX
+D17 - PD4 INT4    RXLED
+D18 - PD5 PCINT12 TXLED
+D19 - [NC] PD6 INT5 
+D20 - PD7 INT7 328/2560 RESET
+```
+
 Useful Links
 ============
 
 * [HID Project](https://github.com/NicoHood/HID) for the Arduino IDE core files/examples.
-* [Lufa from Dean Camera](http://www.fourwalledcubicle.com/LUFA.php)
+* [LUFA from Dean Camera](http://www.fourwalledcubicle.com/LUFA.php)
 * [The Original Arduino Sources](https://github.com/arduino/Arduino/tree/master/hardware/arduino/firmwares/atmegaxxu2/arduino-usbserial)
 * [Sparkfun 32u4 Bootloader](https://github.com/sparkfun/SF32u4_boards)
 * Nick Gammon's [Atmega Board Programmmer](https://github.com/nickgammon/arduino_sketches), [Website](http://www.gammon.com.au/forum/?id=11635).
