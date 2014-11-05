@@ -51,8 +51,9 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // Version 1.24: Added bootloader for Uno Atmega16U2 chip (the USB interface)
 // Version 1.25: Fixed bug re verifying uploaded sketch for the Lilypad
 // Version 1.25-A: Fixed uploading problems with a standalone Arduino
+// Version 1.26-A: Turn off programming mode when done (so chip can run)
 
-#define VERSION "1.25-A"
+#define VERSION "1.26-A"
 
 //================================================================================
 // HoodLoader2 definitions
@@ -448,7 +449,7 @@ void writeBootloader ()
 
   unsigned long oldPage = addr & pagemask;
 
-  SERIAL.println (F("Type 'V' to verify, or 'G' to program the chip with the bootloader ..."));
+  SERIAL.println (F("Type 'Q' to quit, 'V' to verify, or 'G' to program the chip with the bootloader ..."));
   char command;
   do
     {
@@ -458,7 +459,11 @@ void writeBootloader ()
     if(force16u2 == 'H' || force16u2 == 'D')
       command = 'G';
       
-    } while (command != 'G' && command != 'V');
+    } while (command != 'G' && command != 'V' && command != 'Q');
+    
+  // let them do nothing
+  if (command == 'Q')
+  return;
 
   if (command == 'G')
     {
@@ -555,6 +560,11 @@ void writeBootloader ()
   
 void startProgramming ()
   {
+  SERIAL.println (F("Attempting to enter programming mode ..."));
+  digitalWrite (RESET, HIGH); // ensure SS stays high for now
+  SPI.begin ();
+  SPI.setClockDivider (SPI_CLOCK_DIV64);
+  
   byte confirm;
   pinMode (RESET, OUTPUT);
   pinMode (SCK, OUTPUT);
@@ -578,6 +588,26 @@ void startProgramming ()
     
   SERIAL.println (F("Entered programming mode OK."));
   }  // end of startProgramming
+  
+void stopProgramming ()
+  {
+  SPI.end ();
+ 
+  // turn off pull-ups, if any
+  digitalWrite (RESET, LOW);
+  digitalWrite (SCK, LOW);
+  digitalWrite (MOSI, LOW);
+  digitalWrite (MISO, LOW);
+ 
+  // set everything back to inputs
+  pinMode (RESET, INPUT);
+  pinMode (SCK, INPUT);
+  pinMode (MOSI, INPUT);
+  pinMode (MISO, INPUT);
+ 
+  Serial.println (F("Programming mode off."));
+  } // end of startProgramming
+
  
 void getSignature ()
   {
@@ -666,8 +696,7 @@ void loop ()
   if (foundSig != -1)
     writeBootloader ();
 
-  // release reset    
-  digitalWrite (RESET, HIGH);
+  stopProgramming();
   
   SERIAL.println (F("Type 'C' when ready to continue with another chip ..."));
   while (toupper (SERIAL.read ()) != 'C') 
