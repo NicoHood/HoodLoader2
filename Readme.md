@@ -71,6 +71,7 @@ and some online shops even sell the bigger 32u2 (I've got two of them :D).
 * PD7 connected to RESET of the 328/2560
 * Not all pins are broken out (SS, INT, etc)
 * No I2C (u2 series doesn't have TWI) but Serial (to 328/2560) and SPI (master only)
+* No analogue pins
 * No USB-Serial bridge at baud 57600 possible, used for CDC self reprogramming
 
 | 8/16/32u2 Flash | Bootloader (4kb)                            | Program (4/12/28kb)    |
@@ -98,15 +99,38 @@ Arduino Uno Overview/Pinout
 ![Arduino Uno Pinout](pictures/pinout.png)
 (c) [pighixxx](http://forum.arduino.cc/index.php/topic,146315.0.html)
 
-
+```
 16u2 Pinout
-```
-TODO
+[NC] = Not connected on an Arduino Uno/Mega R3
+
+D0  - PB0 PCINT0
+D1  - PB1 PCINT1
+D2  - PB2 PCINT2
+D3  - PB3 PCINT3
+D4  - PB4 PCINT4
+D5  - PB5 PCINT5
+D6  - PB6 PCINT6
+D7  - PB7 PCINT7 TIMER1C
+
+D8  - [NC] PC7 INT4
+D9  - [NC] PC6 PCINT8 TIMER1A
+D10 - [NC] PC5 PCINT9 TIMER1B
+D11 - [NC] PC4 PCINT10
+D12 - [NC] PC2 PCINT11
+
+D13 - [NC] PD0 INT0 TIMER0B
+D14 - [NC] PD1 INT1 
+D15 - PD2 INT2 USART1 RX
+D16 - PD3 INT3 USART1 TX
+D17 - PD4 INT4    RXLED
+D18 - PD5 PCINT12 TXLED
+D19 - [NC] PD6 INT5 
+D20 - PD7 INT7 328/2560 RESET
 ```
 
-**Note: Some pins are not connected on a standard Arduino Uno R3** but still listed so you can use them if you had a custom board.
+**Note: Some pins are not connected on a standard Arduino Uno R3** but still listed so you can use them if you have a custom board.
 You also need to solder the additional 4 pin header to access all 7 PB i/o pins.
-The Arduino Mega pinout is the same for the 16u2 MCU.
+The Arduino Uno/Mega pinout is the same for the 16u2 MCU.
 
 HoodLoader2 - Installation
 ==========================
@@ -258,7 +282,8 @@ If not you manually have to enter bootloader mode as described above.
 
 **The IDE integration is not ready yet. Please [use this core for now (with USB)](https://www.mattairtech.com/index.php/development-boards/mt-db-u1.html).**
 
-**A workaround is now available in *avr/* (copy to your sketchbook). You can use the blink example to compile code for the 16u2 without any USB functions.**
+**A workaround is now available in *avr/* (copy to your sketchbook hardware folder).
+You can use the blink example to compile code for the 16u2 without any USB functions.**
 
 Go to the [HID Project](https://github.com/NicoHood/HID) page to get the newest Arduino core library for the 16u2.
 

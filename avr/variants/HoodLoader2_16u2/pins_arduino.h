@@ -52,26 +52,47 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 #define Pins_Arduino_h
 
 #include <avr/pgmspace.h>
-#define USBCON_2 USBCON
 
+// temporary USB deactivation workaround
+#define USBCON_2 USBCON
 #undef USBCON
 #define USB_PRODUCT "HL2 16u2"
 #define USB_MANUFACTURER "NicoHood"
 #define USB_VID 0x16D0
 #define USB_PID 0x0856
 
-#define TX_RX_LED_INIT	DDRD |= (1<<0)
-#define TXLED0			PORTD |= (1<<0)
-#define TXLED1			PORTD &= ~(1<<0)
-#define RXLED0			PORTD |= (1<<0)
-#define RXLED1			PORTD &= ~(1<<0)
 
-static const uint8_t LED_BUILTIN = 13;
+/** LED mask for the first LED on the board. */
+#define LEDS_LED1        (1 << 5)
+
+/** LED mask for the second LED on the board. */
+#define LEDS_LED2        (1 << 4)
+
+/** LED mask for all the LEDs on the board. */
+#define LEDS_ALL_LEDS    (LEDS_LED1 | LEDS_LED2)
+
+/** LED mask for the none of the board LEDs */
+#define LEDS_NO_LEDS     0
+
+// LED mask for the library LED driver, to indicate TX activity.
+#define LEDMASK_TX               LEDS_LED1
+
+// LED mask for the library LED driver, to indicate RX activity.
+#define LEDMASK_RX               LEDS_LED2
+
+#define TX_RX_LED_INIT	DDRD |= LEDS_ALL_LEDS
+#define TXLED0			PORTD |= LEDMASK_TX
+#define TXLED1			PORTD &= ~LEDMASK_TX
+#define RXLED0			PORTD |= LEDMASK_RX
+#define RXLED1			PORTD &= ~LEDMASK_RX
+
+//static const uint8_t LED_BUILTIN = 13;
 
 static const uint8_t SS   = 0;
+static const uint8_t SCK  = 1;
 static const uint8_t MOSI = 2;
 static const uint8_t MISO = 3;
-static const uint8_t SCK  = 1;
+
 
 #define NUM_DIGITAL_PINS            21
 #define NUM_ANALOG_INPUTS           0
@@ -95,8 +116,40 @@ static const uint8_t SCK  = 1;
                                 ( (((p) >= 9) && ((p) <= 12)) ? ((p) - 9) : \
                                 0 ) ) )
 
+// 8 interrupts!
+#define digitalPinToInterrupt(p) ((p) == 13 ? 0 : ((p) == 14 ? 1 : ((p) == 15 ? 2 : ((p) == 16 ? 3 : ((p) == 8 ? 4 : ((p) == 17 ? 5 : ((p) == 19 ? 6 : ((p) == 20 ? 7 : NOT_AN_INTERRUPT)))))
+
 
 #ifdef ARDUINO_MAIN
+
+/*
+16u2 Pinout
+[NC] = Not connected on an Arduino Uno / Mega R3
+
+D0 - PB0 PCINT0
+D1 - PB1 PCINT1
+D2 - PB2 PCINT2
+D3 - PB3 PCINT3
+D4 - PB4 PCINT4
+D5 - PB5 PCINT5
+D6 - PB6 PCINT6
+D7 - PB7 PCINT7 TIMER1C
+
+D8 - [NC] PC7 INT4
+D9 - [NC] PC6 PCINT8 TIMER1A
+D10 - [NC] PC5 PCINT9 TIMER1B
+D11 - [NC] PC4 PCINT10
+D12 - [NC] PC2 PCINT11
+
+D13 - [NC] PD0 INT0 TIMER0B
+D14 - [NC] PD1 INT1
+D15 - PD2 INT2 USART1 RX
+D16 - PD3 INT3 USART1 TX
+D17 - PD4 INT4    RXLED
+D18 - PD5 PCINT12 TXLED
+D19 - [NC] PD6 INT5
+D20 - PD7 INT7 328 / 2560 RESET
+*/
 
 // these arrays map port names (e.g. port B) to the
 // appropriate addresses for various functions (e.g. reading
@@ -199,4 +252,25 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[21] = {
 
 
 #endif /* ARDUINO_MAIN */
+
+// These serial port names are intended to allow libraries and architecture-neutral
+// sketches to automatically default to the correct port name for a particular type
+// of use.  For example, a GPS module would normally connect to SERIAL_PORT_HARDWARE_OPEN,
+// the first hardware serial port whose RX/TX pins are not dedicated to another use.
+//
+// SERIAL_PORT_MONITOR        Port which normally prints to the Arduino Serial Monitor
+//
+// SERIAL_PORT_USBVIRTUAL     Port which is USB virtual serial
+//
+// SERIAL_PORT_LINUXBRIDGE    Port which connects to a Linux system via Bridge library
+//
+// SERIAL_PORT_HARDWARE       Hardware serial port, physical RX & TX pins.
+//
+// SERIAL_PORT_HARDWARE_OPEN  Hardware serial ports which are open for use.  Their RX & TX
+//                            pins are NOT connected to anything by default.
+#define SERIAL_PORT_MONITOR        Serial
+#define SERIAL_PORT_USBVIRTUAL     Serial
+#define SERIAL_PORT_HARDWARE       Serial1
+#define SERIAL_PORT_HARDWARE_OPEN  Serial1
+
 #endif /* Pins_Arduino_h */
