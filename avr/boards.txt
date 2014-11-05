@@ -1,0 +1,59 @@
+#HoodLoader2 boards.txt file
+
+menu.cpu=Processor
+menu.board=Main MCU
+
+HoodLoader2.name=HoodLoader2
+HoodLoader2.build.core=arduino:arduino
+HoodLoader2.bootloader.tool=arduino:avrdude
+HoodLoader2.upload.tool=arduino:avrdude
+
+#uploading settings
+HoodLoader2.upload.speed=57600
+HoodLoader2.upload.protocol=avr109
+HoodLoader2.upload.disable_flushing=true
+HoodLoader2.upload.use_1200bps_touch=true
+HoodLoader2.upload.wait_for_upload_port=true
+
+#fuses
+HoodLoader2.bootloader.low_fuses=0xFF
+HoodLoader2.bootloader.high_fuses=0xD9
+HoodLoader2.bootloader.extended_fuses=0xF4
+HoodLoader2.bootloader.unlock_bits=0x3F
+HoodLoader2.bootloader.lock_bits=0x2F
+
+#general settings:
+HoodLoader2.build.f_cpu=16000000L
+
+#TODO
+HoodLoader2.build.board=HOODLOADER2
+#HoodLoader2.build.vid=0x16D0
+#HoodLoader2.build.pid=0x0856
+#HoodLoader2.build.usb_product="Arduino HoodLoader2"
+#HoodLoader2.build.extra_flags={build.usb_flags}
+
+#MCU selection:
+#16u2
+HoodLoader2.menu.cpu.HL2_16u2=atmega16u2
+HoodLoader2.menu.cpu.HL2_16u2.upload.maximum_size=12288
+HoodLoader2.menu.cpu.HL2_16u2.upload.maximum_data_size=512
+HoodLoader2.menu.cpu.HL2_16u2.build.mcu=at90usb162
+HoodLoader2.menu.cpu.HL2_16u2.build.variant=HoodLoader2_16u2
+HoodLoader2.menu.cpu.HL2_16u2.bootloader.file=Hoodloader2_Uno_Beta.hex
+
+#32u2
+HoodLoader2.menu.cpu.HL2_32u2=atmega32u2
+HoodLoader2.menu.cpu.HL2_32u2.upload.maximum_size=28672
+HoodLoader2.menu.cpu.HL2_32u2.upload.maximum_data_size=1024
+HoodLoader2.menu.cpu.HL2_32u2.build.mcu=atmega32u2
+HoodLoader2.menu.cpu.HL2_32u2.build.variant=HoodLoader2_32u2
+#HoodLoader2.menu.cpu.HL2_32u2.bootloader.file=Hoodloader2_Uno_Beta.hex
+
+#Board selection
+#Uno
+#HoodLoader2.menu.board.uno=Arduino Uno
+#HoodLoader2.menu.board.uno.bootloader.path=Uno
+
+#Mega
+#HoodLoader2.menu.board.mega2560=Arduino Mega
+#HoodLoader2.menu.board.mega2560.bootloader.path=Mega

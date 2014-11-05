@@ -256,7 +256,9 @@ You have to install new drivers since it will conflict with the official due to 
 (it will use a different PID/VID). If you have a sketch with CDC Serial running you can use the normal upload function.
 If not you manually have to enter bootloader mode as described above.
 
-**The IDE integration is not ready yet. Please [use this core for now](https://www.mattairtech.com/index.php/development-boards/mt-db-u1.html).**
+**The IDE integration is not ready yet. Please [use this core for now (with USB)](https://www.mattairtech.com/index.php/development-boards/mt-db-u1.html).**
+
+**A workaround is now available in *avr/* (copy to your sketchbook). You can use the blink example to compile code for the 16u2 without any USB functions.**
 
 Go to the [HID Project](https://github.com/NicoHood/HID) page to get the newest Arduino core library for the 16u2.
 
@@ -323,6 +325,8 @@ add 8u2/32u2/32u4 version
 _delay_loop_2()
 increase buffer to 128 or even 256
 current fuses in the uploading sketch?
+Reset of 328 when leaving Bootloader mode
+Someone should look over the watchdog timer thing
 
 Version History
 ===============
@@ -332,6 +336,9 @@ Version History
  * Added Arduino IDE Integration
  * Added HID examples
 * HoodLoader2 declared stable
+
+2.0.0 Beta-6 Release (05.11.2014)
+* Added Arduino-IDE integration workaround for non USB usage
 
 2.0.0 Beta-5 Release (05.11.2014)
 * Improved Atmega Bootloader (added stop programming feature)
