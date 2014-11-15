@@ -246,6 +246,8 @@ If not you manually have to enter bootloader mode as described above.
 **A workaround is now available in *avr/* (copy to your sketchbook hardware folder).
 You can use the blink example to compile code for the 16u2 without any USB functions.**
 
+**Keep in mind that the Leds have inverted logic. Writing LOW means turn them on. I got stuck there for an hour...**
+
 Go to the [HID Project](https://github.com/NicoHood/HID) page to get the newest Arduino core library for the 16u2.
 
 ### How to flash/erase firmwares (.hex files) to the 16u2 with avr-dude
@@ -281,10 +283,10 @@ The Arduino Uno/Mega pinout is the same for the 16u2 MCU.
 16u2 Pinout
 [NC] = Not connected on an Arduino Uno/Mega R3
 
-D0  - PB0 PCINT0
-D1  - PB1 PCINT1
-D2  - PB2 PCINT2
-D3  - PB3 PCINT3
+D0  - PB0 PCINT0 SS
+D1  - PB1 PCINT1 SCLK
+D2  - PB2 PCINT2 MOSI
+D3  - PB3 PCINT3 MISO
 D4  - PB4 PCINT4
 D5  - PB5 PCINT5
 D6  - PB6 PCINT6
@@ -352,6 +354,7 @@ increase buffer to 128 or even 256
 current fuses in the uploading sketch?
 Reset of 328 when leaving Bootloader mode
 Someone should look over the watchdog timer thing
+change HL2-CDC name
 
 Version History
 ===============
