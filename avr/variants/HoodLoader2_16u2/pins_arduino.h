@@ -117,7 +117,7 @@ static const uint8_t MISO = 3;
                                 0 ) ) )
 
 // 8 interrupts!
-#define digitalPinToInterrupt(p) ((p) == 13 ? 0 : ((p) == 14 ? 1 : ((p) == 15 ? 2 : ((p) == 16 ? 3 : ((p) == 8 ? 4 : ((p) == 17 ? 5 : ((p) == 19 ? 6 : ((p) == 20 ? 7 : NOT_AN_INTERRUPT)))))
+#define digitalPinToInterrupt(p) ((p) == 13 ? 0 : ((p) == 14 ? 1 : ((p) == 15 ? 2 : ((p) == 16 ? 3 : ((p) == 8 ? 4 : ((p) == 17 ? 5 : ((p) == 19 ? 6 : ((p) == 20 ? 7 : NOT_AN_INTERRUPT))))))))
 
 
 #ifdef ARDUINO_MAIN
