@@ -54,12 +54,18 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 #include <avr/pgmspace.h>
 
 // temporary USB deactivation workaround
-#define USBCON_2 USBCON
-#undef USBCON
+// you can still use this to get rid of all USB functions
+//#undef USBCON
+
 #define USB_PRODUCT "HL2 16u2"
 #define USB_MANUFACTURER "NicoHood"
 #define USB_VID 0x16D0
 #define USB_PID 0x0856
+
+// We only have a small USB buffer
+// We can only set a global EP size because in u8 USB_SendSpace(u8 ep)
+// there is only a general EPSIZE handle (USBCore.cpp)
+#define USB_EP_SIZE 16
 
 
 /** LED mask for the first LED on the board. */

@@ -2,6 +2,7 @@
 
 menu.cpu=Processor
 menu.board=Main MCU
+menu.usbcore=USB Core
 
 HoodLoader2.name=HoodLoader2
 HoodLoader2.build.core=arduino:arduino
@@ -34,7 +35,7 @@ HoodLoader2.build.board=HOODLOADER2
 
 #MCU selection:
 #16u2
-HoodLoader2.menu.cpu.HL2_16u2=atmega16u2
+HoodLoader2.menu.cpu.HL2_16u2=ATmega16u2
 HoodLoader2.menu.cpu.HL2_16u2.upload.maximum_size=12288
 HoodLoader2.menu.cpu.HL2_16u2.upload.maximum_data_size=512
 HoodLoader2.menu.cpu.HL2_16u2.build.mcu=at90usb162
@@ -42,14 +43,20 @@ HoodLoader2.menu.cpu.HL2_16u2.build.variant=HoodLoader2_16u2
 HoodLoader2.menu.cpu.HL2_16u2.bootloader.file=Hoodloader2_Uno_Beta.hex
 
 #32u2
-HoodLoader2.menu.cpu.HL2_32u2=atmega32u2
+HoodLoader2.menu.cpu.HL2_32u2=ATmega32u2
 HoodLoader2.menu.cpu.HL2_32u2.upload.maximum_size=28672
 HoodLoader2.menu.cpu.HL2_32u2.upload.maximum_data_size=1024
 HoodLoader2.menu.cpu.HL2_32u2.build.mcu=atmega32u2
 HoodLoader2.menu.cpu.HL2_32u2.build.variant=HoodLoader2_32u2
 #HoodLoader2.menu.cpu.HL2_32u2.bootloader.file=Hoodloader2_Uno_Beta.hex
 
-#Board selection
+#USB core selection
+HoodLoader2.menu.usbcore.USB_CORE=Serial + HID
+HoodLoader2.menu.usbcore.USB_CORE.build.variant=HoodLoader2_16u2
+HoodLoader2.menu.usbcore.NO_USB=No USB functions
+HoodLoader2.menu.usbcore.NO_USB.build.variant=HoodLoader2_16u2
+
+#Board selection (only important for burning bootloaders)
 #Uno
 #HoodLoader2.menu.board.uno=Arduino Uno
 #HoodLoader2.menu.board.uno.bootloader.path=Uno
