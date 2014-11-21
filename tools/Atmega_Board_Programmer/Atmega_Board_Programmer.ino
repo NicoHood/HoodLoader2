@@ -60,10 +60,12 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 //================================================================================
 
 // depending on the uploading board decide what hex file we should use
-#ifdef __AVR_ATmega2560__
+#ifdef ARDUINO_AVR_MEGA2560
 #define HOODLOADER2_16U2_MEGA
-// by default use the file for Arduino Uno. Its no problem to upload an Uno file to a Mega though.
+#elseif defined ARDUINO_AVR_UNO
+#define HOODLOADER2_16U2_UNO
 #else
+// by default use the file for Arduino Uno. Its no problem to upload an Uno file to a Mega though.
 #define HOODLOADER2_16U2_UNO
 #endif
 
