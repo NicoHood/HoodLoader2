@@ -23,15 +23,17 @@ HoodLoader2.bootloader.extended_fuses=0xF4
 HoodLoader2.bootloader.unlock_bits=0x3F
 HoodLoader2.bootloader.lock_bits=0x2F
 
-#general settings:
+#general settings for all boards:
+HoodLoader2.build.board=HOODLOADER2
 HoodLoader2.build.f_cpu=16000000L
 
-#TODO
-HoodLoader2.build.board=HOODLOADER2
-#HoodLoader2.build.vid=0x16D0
-#HoodLoader2.build.pid=0x0856
-#HoodLoader2.build.usb_product="Arduino HoodLoader2"
+#TODO, seems to not work correctly, placed in pins_arduino.h?
+#HoodLoader2.build.vid=0x2341
+#HoodLoader2.build.pid=0x484C
+#HoodLoader2.build.usb_product="HoodLoader 2"
+#HoodLoader2.build.usb_manufacturer="NicoHood"
 #HoodLoader2.build.extra_flags={build.usb_flags}
+
 
 #MCU selection:
 #16u2
@@ -52,9 +54,9 @@ HoodLoader2.menu.cpu.HL2_32u2.build.variant=HoodLoader2_32u2
 
 #USB core selection
 HoodLoader2.menu.usbcore.USB_CORE=Serial + HID
-HoodLoader2.menu.usbcore.USB_CORE.build.variant=HoodLoader2_16u2
+HoodLoader2.menu.usbcore.USB_CORE.build.variant=HoodLoader2
 HoodLoader2.menu.usbcore.NO_USB=No USB functions
-HoodLoader2.menu.usbcore.NO_USB.build.variant=HoodLoader2_16u2
+HoodLoader2.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
 
 #Board selection (only important for burning bootloaders)
 #Uno

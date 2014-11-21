@@ -274,8 +274,18 @@ Follow the installation instructions __carefully__ and try out the examples. To 
 click upload until it says "uploading" and the double tab reset. The PC will automatically detect that the new serial showed up,
 upload the new code and run it.
 
-If you don't want to use the USB-Core you can also choose under *Tools/USB Core* "No USB functions" to get rid of the USB stuff
+**If you don't want to use the USB-Core** you can also choose under *Tools/USB Core* "No USB functions" to get rid of the USB stuff
 and save the ram for other stuff if you don't need it. You also don't need the HID Project essentially if you don't want to use the USB functions.
+You have to add an ISR into every sketch then. Checkout the '_16u2_NoUSB_Blink' example in */tools/*.
+
+```cpp
+// workaround for undefined USBCON has to be placed in every sketch
+// otherwise the timings wont work correctly
+ISR(USB_GEN_vect)
+{
+  UDINT = 0;
+}
+```
 
 For your interest you can also use this (somehow outdated) [older USB-Core](https://www.mattairtech.com/index.php/development-boards/mt-db-u1.html) from Mattair.
 
