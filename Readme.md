@@ -266,6 +266,18 @@ To get Serial Debug output from the 328/2560 you have to enter bootloader mode a
 
 **To get the 16u2 board definitions for uploading copy this HoodLoader2 folder into your sketchbook like this: *sketchbook/hardware/HoodLoader2/* **
 
+CDC Driver installation:
+
+**You need to install new drivers for the new device on Windows (Linux, Mac not needed).** Actually they are not new, its just an .inf file that tells
+Windows to use its built in CDC Serial driver. Ironically Microsoft never signed its own driver.
+The driver files is named HoodLoader2.inf
+Also see [this tutorial](http://arduino.cc/en/guide/windows) on how to install the drivers (rightclick the .inf file and hit install).
+[How to install drivers for Windows 8/8.1](https://learn.sparkfun.com/tutorials/disabling-driver-signature-on-windows-8/disabling-signed-driver-enforcement-on-windows-8).
+
+If you want it to be recognized as Uno/Mega edit the makefile and recompile. I dont recommend this to know what
+Bootloader currently is on your Board. It seems that with the signed drivers HID wont work with official PIDs.
+
+
 **Go to the [HID Project](https://github.com/NicoHood/HID) page to get the newest Arduino core library for the 16u2.**
 ### Temporary dev version can be found here, official update coming soon!:
 https://github.com/NicoHood/HID/tree/dev

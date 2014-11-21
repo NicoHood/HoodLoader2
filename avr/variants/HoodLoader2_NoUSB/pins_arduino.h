@@ -19,7 +19,6 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "../HoodLoader2/pins_arduino.h"
-#include "pins_arduino.c"
 
 // temporary USB deactivation workaround
 // you can still use this to get rid of all USB functions

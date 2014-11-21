@@ -26,6 +26,8 @@ HoodLoader2.bootloader.lock_bits=0x2F
 #general settings for all boards:
 HoodLoader2.build.board=HOODLOADER2
 HoodLoader2.build.f_cpu=16000000L
+HoodLoader2.vid.0=0x2341
+HoodLoader2.pid.0=0x484C
 
 #TODO, seems to not work correctly, placed in pins_arduino.h?
 #HoodLoader2.build.vid=0x2341
