@@ -79,7 +79,7 @@ and some online shops even sell the bigger 32u2 (I've got two of them :D).
 * 176 bytes DPRAM (ram for USB endpoints, double bank possible)
 * 8 and 16 bit timer
 * 2 status LEDs (PD4 RX + PD5 TX)
-* 7 i/o pins with PCINT, SPI and PWM (3 pin SPI header + additional 4 pin header)
+* 7 usable i/o pins with PCINT, SPI and 1PWM (3 pin SPI header + additional 4 pin header)
 * HW Serial connected to Serial0 of the 328/2560
 * PD7 connected to RESET of the 328/2560
 * Not all pins are broken out (SS, INT, etc)
@@ -329,7 +329,7 @@ Arduino Uno/Mega 16u2 Pinout
 (c) [pighixxx](http://forum.arduino.cc/index.php/topic,146315.0.html)
 
 **Note: Some pins are not connected on a standard Arduino Uno R3** but still listed so you can use them if you have a custom board.
-You also need to solder the additional 4 pin header to access all 7 PB i/o pins.
+You also need to solder the additional 4 pin header to access all 7 PB i/o pins. D7 has PWM! (other not connected pins with a timer as well).
 The Arduino Uno/Mega pinout is the same for the 16u2 MCU.
 
 **Keep in mind that the Leds have inverted logic. Writing LOW means turn them on. I got stuck there for an hour...**
@@ -345,7 +345,7 @@ D3  - PB3 PCINT3 MISO
 D4  - PB4 PCINT4
 D5  - PB5 PCINT5
 D6  - PB6 PCINT6
-D7  - PB7 PCINT7 TIMER1C
+~D7 - PB7 PCINT7 TIMER1C PWM
 
 D8  - [NC] PC7 INT4
 D9  - [NC] PC6 PCINT8 TIMER1A
@@ -366,11 +366,16 @@ D20 - PD7 INT7 328/2560 RESET
 Useful Links
 ============
 
+**A great thx to all people who helped and supported me with this. Most of them are linked below.**
+
 * [HID Project](https://github.com/NicoHood/HID) for the Arduino IDE core files/examples.
 * [LUFA from Dean Camera](http://www.fourwalledcubicle.com/LUFA.php)
 * [The Original Arduino Sources](https://github.com/arduino/Arduino/tree/master/hardware/arduino/firmwares/atmegaxxu2/arduino-usbserial)
 * [Sparkfun 32u4 Bootloader](https://github.com/sparkfun/SF32u4_boards)
-* Nick Gammon's [Atmega Board Programmmer](https://github.com/nickgammon/arduino_sketches), [Website](http://www.gammon.com.au/forum/?id=11635).
+* [Nick Gammon's Atmega Board Programmmer](https://github.com/nickgammon/arduino_sketches), [Website](http://www.gammon.com.au/forum/?id=11635).
+* [Mattairtechs 16u2 Lufa USB Core](https://www.mattairtech.com/index.php/development-boards/mt-db-u1.html)
+* [Paul Brook's Minimus 32u2 Arduino USB Core](https://github.com/pbrook/minimus-arduino)
+* [Paul Stoffregen's Teensy Core](https://github.com/PaulStoffregen/cores)
 * [How to use AVR-Dude](http://www.ladyada.net/learn/avr/avrdude.html)
 * [Installing a bootloader in general](https://learn.sparkfun.com/tutorials/installing-an-arduino-bootloader)
 * See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
@@ -395,30 +400,30 @@ TODO
 ====
 (ignore this, its just for me)
 
-pwm pins?
 pictures, example with leds spi, ir sensor, usb function
 check if fastled/other libs work
-windows key?
+
 uploading baud rate
 bank, epsize, buffer size
 migrate at90usb162 to atmega16u2 (also the bat file)
 add 8u2/32u2/32u4 version
 _delay_loop_2() instead delay function
 increase buffer to 128 or even 256
+change HL2-CDC name etc
+remove buffer and use endpoint banks? store endpoint state in isr!
+HL2> special baud check for bootloader enable again 5700> see github pull req.
+
 current fuses in the uploading sketch?
 Reset of 328 when leaving Bootloader mode
 Someone should look over the watchdog timer thing
-change HL2-CDC name
-remove buffer and use endpoint banks? store endpoint state in isr!
+
 mattairtech link, paul link
-test pwm timer1c
-usb names etc, vid
-reset bug, flash leds
-test single gamepad
+cdc reset bug, flash leds
 update Burning via ISP (advanced)
 system wakeup and other (github pull requests)
-HL2> special baud check for bootloader enable again> see github pull req.
-first upload 158 usb source, then the update to see the diffs.
+
+add led feedback
+
 
 Version History
 ===============
