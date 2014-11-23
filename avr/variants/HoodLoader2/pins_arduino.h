@@ -93,6 +93,9 @@ static const uint8_t LED_BUILTIN_RX = 17;
 static const uint8_t LED_BUILTIN_TX = 18;
 static const uint8_t LED_BUILTIN = 18;
 
+// reset line for 328/2560
+static const uint8_t MAIN_MCU_RESET_PIN = 20;
+
 static const uint8_t SS   = 0;
 static const uint8_t SCK  = 1;
 static const uint8_t MOSI = 2;
