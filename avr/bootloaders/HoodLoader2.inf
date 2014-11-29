@@ -4,7 +4,7 @@
 ;************************************************************
 
 [DefaultInstall]
-CopyINF="LUFA CDC Bootloader.inf"
+CopyINF="HoodLoader2.inf"
 
 [Version]
 Signature="$Windows NT$"
@@ -45,16 +45,16 @@ HKR,,EnumPropPages32,,"msports.dll,SerialPortPropPageProvider"
 ; For each supported device, append ",USB\VID_xxxx&PID_yyyy" to the end of the line.
 ;------------------------------------------------------------------------------
 [DeviceList]
-%DESCRIPTION%=DriverInstall, USB\VID_03EB&PID_204A
+%hoodloader2.name%=DriverInstall, USB\VID_2341&PID_484C&MI_00
 
 [DeviceList.NTx86]
-%DESCRIPTION%=DriverInstall, USB\VID_03EB&PID_204A
+%hoodloader2.name%=DriverInstall, USB\VID_2341&PID_484C&MI_00
 
 [DeviceList.NTamd64]
-%DESCRIPTION%=DriverInstall, USB\VID_03EB&PID_204A
+%hoodloader2.name%=DriverInstall, USB\VID_2341&PID_484C&MI_00
 
 [DeviceList.NTia64]
-%DESCRIPTION%=DriverInstall, USB\VID_03EB&PID_204A
+%hoodloader2.name%=DriverInstall, USB\VID_2341&PID_484C&MI_00
 
 ;------------------------------------------------------------------------------
 ;  String Definitions
@@ -62,5 +62,5 @@ HKR,,EnumPropPages32,,"msports.dll,SerialPortPropPageProvider"
 ;Modify these strings to customize your device
 ;------------------------------------------------------------------------------
 [Strings]
-MFGNAME="http://www.lufa-lib.org"
-DESCRIPTION="LUFA CDC Class Bootloader"
+MFGNAME="NicoHood"
+hoodloader2.name="Arduino HoodLoader2"

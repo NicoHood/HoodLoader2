@@ -65,7 +65,7 @@ static CDC_LineEncoding_t LineEncoding = { .BaudRateBPS = 0,
 .DataBits = 8 };
 
 /** Underlying data buffer for \ref USARTtoUSB_Buffer, where the stored bytes are located. */
-#define BUFFER_SIZE 64 // 2^x is for better performence (32,64,128,256)
+#define BUFFER_SIZE 128 // 2^x is for better performence (32,64,128,256)
 static uint8_t      USARTtoUSB_Buffer_Data[BUFFER_SIZE];
 static volatile uint8_t BufferCount = 0; // Number of bytes currently stored in the buffer
 static uint8_t BufferIndex = 0; // position of the first buffer byte (Buffer out)
@@ -76,7 +76,6 @@ static uint8_t TxLEDPulse = 0;
 static uint8_t RxLEDPulse = 0;
 
 // variable to determine if CDC baudrate is for the bootloader mode or not
-//TODO volatile CDCAvtive?
 static volatile bool CDCActive = false;
 
 /** Current address counter. This stores the current address of the FLASH or EEPROM as set by the host,
@@ -91,12 +90,21 @@ static uint32_t CurrAddress;
  */
 static bool RunBootloader = true;
 
-/** Magic lock for forced application start. If the HWBE fuse is programmed and BOOTRST is unprogrammed, the bootloader
- *  will start if the /HWB line of the AVR is held low and the system is reset. However, if the /HWB line is still held
- *  low when the application attempts to start via a watchdog reset, the bootloader will re-start. If set to the value
- *  \ref MAGIC_BOOT_KEY the special init function \ref Application_Jump_Check() will force the application to start.
- */
-uint8_t MagicBootKey ATTR_NO_INIT;
+
+// MAH 8/15/12- let's make this an 8-bit value instead of 16- that saves on memory because 16-bit addition and
+//  comparison compiles to bulkier code. Note that this does *not* require a change to the Arduino core- we're 
+//  just sort of ignoring the extra byte that the Arduino core puts at the next location.
+// ensure the address isnt used anywhere else by adding a compiler flag in the makefile ld flag
+// -Wl,--section-start=.blkey=0x800280
+// "Because of the Harvard architecture of the AVR devices, you must manually add 0x800000 to the address you pass
+// to the linker as the start of the section. Otherwise, the linker thinks you want to put the .noinit section
+// into the .text section instead of .data/.bss and will complain."
+//volatile uint8_t MagicBootKey __attribute__((section(".blkey")));
+volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)0x0280;
+
+/** Magic bootloader key to unlock forced application start mode. */
+// Arduino uses a 16bit value but we use a 8 bit value to keep the size low, see above
+#define MAGIC_BOOT_KEY               (uint8_t)0x7777
 
 // Bootloader timeout timer in ms
 #define EXT_RESET_TIMEOUT_PERIOD 750
@@ -108,8 +116,8 @@ uint8_t MagicBootKey ATTR_NO_INIT;
 void Application_Jump_Check(void)
 {
 	// Save the value of the boot key memory before it is overwritten
-	uint8_t bootKeyPtrVal = MagicBootKey;
-	MagicBootKey = 0;
+	uint8_t bootKeyPtrVal = *MagicBootKeyPtr;
+	*MagicBootKeyPtr = 0;
 
 	// Check the reason for the reset so we can act accordingly
 	uint8_t  mcusr_state = MCUSR;		// store the initial state of the Status register
@@ -128,18 +136,16 @@ void Application_Jump_Check(void)
 		if ((mcusr_state & (1 << EXTRF))) {
 			if ((bootKeyPtrVal != MAGIC_BOOT_KEY)){
 				// set the Bootkey and give the user a few ms chance to enter Bootloader mode
-				MagicBootKey = MAGIC_BOOT_KEY;
+				*MagicBootKeyPtr = MAGIC_BOOT_KEY;
 
 				// wait for a possible double tab (this methode takes less flash than an ISR)
 				_delay_ms(EXT_RESET_TIMEOUT_PERIOD);
 
 				// user was too slow/normal reset, start sketch now
-				MagicBootKey = 0;
+				*MagicBootKeyPtr = 0;
 				StartSketch();
 			}
 		}
-
-		//TODO BOOTRST Fuse check, see Lufa on Github?
 
 		// On a power-on reset, we ALWAYS want to go to the sketch. If there is one.
 		else if ((mcusr_state & (1 << PORF))) {
@@ -148,7 +154,6 @@ void Application_Jump_Check(void)
 
 		// On a watchdog reset, if the bootKey isn't set, and there's a sketch, we should just
 		//  go straight to the sketch.
-		//TODO magic key check needed?
 		else if ((mcusr_state & (1 << WDRF)) && (bootKeyPtrVal != MAGIC_BOOT_KEY)) {
 			// If it looks like an "accidental" watchdog reset then start the sketch.
 			StartSketch();
@@ -158,26 +163,8 @@ void Application_Jump_Check(void)
 
 static void StartSketch(void)
 {
-	cli();
-
-	// Undo TIMER0 setup
-	TCCR0B = 0;
-
-	// Relocate the interrupt vector table to the application section
-	// Important for interrupts from what i understood (also needed for the timer)
-	MCUCR = (1 << IVCE);
-	MCUCR = 0;
-
-	LEDs_TurnOffLEDs(LEDS_ALL_LEDS);
-
-	//TODO turn off UART?
-
-
 	// jump to beginning of application space
-	//__asm__ volatile("jmp 0x0000");
-
-	// cppcheck-suppress constStatement
-	((void(*)(void))0x0000)();
+	__asm__ volatile("jmp 0x0000");
 }
 
 /** Main program entry point. This routine configures the hardware required by the bootloader, then continuously
@@ -216,8 +203,11 @@ int main(void)
 	/* Disconnect from the host - USB interface will be reset later along with the AVR */
 	USB_Detach();
 
-	/* Jump to beginning of application space to run the sketch - do not reset */
-	StartSketch();
+	/* Enable the watchdog and force a timeout to reset the AVR */
+	// this is the simplest solution since it will clear all the hardware setups
+	wdt_enable(WDTO_250MS);
+
+	for (;;);
 }
 
 /** Configures all hardware required for the bootloader. */
@@ -229,10 +219,6 @@ static void SetupHardware(void)
 	// Relocate the interrupt vector table to the bootloader section
 	MCUCR = (1 << IVCE);
 	MCUCR = (1 << IVSEL);
-
-	//TODO needed??
-//#define CPU_PRESCALE(n)	(CLKPR = 0x80, CLKPR = (n))
-	//CPU_PRESCALE(0);
 
 	/* Initialize the USB and other board hardware drivers */
 	USB_Init();
@@ -324,10 +310,10 @@ void EVENT_USB_Device_ControlRequest(void)
 			if (!skip)
 				while (!(Endpoint_IsINReady()))
 				{
-				uint8_t USB_DeviceState_LCL = USB_DeviceState;
+					uint8_t USB_DeviceState_LCL = USB_DeviceState;
 
-				if ((USB_DeviceState_LCL == DEVICE_STATE_Unattached) || (USB_DeviceState_LCL == DEVICE_STATE_Suspended))
-					break;
+					if ((USB_DeviceState_LCL == DEVICE_STATE_Unattached) || (USB_DeviceState_LCL == DEVICE_STATE_Suspended))
+						break;
 				}
 
 			// end of inline Endpoint_Read_Control_Stream_LE
@@ -355,10 +341,14 @@ void EVENT_USB_Device_ControlRequest(void)
 			Endpoint_ClearStatusStage();
 
 			// check DTR state and reset the MCU
-			if (!CDCActive && (USB_ControlRequest.wValue & CDC_CONTROL_LINE_OUT_DTR))
+			// You could add the OUTPUT declaration here but it wont help since the pc always tries to open the serial port once.
+			// At least if the usb is connected this always results in a main MCU reset if the bootloader is executed.
+			// From my testings there is no way to avoid this. Its needed as far as I tested, no way.
+			if (!CDCActive && USB_ControlRequest.wValue & CDC_CONTROL_LINE_OUT_DTR)
 				AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
 			else
 				AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+
 		}
 
 		break;
@@ -906,19 +896,18 @@ static void CDC_Device_LineEncodingChanged(void)
 	UCSR1C = 0;
 
 	/* Set the new baud rate before configuring the USART */
-	UBRR1 = SERIAL_2X_UBBRVAL(LineEncoding.BaudRateBPS);
-
-	//TODO needed?
-	/* Set the new baud rate before configuring the USART */
 	/* Special case 57600 baud for compatibility with the ATmega328 bootloader. */
-	//UBRR1 = (LineEncoding.BaudRateBPS == 57600)
+	// Special mode not needed/possible since our CDC Bootloader uses this speed!
+	UBRR1 = SERIAL_2X_UBBRVAL(LineEncoding.BaudRateBPS); // Lufa standard
+	//bool compat = LineEncoding.BaudRateBPS == 57600;
+	//UBRR1 = compat
 	//	? SERIAL_UBBRVAL(LineEncoding.BaudRateBPS)
 	//	: SERIAL_2X_UBBRVAL(LineEncoding.BaudRateBPS);
 
 	/* Reconfigure the USART in double speed mode for a wider baud rate range at the expense of accuracy */
 	UCSR1C = ConfigMask;
-	UCSR1A = (1 << U2X1);
-	//UCSR1A = (LineEncoding.BaudRateBPS == 57600) ? 0 : (1 << U2X1);
+	UCSR1A = (1 << U2X1); // Lufa standard
+	//UCSR1A = compat ? 0 : (1 << U2X1);
 	UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1));
 
 	/* Release the TX line after the USART has been reconfigured */

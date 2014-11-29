@@ -52,8 +52,9 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // Version 1.25: Fixed bug re verifying uploaded sketch for the Lilypad
 // Version 1.25-A: Fixed uploading problems with a standalone Arduino
 // Version 1.26-A: Turn off programming mode when done (so chip can run)
+// Version 1.26-B: Updated to HoodLoader 2.0.1
 
-#define VERSION "1.26-A"
+#define VERSION "1.26-B"
 
 //================================================================================
 // HoodLoader2 definitions
@@ -62,7 +63,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // depending on the uploading board decide what hex file we should use
 #ifdef ARDUINO_AVR_MEGA2560
 #define HOODLOADER2_16U2_MEGA
-#elseif defined ARDUINO_AVR_UNO
+#elif defined ARDUINO_AVR_UNO
 #define HOODLOADER2_16U2_UNO
 #else
 // by default use the file for Arduino Uno. Its no problem to upload an Uno file to a Mega though.
@@ -429,15 +430,19 @@ void writeBootloader ()
     
     if (subcommand == 'H')
       {
+      newlFuse = 0xFF;
+      newhFuse = 0xD8;
+      newextFuse = 0xFC;
+      newlockByte = 0x3F;
       addr = 0x3000;
 #ifdef HOODLOADER2_16U2_MEGA
       SERIAL.println (F("Using Hoodloader2 Mega."));
-      bootloader = Hoodloader2_Mega_Beta_hex;
-      len = sizeof Hoodloader2_Mega_Beta_hex;
+      bootloader = HoodLoader2_0_1_Mega_16u2_hex;
+      len = sizeof HoodLoader2_0_1_Mega_16u2_hex;
 #else // HOODLOADER2_16U2_UNO
       SERIAL.println (F("Using Hoodloader2 Uno."));
-      bootloader = Hoodloader2_Uno_Beta_hex;
-      len = sizeof Hoodloader2_Uno_Beta_hex;
+      bootloader = HoodLoader2_0_1_Uno_16u2_hex;
+      len = sizeof HoodLoader2_0_1_Uno_16u2_hex;
 #endif
       }
       

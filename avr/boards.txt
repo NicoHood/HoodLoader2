@@ -1,92 +1,252 @@
 #HoodLoader2 boards.txt file
 
-menu.cpu=Processor
 menu.usbcore=USB Core
 menu.board=BootLoader
 
-HoodLoader2.name=HoodLoader2
-HoodLoader2.build.core=arduino:arduino
-HoodLoader2.bootloader.tool=arduino:avrdude
-HoodLoader2.upload.tool=arduino:avrdude
+##############################################################
 
-#uploading settings
-HoodLoader2.upload.speed=57600
-HoodLoader2.upload.protocol=avr109
-HoodLoader2.upload.disable_flushing=true
-HoodLoader2.upload.use_1200bps_touch=true
-HoodLoader2.upload.wait_for_upload_port=true
 
-#fuses
-HoodLoader2.bootloader.low_fuses=0xFF
-HoodLoader2.bootloader.high_fuses=0xD9
-HoodLoader2.bootloader.extended_fuses=0xF4
-HoodLoader2.bootloader.unlock_bits=0x3F
-HoodLoader2.bootloader.lock_bits=0x2F
+HoodLoader2atmega16u2.name=HoodLoader2 16u2
+HoodLoader2atmega16u2.build.core=arduino:arduino
+HoodLoader2atmega16u2.bootloader.tool=arduino:avrdude
+HoodLoader2atmega16u2.upload.tool=arduino:avrdude
+
+# MCU properties
+HoodLoader2atmega16u2.upload.maximum_size=12288
+HoodLoader2atmega16u2.upload.maximum_data_size=512
+HoodLoader2atmega16u2.build.mcu=atmega16u2
 
 #general settings for all boards:
-HoodLoader2.build.board=HOODLOADER2
-HoodLoader2.build.f_cpu=16000000L
-HoodLoader2.vid.0=0x2341
-HoodLoader2.pid.0=0x484C
+HoodLoader2atmega16u2.build.board=HOODLOADER2
+HoodLoader2atmega16u2.build.f_cpu=16000000L
+HoodLoader2atmega16u2.vid.0=0x2341
+HoodLoader2atmega16u2.pid.0=0x484C
 
-#TODO, seems to not work correctly, placed in pins_arduino.h?
-#HoodLoader2.build.vid=0x2341
-#HoodLoader2.build.pid=0x484C
-#HoodLoader2.build.usb_product="HoodLoader 2"
-#HoodLoader2.build.usb_manufacturer="NicoHood"
-#HoodLoader2.build.extra_flags={build.usb_flags}
+#uploading settings
+HoodLoader2atmega16u2.upload.speed=57600
+HoodLoader2atmega16u2.upload.protocol=avr109
+HoodLoader2atmega16u2.upload.disable_flushing=true
+HoodLoader2atmega16u2.upload.use_1200bps_touch=true
+HoodLoader2atmega16u2.upload.wait_for_upload_port=true
 
+#fuses (HoodLoader2 only, not suitable for DFU)
+HoodLoader2atmega16u2.bootloader.low_fuses=0xFF
+HoodLoader2atmega16u2.bootloader.high_fuses=0xD8
+HoodLoader2atmega16u2.bootloader.extended_fuses=0xFC
+HoodLoader2atmega16u2.bootloader.unlock_bits=0x3F
+HoodLoader2atmega16u2.bootloader.lock_bits=0x2F
 
-#MCU selection:
-#16u2
-HoodLoader2.menu.cpu.HL2_16u2=ATmega16u2
-HoodLoader2.menu.cpu.HL2_16u2.upload.maximum_size=12288
-HoodLoader2.menu.cpu.HL2_16u2.upload.maximum_data_size=512
-HoodLoader2.menu.cpu.HL2_16u2.build.mcu=atmega16u2
-HoodLoader2.menu.cpu.HL2_16u2.build.variant=HoodLoader2_16u2
-#HoodLoader2.menu.cpu.HL2_16u2.bootloader.path=16u2
-
-#at90usb162
-HoodLoader2.menu.cpu.HL2_at90usb162=at90usb162
-HoodLoader2.menu.cpu.HL2_at90usb162.upload.maximum_size=12288
-HoodLoader2.menu.cpu.HL2_at90usb162.upload.maximum_data_size=512
-HoodLoader2.menu.cpu.HL2_at90usb162.build.mcu=at90usb162
-HoodLoader2.menu.cpu.HL2_at90usb162.build.variant=HoodLoader2_16u2
-#HoodLoader2.menu.cpu.HL2_at90usb162.bootloader.path=16u2
-
-#32u2
-HoodLoader2.menu.cpu.HL2_32u2=ATmega32u2
-HoodLoader2.menu.cpu.HL2_32u2.upload.maximum_size=28672
-HoodLoader2.menu.cpu.HL2_32u2.upload.maximum_data_size=1024
-HoodLoader2.menu.cpu.HL2_32u2.build.mcu=atmega32u2
-HoodLoader2.menu.cpu.HL2_32u2.build.variant=HoodLoader2_32u2
-#HoodLoader2.menu.cpu.HL2_32u2.bootloader.path=32u2
+#TODO, seems to not work correctly, placed in pins_arduino.h
+#HoodLoader2atmega16u2.build.vid=0x2341
+#HoodLoader2atmega16u2.build.pid=0x484C
+#HoodLoader2atmega16u2.build.usb_product="HoodLoader2"
+#HoodLoader2atmega16u2.build.usb_manufacturer="NicoHood"
+#HoodLoader2atmega16u2.build.extra_flags={build.usb_flags}
 
 
 #USB core selection
-HoodLoader2.menu.usbcore.USB_CORE=Serial + HID
-HoodLoader2.menu.usbcore.USB_CORE.build.variant=HoodLoader2
-HoodLoader2.menu.usbcore.NO_USB=No USB functions
-HoodLoader2.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
+HoodLoader2atmega16u2.menu.usbcore.USB_CORE=Serial + HID
+HoodLoader2atmega16u2.menu.usbcore.USB_CORE.build.variant=HoodLoader2
+HoodLoader2atmega16u2.menu.usbcore.NO_USB=No USB functions
+HoodLoader2atmega16u2.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
 
 
 #Board selection (only important for burning bootloaders)
-#HL2 Uno
-HoodLoader2.menu.board.uno=HoodLoader2 Uno
-HoodLoader2.menu.board.uno.bootloader.file=Hoodloader2_Uno_Beta.hex
+HoodLoader2atmega16u2.menu.board.uno=HoodLoader2 Uno
+HoodLoader2atmega16u2.menu.board.uno.bootloader.file=HoodLoader2_0_1_Uno_16u2.hex
+HoodLoader2atmega16u2.menu.board.mega2560=HoodLoader2 Mega
+HoodLoader2atmega16u2.menu.board.mega2560.bootloader.file=HoodLoader2_0_1_Mega_16u2.hex
+HoodLoader2atmega16u2.menu.board.dev=HoodLoader2 Dev
+HoodLoader2atmega16u2.menu.board.dev.bootloader.file=../../HoodLoader2.hex
 
-#HL2 Mega
-HoodLoader2.menu.board.mega2560=HoodLoader2 Mega
-HoodLoader2.menu.board.mega2560.bootloader.file=Hoodloader2_Mega_Beta.hex
 
-#CDC
-HoodLoader2.menu.board.cdc=CDC BootLoader
-HoodLoader2.menu.board.cdc.bootloader.file=BootloaderCDC_atusb162.hex
+##############################################################
 
-#CDC Mattair
-HoodLoader2.menu.board.cdcm=CDC Mattair BootLoader
-HoodLoader2.menu.board.cdcm.bootloader.file=BootloaderMattairtech.hex
 
-#DFU
-HoodLoader2.menu.board.dfu=DFU + USB-Serial BootLoader
-HoodLoader2.menu.board.dfu.bootloader.file=Arduino-COMBINED-dfu-usbserial-atmega16u2-Uno-Rev3.hex
+HoodLoader2at90usb162.name=HoodLoader2 at90usb162
+HoodLoader2at90usb162.build.core=arduino:arduino
+HoodLoader2at90usb162.bootloader.tool=arduino:avrdude
+HoodLoader2at90usb162.upload.tool=arduino:avrdude
+
+# MCU properties
+HoodLoader2at90usb162.upload.maximum_size=12288
+HoodLoader2at90usb162.upload.maximum_data_size=512
+HoodLoader2at90usb162.build.mcu=at90usb162
+
+#general settings for all boards:
+HoodLoader2at90usb162.build.board=HOODLOADER2
+HoodLoader2at90usb162.build.f_cpu=16000000L
+HoodLoader2at90usb162.vid.0=0x2341
+HoodLoader2at90usb162.pid.0=0x484C
+
+#uploading settings
+HoodLoader2at90usb162.upload.speed=57600
+HoodLoader2at90usb162.upload.protocol=avr109
+HoodLoader2at90usb162.upload.disable_flushing=true
+HoodLoader2at90usb162.upload.use_1200bps_touch=true
+HoodLoader2at90usb162.upload.wait_for_upload_port=true
+
+#fuses (HoodLoader2 only, not suitable for DFU)
+HoodLoader2at90usb162.bootloader.low_fuses=0xFF
+HoodLoader2at90usb162.bootloader.high_fuses=0xD8
+HoodLoader2at90usb162.bootloader.extended_fuses=0xFC
+HoodLoader2at90usb162.bootloader.unlock_bits=0x3F
+HoodLoader2at90usb162.bootloader.lock_bits=0x2F
+
+#TODO, seems to not work correctly, placed in pins_arduino.h
+#HoodLoader2at90usb162.build.vid=0x2341
+#HoodLoader2at90usb162.build.pid=0x484C
+#HoodLoader2at90usb162.build.usb_product="HoodLoader2"
+#HoodLoader2at90usb162.build.usb_manufacturer="NicoHood"
+#HoodLoader2at90usb162.build.extra_flags={build.usb_flags}
+
+
+#USB core selection
+HoodLoader2at90usb162.menu.usbcore.USB_CORE=Serial + HID
+HoodLoader2at90usb162.menu.usbcore.USB_CORE.build.variant=HoodLoader2
+HoodLoader2at90usb162.menu.usbcore.NO_USB=No USB functions
+HoodLoader2at90usb162.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
+
+
+#Board selection (only important for burning bootloaders)
+HoodLoader2at90usb162.menu.board.uno=HoodLoader2 Uno
+HoodLoader2at90usb162.menu.board.uno.bootloader.file=HoodLoader2_0_1_Uno_at90usb162.hex
+HoodLoader2at90usb162.menu.board.mega2560=HoodLoader2 Mega
+HoodLoader2at90usb162.menu.board.mega2560.bootloader.file=HoodLoader2_0_1_Mega_at90usb162.hex
+
+
+##############################################################
+
+
+HoodLoader2atmega32u2.name=HoodLoader2 32u2
+HoodLoader2atmega32u2.build.core=arduino:arduino
+HoodLoader2atmega32u2.bootloader.tool=arduino:avrdude
+HoodLoader2atmega32u2.upload.tool=arduino:avrdude
+
+# MCU properties
+HoodLoader2atmega32u2.upload.maximum_size=28672
+HoodLoader2atmega32u2.upload.maximum_data_size=1024
+HoodLoader2atmega32u2.build.mcu=atmega32u2
+
+#general settings for all boards:
+HoodLoader2atmega32u2.build.board=HOODLOADER2
+HoodLoader2atmega32u2.build.f_cpu=16000000L
+HoodLoader2atmega32u2.vid.0=0x2341
+HoodLoader2atmega32u2.pid.0=0x484C
+
+#uploading settings
+HoodLoader2atmega32u2.upload.speed=57600
+HoodLoader2atmega32u2.upload.protocol=avr109
+HoodLoader2atmega32u2.upload.disable_flushing=true
+HoodLoader2atmega32u2.upload.use_1200bps_touch=true
+HoodLoader2atmega32u2.upload.wait_for_upload_port=true
+
+#fuses (HoodLoader2 only, not suitable for DFU)
+HoodLoader2atmega32u2.bootloader.low_fuses=0xFF
+HoodLoader2atmega32u2.bootloader.high_fuses=0xD8
+HoodLoader2atmega32u2.bootloader.extended_fuses=0xFC
+HoodLoader2atmega32u2.bootloader.unlock_bits=0x3F
+HoodLoader2atmega32u2.bootloader.lock_bits=0x2F
+
+#TODO, seems to not work correctly, placed in pins_arduino.h
+#HoodLoader2atmega32u2.build.vid=0x2341
+#HoodLoader2atmega32u2.build.pid=0x484C
+#HoodLoader2atmega32u2.build.usb_product="HoodLoader2"
+#HoodLoader2atmega32u2.build.usb_manufacturer="NicoHood"
+#HoodLoader2atmega32u2.build.extra_flags={build.usb_flags}
+
+
+#USB core selection
+HoodLoader2atmega32u2.menu.usbcore.USB_CORE=Serial + HID
+HoodLoader2atmega32u2.menu.usbcore.USB_CORE.build.variant=HoodLoader2
+HoodLoader2atmega32u2.menu.usbcore.NO_USB=No USB functions
+HoodLoader2atmega32u2.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
+
+
+#Board selection (only important for burning bootloaders)
+HoodLoader2atmega32u2.menu.board.uno=HoodLoader2 Uno
+HoodLoader2atmega32u2.menu.board.uno.bootloader.file=HoodLoader2_0_1_Uno_32u2.hex
+HoodLoader2atmega32u2.menu.board.mega2560=HoodLoader2 Mega
+HoodLoader2atmega32u2.menu.board.mega2560.bootloader.file=HoodLoader2_0_1_Mega_32u2.hex
+
+
+##############################################################
+
+
+HoodLoader2atmega8u2.name=HoodLoader2 8u2
+HoodLoader2atmega8u2.build.core=arduino:arduino
+HoodLoader2atmega8u2.bootloader.tool=arduino:avrdude
+HoodLoader2atmega8u2.upload.tool=arduino:avrdude
+
+# MCU properties
+HoodLoader2atmega8u2.upload.maximum_size=4096
+HoodLoader2atmega8u2.upload.maximum_data_size=512
+HoodLoader2atmega8u2.build.mcu=atmega8u2
+
+#general settings for all boards:
+HoodLoader2atmega8u2.build.board=HOODLOADER2
+HoodLoader2atmega8u2.build.f_cpu=16000000L
+HoodLoader2atmega8u2.vid.0=0x2341
+HoodLoader2atmega8u2.pid.0=0x484C
+
+#uploading settings
+HoodLoader2atmega8u2.upload.speed=57600
+HoodLoader2atmega8u2.upload.protocol=avr109
+HoodLoader2atmega8u2.upload.disable_flushing=true
+HoodLoader2atmega8u2.upload.use_1200bps_touch=true
+HoodLoader2atmega8u2.upload.wait_for_upload_port=true
+
+#fuses (HoodLoader2 only, not suitable for DFU)
+HoodLoader2atmega8u2.bootloader.low_fuses=0xFF
+HoodLoader2atmega8u2.bootloader.high_fuses=0xD8
+HoodLoader2atmega8u2.bootloader.extended_fuses=0xFC
+HoodLoader2atmega8u2.bootloader.unlock_bits=0x3F
+HoodLoader2atmega8u2.bootloader.lock_bits=0x2F
+
+#TODO, seems to not work correctly, placed in pins_arduino.h
+#HoodLoader2atmega8u2.build.vid=0x2341
+#HoodLoader2atmega8u2.build.pid=0x484C
+#HoodLoader2atmega8u2.build.usb_product="HoodLoader2"
+#HoodLoader2atmega8u2.build.usb_manufacturer="NicoHood"
+#HoodLoader2atmega8u2.build.extra_flags={build.usb_flags}
+
+
+#USB core selection
+HoodLoader2atmega8u2.menu.usbcore.USB_CORE=Serial + HID
+HoodLoader2atmega8u2.menu.usbcore.USB_CORE.build.variant=HoodLoader2
+HoodLoader2atmega8u2.menu.usbcore.NO_USB=No USB functions
+HoodLoader2atmega8u2.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
+
+
+#Board selection (only important for burning bootloaders)
+HoodLoader2atmega8u2.menu.board.uno=HoodLoader2 Uno
+HoodLoader2atmega8u2.menu.board.uno.bootloader.file=HoodLoader2_0_1_Uno_8u2.hex
+HoodLoader2atmega8u2.menu.board.mega2560=HoodLoader2 Mega
+HoodLoader2atmega8u2.menu.board.mega2560.bootloader.file=HoodLoader2_0_1_Mega_8u2.hex
+
+
+##############################################################
+
+
+HoodLoader2atmega16u2DFU.name=Original 16u2 DFU Firmware
+HoodLoader2atmega16u2DFU.build.core=arduino:arduino
+HoodLoader2atmega16u2DFU.bootloader.tool=arduino:avrdude
+HoodLoader2atmega16u2DFU.upload.tool=arduino:avrdude
+
+# MCU properties
+HoodLoader2atmega16u2DFU.build.mcu=atmega16u2
+
+#fuses (HoodLoader2 only, not suitable for DFU)
+HoodLoader2atmega16u2DFU.bootloader.low_fuses=0xFF
+HoodLoader2atmega16u2DFU.bootloader.high_fuses=0xD9
+HoodLoader2atmega16u2DFU.bootloader.extended_fuses=0xF4
+HoodLoader2atmega16u2DFU.bootloader.unlock_bits=0x3F
+HoodLoader2atmega16u2DFU.bootloader.lock_bits=0x0F
+
+
+#Board selection (only important for burning bootloaders)
+HoodLoader2atmega16u2DFU.menu.board.uno=HoodLoader2 Uno
+HoodLoader2atmega16u2DFU.menu.board.uno.bootloader.file=Arduino-COMBINED-dfu-usbserial-atmega16u2-Uno-Rev3.hex
+HoodLoader2atmega16u2DFU.menu.board.mega2560=HoodLoader2 Mega
+HoodLoader2atmega16u2DFU.menu.board.mega2560.bootloader.file=Arduino-COMBINED-dfu-usbserial-atmega16u2-Mega2560-Rev3.hex
+

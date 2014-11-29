@@ -1,2 +1,2 @@
-avrdude.exe -C avrdude.conf -p at90usb162 -c avr109 -b 57600 -P COM1 -e
+avrdude.exe -C avrdude.conf -p atmega16u2 -c avr109 -b 57600 -P COM1 -e
 pause

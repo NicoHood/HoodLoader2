@@ -84,7 +84,7 @@ const USB_Descriptor_Device_t DeviceDescriptor =
 	// passed through makefile
 	.VendorID = VENDORID,
 	.ProductID = PRODUCTID,
-	.ReleaseNumber          = VERSION_BCD(2,0,0),
+	.ReleaseNumber          = VERSION_BCD(2,0,1),
 
 	.ManufacturerStrIndex   = STRING_ID_Manufacturer,
 	.ProductStrIndex        = STRING_ID_Product,
@@ -213,20 +213,20 @@ const USB_Descriptor_String_t LanguageString = USB_STRING_DESCRIPTOR_ARRAY(LANGU
  *  form, and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
  *  Descriptor.
  */
-const USB_Descriptor_String_t ManufacturerString = USB_STRING_DESCRIPTOR(L"Nico");
+const USB_Descriptor_String_t ManufacturerString = USB_STRING_DESCRIPTOR(L"NicoHood");
 
 /** Product descriptor string. This is a Unicode string containing the product's details in human readable form,
  *  and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
  *  Descriptor.
  */
 #if (PRODUCTID == ARDUINO_UNO_PID)
-const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"Hoodloader2 Uno");
+const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Uno");
 #elif (PRODUCTID == ARDUINO_MEGA_PID)
-const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"Hoodloader2 Mega");
+const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Mega");
 #elif (PRODUCTID == ARDUINO_ADK_PID)
-const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"Hoodloader2 ADK");
+const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 ADK");
 #else
-const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"Hoodloader2 Lufa");
+const USB_Descriptor_String_t ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Lufa");
 #endif
 
 /** This function is called by the library when in device mode, and must be overridden (see LUFA library "USB Descriptors"

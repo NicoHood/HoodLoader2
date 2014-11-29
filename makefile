@@ -11,14 +11,13 @@
 
 # Run "make help" for target help.
 
-#MCU          = atmega16u2
-MCU          = at90usb162
+MCU          = atmega16u2
 ARCH         = AVR8
 BOARD        = USER
 F_CPU        = 16000000
 F_USB        = $(F_CPU)
 OPTIMIZATION = s
-TARGET       = Hoodloader2
+TARGET       = HoodLoader2
 SRC          = $(TARGET).c Descriptors.c BootloaderAPI.c BootloaderAPITable.S $(LUFA_SRC_USB)
 LUFA_PATH    = ./lufa-LUFA-140928/LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_START_ADDR=$(BOOT_START_OFFSET)

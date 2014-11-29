@@ -176,51 +176,25 @@ reset the main MCU (328/2560) and short the pin (7 or 8) to ground and wait a fe
 ### Burning via ISP (advanced)
 
 This is for advanced users who want to burn the bootloader with an external ISP directly.
-You can do this with your program if choice (e.g. avr-dude) or use the Arduino IDE and select 16u2 and hit "burn bootloader".
+You can do this with your program if choice (e.g. avr-dude) or use the Arduino IDE and select the correct MCU + Board and hit "burn bootloader".
+
+Fuses:
 
 ```
-Official documentation:
+HoodLoader2 Fuses:
 low_fuses=0xFF
 high_fuses=0xD9
 extended_fuses=0xF4
 unlock_bits=0x3F
 lock_bits=0x2F
 
-Actual fuse setting on an official R3 board:
-0xEF, // fuse low byte: external clock, m
-0xD9, // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
-0xF4, // fuse extended byte: brown-out detection at 2.6V
-0xCF }, // lock bits
-```
 
-For your interest, how to set the boards.txt to upload the firmware directly via the IDE + ISP
-
-```
-atmega16u2.name=Atmega 16u2
-atmega16u2.upload.tool=avrdude
-atmega16u2.upload.protocol=avr109
-atmega16u2.upload.maximum_size=12288
-atmega16u2.upload.maximum_data_size=512
-atmega16u2.upload.speed=57600
-atmega16u2.upload.disable_flushing=true
-atmega16u2.upload.use_1200bps_touch=true
-atmega16u2.upload.wait_for_upload_port=true
-
-atmega16u2.bootloader.tool=avrdude
-atmega16u2.bootloader.low_fuses=0xFF
-atmega16u2.bootloader.high_fuses=0xD9
-atmega16u2.bootloader.extended_fuses=0xF4
-atmega16u2.bootloader.file=16u2.hex
-atmega16u2.bootloader.unlock_bits=0x3F
-atmega16u2.bootloader.lock_bits=0x2F
-
-atmega16u2.build.mcu=atmega16u2
-atmega16u2.build.f_cpu=16000000L
-atmega16u2.build.usb_product="Atmega 16u2"
-atmega16u2.build.board=AVR_16U2
-atmega16u2.build.core=arduino
-atmega16u2.build.variant=atmega16u2
-#atmega16u2.build.extra_flags={build.usb_flags}
+Official DFU + USB-Serial Fuses:
+low_fuses=0xFF // Nick Gammon read 0xEF, have to check this
+high_fuses=0xD9
+extended_fuses=0xF4
+unlock_bits=0x3F
+lock_bits=0x2F
 ```
 
 ### Updating HoodLoader2 to a newer version
@@ -228,6 +202,8 @@ atmega16u2.build.variant=atmega16u2
 Updating to a newer HoodLoader2 version just works like the first install.
 Upload the installation sketch and follow the instructions again carefully.
 For the HID Project read the updating instructions carefully since they might change from version to version.
+
+**From Beta 2.0 to 2.0.1 just burn the new HoodLoader2 and update to the newest HID Project.**
 
 HoodLoader2 - How to use
 ==========================
@@ -262,7 +238,7 @@ You have to install new drivers since it will conflict with the official due to 
 If not you manually have to enter bootloader mode as described above and below.
 
 To get Serial Debug output from the 328/2560 you have to enter bootloader mode again.
-**Keep in mind that the Leds have inverted logic. Writing LOW means turn them on. I got stuck there for an hour...**
+**Keep in mind that the Leds have inverted logic. Writing LOW means turn them on.**
 
 **To get the 16u2 board definitions for uploading copy this HoodLoader2 folder into your sketchbook like this: *sketchbook/hardware/HoodLoader2/* **
 
@@ -314,11 +290,11 @@ The .bat files are also located in */tools*.
 This can also be used to erase the program from your 16u2 if you always want to use it as normal USB-Serial bridge again.
 
 ```
-#select com port/device and .hex file
-avrdude.exe -C avrdude.conf -p at90usb162 -c avr109 -b 57600 -P COM1 -U flash:w:HoodLoader1_8.hex
+#select com port, device and .hex file yourself
+avrdude.exe -C avrdude.conf -p atmega16u2 -c avr109 -b 57600 -P COM1 -U flash:w:HoodLoader1_8.hex
 pause
 
-avrdude.exe -C avrdude.conf -p at90usb162 -c avr109 -b 57600 -P COM1 -e
+avrdude.exe -C avrdude.conf -p atmega16u2 -c avr109 -b 57600 -P COM1 -e
 pause
 ```
 
@@ -332,7 +308,7 @@ Arduino Uno/Mega 16u2 Pinout
 You also need to solder the additional 4 pin header to access all 7 PB i/o pins. D7 has PWM! (other not connected pins with a timer as well).
 The Arduino Uno/Mega pinout is the same for the 16u2 MCU.
 
-**Keep in mind that the Leds have inverted logic. Writing LOW means turn them on. I got stuck there for an hour...**
+**Keep in mind that the Leds have inverted logic. Writing LOW means turn them on.**
 
 ```
 16u2 Pinout
@@ -376,6 +352,9 @@ Useful Links
 * [Mattairtechs 16u2 Lufa USB Core](https://www.mattairtech.com/index.php/development-boards/mt-db-u1.html)
 * [Paul Brook's Minimus 32u2 Arduino USB Core](https://github.com/pbrook/minimus-arduino)
 * [Paul Stoffregen's Teensy Core](https://github.com/PaulStoffregen/cores)
+* [Keyboard Led Out report by hartmut_holgraefe](http://forum.arduino.cc/index.php?topic=173583.0)
+* [atmega memory use](http://jeelabs.org/2011/05/22/atmega-memory-use/)
+* [wiki entry about ram addresses](http://en.wikipedia.org/wiki/Atmel_AVR_instruction_set)
 * [How to use AVR-Dude](http://www.ladyada.net/learn/avr/avrdude.html)
 * [Installing a bootloader in general](https://learn.sparkfun.com/tutorials/installing-an-arduino-bootloader)
 * See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
@@ -387,8 +366,12 @@ Questions might be added here. Feel free to contact me for any questions!
 
 See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
 
-Bugs
-====
+Known Bugs
+==========
+
+Baud 57600 cannot be used in bootloader mode since its used for CDC programming.
+
+The main MCU will always reset on a 16u2 reprogramming. There is no way to fix this (yet).
 
 Gamepads and RAW-HID in an HID multi report gives problems under some OS (Gamepads especially Linux).
 This is an OS bug and has nothing to do with the HoodLoader.
@@ -400,39 +383,49 @@ TODO
 ====
 (ignore this, its just for me)
 
+documentation HoodLoader2:
 pictures, example with leds spi, ir sensor, usb function
 check if fastled/other libs work
 
-uploading baud rate
-bank, epsize, buffer size
-migrate at90usb162 to atmega16u2 (also the bat file)
-add 8u2/32u2/32u4 version
-_delay_loop_2() instead delay function
-increase buffer to 128 or even 256
-change HL2-CDC name etc
-remove buffer and use endpoint banks? store endpoint state in isr!
-HL2> special baud check for bootloader enable again 5700> see github pull req.
+Bootloader itself:
+remove buffer and use endpoint double banks? store prev endpoint state in isr! (reliable and useful??)
+change bootloader key position in ram?
 
-current fuses in the uploading sketch?
-Reset of 328 when leaving Bootloader mode
-Someone should look over the watchdog timer thing
+check fuse setting: 0xEF, vs 0xFF
+fix usb vid pass via boards.txt
 
-mattairtech link, paul link
-cdc reset bug, flash leds
+Hid Project:
 update Burning via ISP (advanced)
 system wakeup and other (github pull requests)
-
-add led feedback
+add led keyboard feedback in hid project
+fix bootkey ram bug
+documentation
 
 
 Version History
 ===============
 ```
-2.0.0 Release TODO! (xx.11.2014)
-* HID Project updated:
- * Added Arduino IDE Integration
- * Added HID examples
+2.0.1 Release TODO! (xx.11.2014)
+* HID Project 2.0 official released:
+ * Added Arduino IDE Integration for HoodLoader2
+ * See official changelog for more information.
 * HoodLoader2 declared stable
+
+2.0.1 Pre-Release (29.11.2014)
+* HoodLoader2.0.1 Release
+ * Better, full reset after bootloader execution with watchdog
+ * Fixed fuse bug
+ * Fixed magic key passed from Arduino core (HID Project)
+ * Changed some descriptor names, bugfix above freed some space
+ * Special case 57600 baud for compatibility with the ATmega328 bootloader TODO resolved (baud reserved for cdc)
+ * Reset of 328 when leaving Bootloader mode resolved (not possible to fix)
+ * _delay_loop_2() instead delay function resolved (saves 2 bytes, more confusing + inaccurate than useful)
+ * CPU_PRESCALE resolved (not needed for bootloader, watchdog will reset it anyways)
+ * Re enabled LOCK_BYTE_WRITE_SUPPORT function (due to flash improvements)
+ * Increased TX/RX EP_SIZE to 64 bytes
+ * Increased Serial->USB Buffer to 128 bytes
+* HID Project dev update related to the magic key bugfix
+* Updated Atmega board programmer sketch with the new firmware and fuses
 
 2.0.0 Beta-6 Release (05.11.2014)
 * Added Arduino-IDE integration workaround for non USB usage
@@ -574,7 +567,7 @@ $ sudo make clean
 $ sudo make
 ```
 
-**HoodLoader2 Beta compiles with exactly 4000 bytes with a Raspberry Pi.**
+**HoodLoader2 Beta compiles with 3956(+2 for Mega) bytes with a Raspberry Pi.**
 
 ### How to compile with Ubuntu (avr-gcc 4.8.1)
 
@@ -593,7 +586,7 @@ $ sudo make
 
 [Package information](https://launchpad.net/~pmjdebruijn/+archive/ubuntu/gcc-avr-release)
 
-**HoodLoader2 Beta compiles with about 3950 bytes with this toolchain.**
+**HoodLoader2 Beta compiles with about 50 bytes less with this toolchain.**
 
 Licence and Copyright
 =====================
