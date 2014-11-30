@@ -1,10 +1,7 @@
-HoodLoader2 Beta
-================
+HoodLoader2.0.2
+===============
 
 ![header](pictures/header.jpg)
-
-*Caution: This is a Beta, please read everything carefully to not brick your Arduino!
-Some things might be added/changed later and you might wonder where to find them.*
 
 An Arduino Uno/Mega board has two Microcontroller of which one(16u2) is normally used for stupid USB-Serial translation.
 But we can also use it as standalone AVR Microcontroller with (or without) USB functions as well.
@@ -66,9 +63,12 @@ and some online shops even sell the bigger 32u2 (I've got two of them :D).
 * Self flashing sketch to burn the HoodLoader2 to the 16u2 (modified version from Nick Gammon)
 
 **[HID Project](https://github.com/NicoHood/HID) features (for HoodLoader2):**
-* Arduino IDE integration + programming with the 16u2
-* IDE example USB-Serial demo (equal to original firmware)
-* IDE example sketches for 16u2 HID devices (Mouse, Keyboard, Gamepad, Media/System Keys)
+* Arduino IDE integration + programming with the 16u2 (USB-Core)
+* IDE example sketches for HID devices (Mouse, Keyboard, Gamepad, Media/System Keys)
+* IDE example sketch for a working Serial + Keyboard demonstration
+* IDE example sketch for no usb usage
+* IDE example sketch for PWM demonstration
+* IDE example USB-Serial demo (equal to original firmware for baud rate 115200)
 * IDE example sketch for 16u2 - 328/2560 communication (HoodLoader1 technique)
 
 **16u2 features on a normal Uno/Mega R3:**
@@ -203,7 +203,7 @@ Updating to a newer HoodLoader2 version just works like the first install.
 Upload the installation sketch and follow the instructions again carefully.
 For the HID Project read the updating instructions carefully since they might change from version to version.
 
-**From Beta 2.0 to 2.0.1 just burn the new HoodLoader2 and update to the newest HID Project.**
+**Updating to 2.0.2 just burn the new HoodLoader2 and update to the newest HID Project.**
 
 HoodLoader2 - How to use
 ==========================
@@ -242,12 +242,12 @@ To get Serial Debug output from the 328/2560 you have to enter bootloader mode a
 
 **To get the 16u2 board definitions for uploading copy this HoodLoader2 folder into your sketchbook like this: *sketchbook/hardware/HoodLoader2/* **
 
-CDC Driver installation:
+#### CDC Driver installation:
 
 **You need to install new drivers for the new device on Windows (Linux, Mac not needed).** Actually they are not new, its just an .inf file that tells
 Windows to use its built in CDC Serial driver. Ironically Microsoft never signed its own driver.
 The driver files is named HoodLoader2.inf
-Also see [this tutorial](http://arduino.cc/en/guide/windows) on how to install the drivers (rightclick the .inf file and hit install).
+Also see [this tutorial](http://arduino.cc/en/guide/windows) on how to install the drivers (right click the .inf file and hit install).
 [How to install drivers for Windows 8/8.1](https://learn.sparkfun.com/tutorials/disabling-driver-signature-on-windows-8/disabling-signed-driver-enforcement-on-windows-8).
 
 If you want it to be recognized as Uno/Mega edit the makefile and recompile. I dont recommend this to know what
@@ -255,10 +255,8 @@ Bootloader currently is on your Board. It seems that with the signed drivers HID
 
 
 **Go to the [HID Project](https://github.com/NicoHood/HID) page to get the newest Arduino core library for the 16u2.**
-### Temporary dev version can be found here, official update coming soon!:
-https://github.com/NicoHood/HID/tree/dev
 
-Follow the installation instructions __carefully__ and try out the examples. To upload the code to your Arduino the easiest way is to
+Follow the installation instructions __carefully__ and **try out the HoodLoader 2 related examples**. To upload the code to your Arduino the easiest way is to
 click upload until it says "uploading" and the double tab reset. The PC will automatically detect that the new serial showed up,
 upload the new code and run it.
 
@@ -267,12 +265,14 @@ and save the ram for other stuff if you don't need it. You also don't need the H
 You have to add an ISR into every sketch then. Checkout the '_16u2_NoUSB_Blink' example in */tools/*.
 
 ```cpp
+#ifndef USBCON
 // workaround for undefined USBCON has to be placed in every sketch
 // otherwise the timings wont work correctly
 ISR(USB_GEN_vect)
 {
   UDINT = 0;
 }
+#endif
 ```
 
 For your interest you can also use this (somehow outdated) [older USB-Core](https://www.mattairtech.com/index.php/development-boards/mt-db-u1.html) from Mattair.
@@ -357,6 +357,7 @@ Useful Links
 * [wiki entry about ram addresses](http://en.wikipedia.org/wiki/Atmel_AVR_instruction_set)
 * [How to use AVR-Dude](http://www.ladyada.net/learn/avr/avrdude.html)
 * [Installing a bootloader in general](https://learn.sparkfun.com/tutorials/installing-an-arduino-bootloader)
+* [IRLremote is also HoodLoader2 compatible](https://github.com/NicoHood/IRLremote)
 * See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
 
 FAQ
@@ -397,19 +398,17 @@ fix usb vid pass via boards.txt
 Hid Project:
 update Burning via ISP (advanced)
 system wakeup and other (github pull requests)
-add led keyboard feedback in hid project
-fix bootkey ram bug
-documentation
+Test with Android phone
 
 
 Version History
 ===============
 ```
-2.0.1 Release TODO! (xx.11.2014)
+2.0.2 Release (30.11.2014)
 * HID Project 2.0 official released:
  * Added Arduino IDE Integration for HoodLoader2
  * See official changelog for more information.
-* HoodLoader2 declared stable
+* HoodLoader2.0.2 released (led off fix)
 
 2.0.1 Pre-Release (29.11.2014)
 * HoodLoader2.0.1 Release
@@ -567,7 +566,7 @@ $ sudo make clean
 $ sudo make
 ```
 
-**HoodLoader2 Beta compiles with 3956(+2 for Mega) bytes with a Raspberry Pi.**
+**HoodLoader2 Beta compiles with 3966(+2 for Mega) bytes with a Raspberry Pi.**
 
 ### How to compile with Ubuntu (avr-gcc 4.8.1)
 

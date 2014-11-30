@@ -53,8 +53,9 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // Version 1.25-A: Fixed uploading problems with a standalone Arduino
 // Version 1.26-A: Turn off programming mode when done (so chip can run)
 // Version 1.26-B: Updated to HoodLoader 2.0.1
+// Version 1.26-C: Updated to HoodLoader 2.0.2
 
-#define VERSION "1.26-B"
+#define VERSION "1.26-C"
 
 //================================================================================
 // HoodLoader2 definitions
@@ -437,12 +438,12 @@ void writeBootloader ()
       addr = 0x3000;
 #ifdef HOODLOADER2_16U2_MEGA
       SERIAL.println (F("Using Hoodloader2 Mega."));
-      bootloader = HoodLoader2_0_1_Mega_16u2_hex;
-      len = sizeof HoodLoader2_0_1_Mega_16u2_hex;
+      bootloader = HoodLoader2_0_2_Mega_16u2_hex;
+      len = sizeof HoodLoader2_0_2_Mega_16u2_hex;
 #else // HOODLOADER2_16U2_UNO
       SERIAL.println (F("Using Hoodloader2 Uno."));
-      bootloader = HoodLoader2_0_1_Uno_16u2_hex;
-      len = sizeof HoodLoader2_0_1_Uno_16u2_hex;
+      bootloader = HoodLoader2_0_2_Uno_16u2_hex;
+      len = sizeof HoodLoader2_0_2_Uno_16u2_hex;
 #endif
       }
       

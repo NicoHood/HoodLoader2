@@ -148,21 +148,23 @@ void Application_Jump_Check(void)
 		}
 
 		// On a power-on reset, we ALWAYS want to go to the sketch. If there is one.
-		else if ((mcusr_state & (1 << PORF))) {
+		else if ((mcusr_state & (1 << PORF)))
 			StartSketch();
-		}
 
 		// On a watchdog reset, if the bootKey isn't set, and there's a sketch, we should just
 		//  go straight to the sketch.
-		else if ((mcusr_state & (1 << WDRF)) && (bootKeyPtrVal != MAGIC_BOOT_KEY)) {
+		else if ((mcusr_state & (1 << WDRF)) && (bootKeyPtrVal != MAGIC_BOOT_KEY))
 			// If it looks like an "accidental" watchdog reset then start the sketch.
 			StartSketch();
-		}
+
 	}
 }
 
 static void StartSketch(void)
 {
+	// turn off leds on every startup
+	ARDUINO_PORT |= LEDS_ALL_LEDS;
+
 	// jump to beginning of application space
 	__asm__ volatile("jmp 0x0000");
 }
