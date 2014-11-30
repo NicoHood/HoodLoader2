@@ -225,44 +225,53 @@ The HoodLoader2 itself just needs the standard Arduino drivers.**
 
 ![16u2 Reset](pictures/reset.jpg)
 
+
 ### How to upload sketches to the 328/2560
 
 Short the 16u2's reset pin twice to enter bootloader mode. You can upload your Arduino sketch like you are used to.
 You might need to check the correct Serial port though. To start the 16u2 sketch again short reset once.
+To get Serial Debug output from the 328/2560 you also have to enter bootloader mode again.
+
 
 ### How to upload sketches to the 16u2 via IDE
 
 You can now use the 16u2 as normal Arduino USB board like a Leonardo/Micro/Teensy.
-You have to install new drivers since it will conflict with the official due to new USB functions
-(it will use a different PID/VID). If you have a sketch with CDC Serial running you can use the normal upload function.
-If not you manually have to enter bootloader mode as described above and below.
-
-To get Serial Debug output from the 328/2560 you have to enter bootloader mode again.
-**Keep in mind that the Leds have inverted logic. Writing LOW means turn them on.**
-
-**To get the 16u2 board definitions for uploading copy this HoodLoader2 folder into your sketchbook like this: *sketchbook/hardware/HoodLoader2/* **
+Therefore you still need to get some software and install it properly.
 
 #### CDC Driver installation:
 
-**You need to install new drivers for the new device on Windows (Linux, Mac not needed).** Actually they are not new, its just an .inf file that tells
-Windows to use its built in CDC Serial driver. Ironically Microsoft never signed its own driver.
-The driver files is named HoodLoader2.inf
+You have to install new drivers (Windows only) since it will conflict with the official due to new USB functions
+(it will use a different PID/VID). The driver files is named HoodLoader2.inf.
 Also see [this tutorial](http://arduino.cc/en/guide/windows) on how to install the drivers (right click the .inf file and hit install).
 [How to install drivers for Windows 8/8.1](https://learn.sparkfun.com/tutorials/disabling-driver-signature-on-windows-8/disabling-signed-driver-enforcement-on-windows-8).
 
-If you want it to be recognized as Uno/Mega edit the makefile and recompile. I dont recommend this to know what
-Bootloader currently is on your Board. It seems that with the signed drivers HID wont work with official PIDs.
+If you want it to be recognized as Uno/Mega edit the board definitions' VID and PID. I don't recommend this to a) know what
+Bootloader currently is on your board and b) it seems that with the official signed drivers wont work with unofficial HID modification.
 
+#### Installing board definitions
+To get the 16u2 board definitions for uploading, copy this HoodLoader2 folder into your sketchbook like this: *sketchbook/hardware/HoodLoader2/*
 
-**Go to the [HID Project](https://github.com/NicoHood/HID) page to get the newest Arduino core library for the 16u2.**
+#### Installing HID Project
 
-Follow the installation instructions __carefully__ and **try out the HoodLoader 2 related examples**. To upload the code to your Arduino the easiest way is to
-click upload until it says "uploading" and the double tab reset. The PC will automatically detect that the new serial showed up,
-upload the new code and run it.
+Go to the [HID Project](https://github.com/NicoHood/HID) page to get the newest Arduino core library for the 16u2.
+Follow the installation instructions __carefully__ and **try out the HoodLoader 2 related examples**.
 
-**If you don't want to use the USB-Core** you can also choose under *Tools/USB Core* "No USB functions" to get rid of the USB stuff
+For your interest you can also use this (somehow outdated) [older USB-Core](https://www.mattairtech.com/index.php/development-boards/mt-db-u1.html) with Lufa from Mattairtech.
+
+#### Using the IDE
+
+Using HoodLoader for the first time I recommend to simply upload an 'empty' sketch. If the drivers are installed correctly it will show up as HoodLoader2.
+Once you have a sketch with USB-Core and CDC Serial running you can use the normal upload function. Switch to the new Serial port in your IDE and hit upload.
+The 16u2 will reset, enter BootLoader mode, reprogram and start the sketch. If it doesn't enter bootloader mode which might happen (also when using no USB-Core)
+you have to manually have to enter bootloader mode as described above.
+
+**Keep in mind that the Leds have inverted logic. Writing LOW means turn them on.** Have a look at the examples in the HID Project.
+
+#### Deactivating USB-Core
+
+If you don't want to use the USB-Core you can also choose under *Tools/USB Core* "No USB functions" to get rid of the USB stuff
 and save the ram for other stuff if you don't need it. You also don't need the HID Project essentially if you don't want to use the USB functions.
-You have to add an ISR into every sketch then. Checkout the '_16u2_NoUSB_Blink' example in */tools/*.
+You have to add an ISR into every sketch then. Checkout the 'HoodLoader2_NoUSB_Blink' example in the HID Project.
 
 ```cpp
 #ifndef USBCON
@@ -275,8 +284,6 @@ ISR(USB_GEN_vect)
 #endif
 ```
 
-For your interest you can also use this (somehow outdated) [older USB-Core](https://www.mattairtech.com/index.php/development-boards/mt-db-u1.html) from Mattair.
-
 ### How to flash/erase firmwares (.hex files) to the 16u2 with avr-dude
 
 If you want to upload a self compiled .hex file from a LUFA project for example like the
@@ -287,7 +294,8 @@ Download avr-dude [here](http://download.savannah.gnu.org/releases/avrdude/) (av
 Open a cmd or bash and try the following code. You can also create a .bat file for easier uploading.
 The .bat files are also located in */tools*.
 
-This can also be used to erase the program from your 16u2 if you always want to use it as normal USB-Serial bridge again.
+This can also be used to erase the program from your 16u2 if you always want to use it as normal USB-Serial bridge again (always stay in bootloader mode).
+And yes, it's correct that **you can have HoodLoader2 and HoodLoader1 running 'at the same time'** since v2 is a real bootloader and v1 'only' a firmware.
 
 ```
 #select com port, device and .hex file yourself
