@@ -163,7 +163,7 @@ The normal way is to control the uploading via Serial, so open the Serial port m
 Follow the instructions (press H + Enter). Then your Arduino should be flashed with the new firmware. Remove all the wires now.
 Once you've done this, normally you don't need to do this again, maybe if there is a new HoodLoader2 version.
 
-**Recovery options/how to get back to the original bootloader:**
+##### **Recovery options/how to get back to the original bootloader:**
 
 If anything goes wrong and you can't access the Serial via USB any more you still are able to try different methods to flash the 16u2.
 You can use another Arduino and upload the installation sketch there and try the flash again.
@@ -176,9 +176,7 @@ reset the main MCU (328/2560) and short the pin (7 or 8) to ground and wait a fe
 ### Burning via ISP (advanced)
 
 This is for advanced users who want to burn the bootloader with an external ISP directly.
-You can do this with your program if choice (e.g. avr-dude) or use the Arduino IDE and select the correct MCU + Board and hit "burn bootloader".
-
-Fuses:
+You can do this with your program if choice (e.g. avr-dude) or use the Arduino IDE and select the correct MCU, board, bootloader and hit "burn bootloader".
 
 ```
 HoodLoader2 Fuses:
@@ -236,7 +234,7 @@ To get Serial Debug output from the 328/2560 you also have to enter bootloader m
 ### How to upload sketches to the 16u2 via IDE
 
 You can now use the 16u2 as normal Arduino USB board like a Leonardo/Micro/Teensy.
-Therefore you still need to get some software and install it properly.
+Therefore you still need to get some software and install it properly. Arduino IDE 1.5.8 or higher is recommended.
 
 #### CDC Driver installation:
 
@@ -248,6 +246,9 @@ Also see [this tutorial](http://arduino.cc/en/guide/windows) on how to install t
 If you want it to be recognized as Uno/Mega edit the board definitions' VID and PID. I don't recommend this to a) know what
 Bootloader currently is on your board and b) it seems that with the official signed drivers wont work with unofficial HID modification.
 
+It happened to me that Windows 'lost' the drivers. Go to 'This Pc -> Manage -> Device Manager -> Other devices -> HoodLoader2',
+right click and hit 'Update Driver Software... -> Search automatically [...]'.
+
 #### Installing board definitions
 To get the 16u2 board definitions for uploading, copy this HoodLoader2 folder into your sketchbook like this: *sketchbook/hardware/HoodLoader2/*
 
@@ -258,14 +259,14 @@ Follow the installation instructions __carefully__ and **try out the HoodLoader 
 
 For your interest you can also use this (somehow outdated) [older USB-Core](https://www.mattairtech.com/index.php/development-boards/mt-db-u1.html) with Lufa from Mattairtech.
 
-#### Using the IDE
+#### Arduino IDE usage
 
 Using HoodLoader for the first time I recommend to simply upload an 'empty' sketch. If the drivers are installed correctly it will show up as HoodLoader2.
 Once you have a sketch with USB-Core and CDC Serial running you can use the normal upload function. Switch to the new Serial port in your IDE and hit upload.
 The 16u2 will reset, enter BootLoader mode, reprogram and start the sketch. If it doesn't enter bootloader mode which might happen (also when using no USB-Core)
 you have to manually have to enter bootloader mode as described above.
 
-**Keep in mind that the Leds have inverted logic. Writing LOW means turn them on.** Have a look at the examples in the HID Project.
+Have a look at the examples in the HID Project. **Keep in mind that the Leds have inverted logic. Writing LOW means turn them on.**
 
 #### Deactivating USB-Core
 
@@ -284,7 +285,7 @@ ISR(USB_GEN_vect)
 #endif
 ```
 
-### How to flash/erase firmwares (.hex files) to the 16u2 with avr-dude
+### How to flash/erase firmwares (.hex files) with avr-dude
 
 If you want to upload a self compiled .hex file from a LUFA project for example like the
 [HoodLoader1](https://github.com/NicoHood/HoodLoader) for example
@@ -314,7 +315,7 @@ Arduino Uno/Mega 16u2 Pinout
 
 **Note: Some pins are not connected on a standard Arduino Uno R3** but still listed so you can use them if you have a custom board.
 You also need to solder the additional 4 pin header to access all 7 PB i/o pins. D7 has PWM! (other not connected pins with a timer as well).
-The Arduino Uno/Mega pinout is the same for the 16u2 MCU.
+The 16u2 pinout is the same for Arduino Uno/Mega.
 
 **Keep in mind that the Leds have inverted logic. Writing LOW means turn them on.**
 
