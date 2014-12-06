@@ -17,6 +17,7 @@ The 16u2 is somehow limited in its functions but still a great addition if you k
 The great thing about this is that you actually have **two fully Arduino compatible Microcontrollers in one Arduino Uno/Mega board**
 – the board most of you already own. Your **main MCU (328/2560) is still reprogrammable** if you enter bootloader mode.
 **All you need for this is a normal Arduino Uno/Mega R3 and some cables** to install the new HoodLoader2.
+Please __read the readme carfully__ to avoid any problems. You will find most of the answers to your questions in the readme.
 
 **See http://nicohood.wordpress.com/ for more tutorials, projects and contact.**
 
@@ -132,6 +133,9 @@ The normal way is to control the uploading via Serial, so open the Serial port m
 Follow the instructions (press H + Enter). Then your Arduino should be flashed with the new firmware. Remove all the wires now.
 Once you've done this, normally you don't need to do this again, maybe if there is a new HoodLoader2 version.
 
+**Read the [How to use](https://github.com/NicoHood/HoodLoader2#hoodloader2---how-to-use) section**
+on how to install and use the HID and USB core and upload new sketches to the 16u2.
+
 ##### **Recovery options/how to get back to the original bootloader:**
 
 If anything goes wrong and you can't access the Serial via USB any more you still are able to try different methods to flash the 16u2.
@@ -239,7 +243,8 @@ Once you have a sketch with USB-Core and CDC Serial running you can use the norm
 The 16u2 will reset, enter BootLoader mode, reprogram and start the sketch. If it doesn't enter bootloader mode which might happen (also when using no USB-Core)
 you have to manually have to enter bootloader mode as described above.
 
-Have a look at the examples in the HID Project. **Keep in mind that the Leds have inverted logic. Writing LOW means turn them on.**
+Have a look at the examples in the HID Project and check out the [pinout](https://github.com/NicoHood/HoodLoader2#arduino-unomega-16u2-pinout) below.
+**Keep in mind that the Leds have inverted logic. Writing LOW means turn them on.**
 
 #### Deactivating USB-Core
 
@@ -340,6 +345,7 @@ Useful Links
 * [How to use AVR-Dude](http://www.ladyada.net/learn/avr/avrdude.html)
 * [Installing a bootloader in general](https://learn.sparkfun.com/tutorials/installing-an-arduino-bootloader)
 * [IRLremote is also HoodLoader2 compatible](https://github.com/NicoHood/IRLremote)
+* [Hackaday post about HoodLoader2](hackaday.com/2014/11/30/using-the-second-microcontroller-on-an-arduino)
 * See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
 
 FAQ
