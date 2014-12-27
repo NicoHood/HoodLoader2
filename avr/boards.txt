@@ -237,11 +237,11 @@ HoodLoader2atmega16u2DFU.upload.tool=arduino:avrdude
 HoodLoader2atmega16u2DFU.build.mcu=atmega16u2
 
 #fuses (HoodLoader2 only, not suitable for DFU)
-HoodLoader2atmega16u2DFU.bootloader.low_fuses=0xFF
+HoodLoader2atmega16u2DFU.bootloader.low_fuses=0xEF
 HoodLoader2atmega16u2DFU.bootloader.high_fuses=0xD9
 HoodLoader2atmega16u2DFU.bootloader.extended_fuses=0xF4
 HoodLoader2atmega16u2DFU.bootloader.unlock_bits=0x3F
-HoodLoader2atmega16u2DFU.bootloader.lock_bits=0x0F
+HoodLoader2atmega16u2DFU.bootloader.lock_bits=0xCF
 
 
 #Board selection (only important for burning bootloaders)

@@ -54,8 +54,9 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // Version 1.26-A: Turn off programming mode when done (so chip can run)
 // Version 1.26-B: Updated to HoodLoader 2.0.1
 // Version 1.26-C: Updated to HoodLoader 2.0.2
+// Version 1.26-D: Corrected Fuses to original Arduino values
 
-#define VERSION "1.26-C"
+#define VERSION "1.26-D"
 
 //================================================================================
 // HoodLoader2 definitions
@@ -216,10 +217,10 @@ signatureType signatures [] =
         0x0000,                   // start address (0x0000-0x4000)
         sizeof Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex, 
         128, // page size in bytes (for committing)
-        0xFF, // fuse low byte: external clock, m
+        0xEF, // fuse low byte: external clock, m
         0xD9, // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
         0xF4, // fuse extended byte: brown-out detection at 2.6V
-        0x0F }, // lock bits
+        0xCF }, // lock bits
        
 #else // HOODLOADER2_16U2_UNO
   { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   512 ,
@@ -227,10 +228,10 @@ signatureType signatures [] =
         0x0000,                   // start address (0x0000-0x4000)
         sizeof Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex, 
         128, // page size in bytes (for committing)
-        0xFF, // fuse low byte: external clock, m
+        0xEF, // fuse low byte: external clock, m
         0xD9, // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
         0xF4, // fuse extended byte: brown-out detection at 2.6V
-        0x0F }, // lock bits
+        0xCF }, // lock bits
         
 #endif
   

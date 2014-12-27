@@ -37,10 +37,10 @@ and some online shops even sell the bigger 32u2 (I've got two of them :D).
 * Arduino IDE integration + programming with the 16u2 (USB-Core)
 * IDE example sketches for HID devices (Mouse, Keyboard, Gamepad, Media/System Keys)
 * IDE example sketch for a working Serial + Keyboard demonstration
-* IDE example sketch for no usb usage
 * IDE example sketch for PWM demonstration
 * IDE example USB-Serial demo (equal to original firmware for baud rate 115200)
 * IDE example sketch for 16u2 - 328/2560 communication (HoodLoader1 technique)
+* Newer features are listed in the HID Project page itself.
 
 **16u2 features on a normal Uno/Mega R3:**
 * 16kb flash (minus 4kb for the HoodLoader2) (8 for a 8u2, 32 for a 32u2)
@@ -161,11 +161,11 @@ lock_bits=0x2F
 
 
 Official DFU + USB-Serial Fuses:
-low_fuses=0xFF // Nick Gammon read 0xEF, have to check this
+low_fuses=0xEF
 high_fuses=0xD9
 extended_fuses=0xF4
 unlock_bits=0x3F
-lock_bits=0x2F
+lock_bits=0xCF
 ```
 
 ### Updating HoodLoader2 to a newer version
@@ -250,18 +250,8 @@ Have a look at the examples in the HID Project and check out the [pinout](https:
 
 If you don't want to use the USB-Core you can also choose under *Tools/USB Core* "No USB functions" to get rid of the USB stuff
 and save the ram for other stuff if you don't need it. You also don't need the HID Project essentially if you don't want to use the USB functions.
-You have to add an ISR into every sketch then. Checkout the 'HoodLoader2_NoUSB_Blink' example in the HID Project.
 
-```cpp
-#ifndef USBCON
-// workaround for undefined USBCON has to be placed in every sketch
-// otherwise the timings wont work correctly
-ISR(USB_GEN_vect)
-{
-  UDINT = 0;
-}
-#endif
-```
+**No workaround is no longer needed with version 2.0.1 or newer.**
 
 ### How to flash/erase firmwares (.hex files) with avr-dude
 
@@ -362,32 +352,15 @@ Baud 57600 cannot be used in bootloader mode since its used for CDC programming.
 
 The main MCU will always reset on a 16u2 reprogramming. There is no way to fix this (yet).
 
-Gamepads and RAW-HID in an HID multi report gives problems under some OS (Gamepads especially Linux).
-This is an OS bug and has nothing to do with the HoodLoader.
+The HoodLoader only ensures that you can upload sketches to the MCUs.
+If your USB HID device causes any problem please check the HID Project for known bugs/updates.
 
-Also the HoodLoader only ensures that you can upload sketches to the MCUs. If your USB HID devices have any problems
-please check the HID Project for known bugs/updates.
+The Magic BootKey is not stored properly in ram and may cause errors. This is a general Arduino
+Software problem, we have to do this to keep compatible. Normally there shouldn't be any noticeable error.
+This bug has a workaround in the HID Project so it wont matter any ways. Just want to mention it here.
 
-TODO
-====
-(ignore this, its just for me)
-
-documentation HoodLoader2:
-pictures, example with leds spi, ir sensor, usb function
-check if fastled/other libs work
-
-Bootloader itself:
-remove buffer and use endpoint double banks? store prev endpoint state in isr! (reliable and useful??)
-change bootloader key position in ram?
-
-check fuse setting: 0xEF, vs 0xFF
-fix usb vid pass via boards.txt
-
-Hid Project:
-update Burning via ISP (advanced)
-system wakeup and other (github pull requests)
-Test with Android phone
-
+The USB setting (pid, vid, manufacturer, name) cannot be passed with the new IDE because the u2 Series is not integrated.
+These values are defined in the pins_arduino.h
 
 Version History
 ===============
@@ -401,6 +374,7 @@ Version History
 2.0.1 Pre-Release (29.11.2014)
 * HoodLoader2.0.1 Release
  * Better, full reset after bootloader execution with watchdog
+ * This fixes the "No-USB" workaround with the USB clock
  * Fixed fuse bug
  * Fixed magic key passed from Arduino core (HID Project)
  * Changed some descriptor names, bugfix above freed some space
