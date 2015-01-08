@@ -23,12 +23,3 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // temporary USB deactivation workaround
 // you can still use this to get rid of all USB functions
 #undef USBCON
-
-/*
-// workaround for undefined USBCON has to be placed in every sketch
-// otherwise the timings wont work correctly
-ISR(USB_GEN_vect)
-{
-	UDINT = 0;
-}
-*/

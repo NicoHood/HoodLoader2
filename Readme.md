@@ -1,4 +1,4 @@
-HoodLoader2.0.2
+HoodLoader2.0.3
 ===============
 
 ![header](pictures/header.jpg)
@@ -173,8 +173,9 @@ lock_bits=0xCF
 Updating to a newer HoodLoader2 version just works like the first install.
 Upload the installation sketch and follow the instructions again carefully.
 For the HID Project read the updating instructions carefully since they might change from version to version.
+Also ensure that your HoodLoader2 board definitions (the avr/ folder) is up to date when you use the newest HID-Project.
 
-**Updating to 2.0.2 just burn the new HoodLoader2 and update to the newest HID Project.**
+**Updating to 2.0.3 just burn the new HoodLoader2 and update to the newest HID Project.**
 
 HoodLoader2 - How to use
 ==========================
@@ -365,6 +366,10 @@ These values are defined in the pins_arduino.h
 Version History
 ===============
 ```
+2.0.3 Release (xx.01.2015)
+* added HID Project 2.1 board definition compatibility
+* HoodLoader2.0.3 released (minor firmware identifier fix)
+
 2.0.2 Release (30.11.2014)
 * HID Project 2.0 official released:
  * Added Arduino IDE Integration for HoodLoader2
