@@ -7,8 +7,7 @@ menu.board=BootLoader
 
 
 HoodLoader2atmega16u2.name=HoodLoader2 16u2
-#TODO change to official core if u2 Series is implemented
-HoodLoader2atmega16u2.build.core=arduino:hid
+HoodLoader2atmega16u2.build.core=HID:hid
 HoodLoader2atmega16u2.bootloader.tool=arduino:avrdude
 HoodLoader2atmega16u2.upload.tool=arduino:avrdude
 
@@ -47,7 +46,6 @@ HoodLoader2atmega16u2.bootloader.lock_bits=0x2F
 
 #USB core selection
 #HID Project needs to be installed https://github.com/NicoHood/HID
-#TODO add for other MCUS as well and change to HID:hid
 HoodLoader2atmega16u2.menu.usbcore.hid=Serial + Extended HID
 HoodLoader2atmega16u2.menu.usbcore.hid.build.variant=HoodLoader2_hid
 HoodLoader2atmega16u2.menu.usbcore.gamepad=Serial + Gamepad HID
