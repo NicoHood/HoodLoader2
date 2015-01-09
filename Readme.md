@@ -360,14 +360,12 @@ The Magic BootKey is not stored properly in ram and may cause errors. This is a 
 Software problem, we have to do this to keep compatible. Normally there shouldn't be any noticeable error.
 This bug has a workaround in the HID Project so it wont matter any ways. Just want to mention it here.
 
-The USB setting (pid, vid, manufacturer, name) cannot be passed with the new IDE because the u2 Series is not integrated.
-These values are defined in the pins_arduino.h
-
 Version History
 ===============
 ```
 2.0.3 Release (xx.01.2015)
 * added HID Project 2.1 board definition compatibility
+* fixed usb flag pass via boards.txt (instead of pins_arduino.h)
 * HoodLoader2.0.3 released (minor firmware identifier fix)
 
 2.0.2 Release (30.11.2014)

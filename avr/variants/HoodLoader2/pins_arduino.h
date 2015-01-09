@@ -53,12 +53,6 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <avr/pgmspace.h>
 
-// USB definitions, compiler flags currently not working
-#define USB_VID 0x2341
-#define USB_PID 0x484C
-#define USB_PRODUCT "HoodLoader2"
-#define USB_MANUFACTURER "NicoHood"
-
 // We only have a small USB buffer
 // We can only set a global EP size because in u8 USB_SendSpace(u8 ep)
 // there is only a general EPSIZE handle (USBCore.cpp)

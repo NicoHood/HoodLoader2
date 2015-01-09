@@ -36,12 +36,12 @@ HoodLoader2atmega16u2.bootloader.extended_fuses=0xFC
 HoodLoader2atmega16u2.bootloader.unlock_bits=0x3F
 HoodLoader2atmega16u2.bootloader.lock_bits=0x2F
 
-#only supported for 32u4s, placed in pins_arduino.h
-#HoodLoader2atmega16u2.build.vid=0x2341
-#HoodLoader2atmega16u2.build.pid=0x484C
-#HoodLoader2atmega16u2.build.usb_product="HoodLoader2"
-#HoodLoader2atmega16u2.build.usb_manufacturer="NicoHood"
-#HoodLoader2atmega16u2.build.extra_flags={build.usb_flags}
+#usb settings, manufacturer overwritten by the IDE because of the VID
+HoodLoader2atmega16u2.build.vid=0x2341
+HoodLoader2atmega16u2.build.pid=0x484C
+HoodLoader2atmega16u2.build.usb_product="HoodLoader2 16u2"
+HoodLoader2atmega16u2.build.usb_manufacturer="Nico Hood"
+HoodLoader2atmega16u2.build.extra_flags={build.usb_flags}
 
 
 #USB core selection
@@ -57,6 +57,7 @@ HoodLoader2atmega16u2.menu.usbcore.USB_CORE.build.variant=HoodLoader2
 HoodLoader2atmega16u2.menu.usbcore.NO_USB=No USB functions
 HoodLoader2atmega16u2.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
 
+
 #Board selection (only important for burning bootloaders)
 HoodLoader2atmega16u2.menu.board.uno=HoodLoader2 Uno
 HoodLoader2atmega16u2.menu.board.uno.bootloader.file=HoodLoader2_0_3_Uno_16u2.hex
@@ -70,7 +71,7 @@ HoodLoader2atmega16u2.menu.board.dev.bootloader.file=../../HoodLoader2.hex
 
 
 HoodLoader2at90usb162.name=HoodLoader2 at90usb162
-HoodLoader2at90usb162.build.core=arduino:arduino
+HoodLoader2at90usb162.build.core=HID:hid
 HoodLoader2at90usb162.bootloader.tool=arduino:avrdude
 HoodLoader2at90usb162.upload.tool=arduino:avrdude
 
@@ -99,16 +100,23 @@ HoodLoader2at90usb162.bootloader.extended_fuses=0xFC
 HoodLoader2at90usb162.bootloader.unlock_bits=0x3F
 HoodLoader2at90usb162.bootloader.lock_bits=0x2F
 
-#only supported for 32u4s, placed in pins_arduino.h
-#HoodLoader2at90usb162.build.vid=0x2341
-#HoodLoader2at90usb162.build.pid=0x484C
-#HoodLoader2at90usb162.build.usb_product="HoodLoader2"
-#HoodLoader2at90usb162.build.usb_manufacturer="NicoHood"
-#HoodLoader2at90usb162.build.extra_flags={build.usb_flags}
+#usb settings, manufacturer overwritten by the IDE because of the VID
+HoodLoader2at90usb162.build.vid=0x2341
+HoodLoader2at90usb162.build.pid=0x484C
+HoodLoader2at90usb162.build.usb_product="HoodLoader2 at90usb162"
+HoodLoader2at90usb162.build.usb_manufacturer="Nico Hood"
+HoodLoader2at90usb162.build.extra_flags={build.usb_flags}
 
 
 #USB core selection
-HoodLoader2at90usb162.menu.usbcore.USB_CORE=Serial + HID
+#HID Project needs to be installed https://github.com/NicoHood/HID
+HoodLoader2at90usb162.menu.usbcore.hid=Serial + Extended HID
+HoodLoader2at90usb162.menu.usbcore.hid.build.variant=HoodLoader2_hid
+HoodLoader2at90usb162.menu.usbcore.gamepad=Serial + Gamepad HID
+HoodLoader2at90usb162.menu.usbcore.gamepad.build.variant=HoodLoader2_gamepad
+HoodLoader2at90usb162.menu.usbcore.custom=Serial + Custom HID
+HoodLoader2at90usb162.menu.usbcore.custom.build.variant=HoodLoader2_custom
+HoodLoader2at90usb162.menu.usbcore.USB_CORE=Default HID Project Core
 HoodLoader2at90usb162.menu.usbcore.USB_CORE.build.variant=HoodLoader2
 HoodLoader2at90usb162.menu.usbcore.NO_USB=No USB functions
 HoodLoader2at90usb162.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
@@ -125,7 +133,7 @@ HoodLoader2at90usb162.menu.board.mega2560.bootloader.file=HoodLoader2_0_1_Mega_a
 
 
 HoodLoader2atmega32u2.name=HoodLoader2 32u2
-HoodLoader2atmega32u2.build.core=arduino:arduino
+HoodLoader2atmega32u2.build.core=HID:hid
 HoodLoader2atmega32u2.bootloader.tool=arduino:avrdude
 HoodLoader2atmega32u2.upload.tool=arduino:avrdude
 
@@ -154,16 +162,23 @@ HoodLoader2atmega32u2.bootloader.extended_fuses=0xFC
 HoodLoader2atmega32u2.bootloader.unlock_bits=0x3F
 HoodLoader2atmega32u2.bootloader.lock_bits=0x2F
 
-#only supported for 32u4s, placed in pins_arduino.h
-#HoodLoader2atmega32u2.build.vid=0x2341
-#HoodLoader2atmega32u2.build.pid=0x484C
-#HoodLoader2atmega32u2.build.usb_product="HoodLoader2"
-#HoodLoader2atmega32u2.build.usb_manufacturer="NicoHood"
-#HoodLoader2atmega32u2.build.extra_flags={build.usb_flags}
+#usb settings, manufacturer overwritten by the IDE because of the VID
+HoodLoader2atmega32u2.build.vid=0x2341
+HoodLoader2atmega32u2.build.pid=0x484C
+HoodLoader2atmega32u2.build.usb_product="HoodLoader2 32u2"
+HoodLoader2atmega32u2.build.usb_manufacturer="Nico Hood"
+HoodLoader2atmega32u2.build.extra_flags={build.usb_flags}
 
 
 #USB core selection
-HoodLoader2atmega32u2.menu.usbcore.USB_CORE=Serial + HID
+#HID Project needs to be installed https://github.com/NicoHood/HID
+HoodLoader2atmega32u2.menu.usbcore.hid=Serial + Extended HID
+HoodLoader2atmega32u2.menu.usbcore.hid.build.variant=HoodLoader2_hid
+HoodLoader2atmega32u2.menu.usbcore.gamepad=Serial + Gamepad HID
+HoodLoader2atmega32u2.menu.usbcore.gamepad.build.variant=HoodLoader2_gamepad
+HoodLoader2atmega32u2.menu.usbcore.custom=Serial + Custom HID
+HoodLoader2atmega32u2.menu.usbcore.custom.build.variant=HoodLoader2_custom
+HoodLoader2atmega32u2.menu.usbcore.USB_CORE=Default HID Project Core
 HoodLoader2atmega32u2.menu.usbcore.USB_CORE.build.variant=HoodLoader2
 HoodLoader2atmega32u2.menu.usbcore.NO_USB=No USB functions
 HoodLoader2atmega32u2.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
@@ -180,7 +195,7 @@ HoodLoader2atmega32u2.menu.board.mega2560.bootloader.file=HoodLoader2_0_2_Mega_3
 
 
 HoodLoader2atmega8u2.name=HoodLoader2 8u2
-HoodLoader2atmega8u2.build.core=arduino:arduino
+HoodLoader2atmega8u2.build.core=HID:hid
 HoodLoader2atmega8u2.bootloader.tool=arduino:avrdude
 HoodLoader2atmega8u2.upload.tool=arduino:avrdude
 
@@ -209,16 +224,23 @@ HoodLoader2atmega8u2.bootloader.extended_fuses=0xFC
 HoodLoader2atmega8u2.bootloader.unlock_bits=0x3F
 HoodLoader2atmega8u2.bootloader.lock_bits=0x2F
 
-#only supported for 32u4s, placed in pins_arduino.h
-#HoodLoader2atmega8u2.build.vid=0x2341
-#HoodLoader2atmega8u2.build.pid=0x484C
-#HoodLoader2atmega8u2.build.usb_product="HoodLoader2"
-#HoodLoader2atmega8u2.build.usb_manufacturer="NicoHood"
-#HoodLoader2atmega8u2.build.extra_flags={build.usb_flags}
+#usb settings, manufacturer overwritten by the IDE because of the VID
+HoodLoader2atmega8u2.build.vid=0x2341
+HoodLoader2atmega8u2.build.pid=0x484C
+HoodLoader2atmega8u2.build.usb_product="HoodLoader2 8u2"
+HoodLoader2atmega8u2.build.usb_manufacturer="Nico Hood"
+HoodLoader2atmega8u2.build.extra_flags={build.usb_flags}
 
 
 #USB core selection
-HoodLoader2atmega8u2.menu.usbcore.USB_CORE=Serial + HID
+#HID Project needs to be installed https://github.com/NicoHood/HID
+HoodLoader2atmega8u2.menu.usbcore.hid=Serial + Extended HID
+HoodLoader2atmega8u2.menu.usbcore.hid.build.variant=HoodLoader2_hid
+HoodLoader2atmega8u2.menu.usbcore.gamepad=Serial + Gamepad HID
+HoodLoader2atmega8u2.menu.usbcore.gamepad.build.variant=HoodLoader2_gamepad
+HoodLoader2atmega8u2.menu.usbcore.custom=Serial + Custom HID
+HoodLoader2atmega8u2.menu.usbcore.custom.build.variant=HoodLoader2_custom
+HoodLoader2atmega8u2.menu.usbcore.USB_CORE=Default HID Project Core
 HoodLoader2atmega8u2.menu.usbcore.USB_CORE.build.variant=HoodLoader2
 HoodLoader2atmega8u2.menu.usbcore.NO_USB=No USB functions
 HoodLoader2atmega8u2.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
@@ -235,7 +257,7 @@ HoodLoader2atmega8u2.menu.board.mega2560.bootloader.file=HoodLoader2_0_1_Mega_8u
 
 
 HoodLoader2atmega16u2DFU.name=Original 16u2 DFU Firmware
-HoodLoader2atmega16u2DFU.build.core=arduino:arduino
+HoodLoader2atmega16u2DFU.build.core=HID:hid
 HoodLoader2atmega16u2DFU.bootloader.tool=arduino:avrdude
 HoodLoader2atmega16u2DFU.upload.tool=arduino:avrdude
 
