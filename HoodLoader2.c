@@ -54,7 +54,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #define  INCLUDE_FROM_BOOTLOADERCDC_C
-#include "Hoodloader2.h"
+#include "HoodLoader2.h"
 
 /** Contains the current baud rate and other settings of the first virtual serial port. This must be retained as some
  *  operating systems will not open the port unless the settings can be set successfully.
