@@ -543,8 +543,13 @@ You need to install the gcc-avr toolchain, avr-libc and compile with:
 $ sudo add-apt-repository ppa:pmjdebruijn/gcc-avr-release
 $ sudo apt-get update
 $ sudo apt-cache search gcc-avr
-$ sudo apt-get install gcc-avr avr-libc
-$ cd Desktop/Arduino/HoodLoader
+$ sudo apt-get install gcc-avr avr-libc git
+$ avr-gcc -v
+$ cd Desktop
+$ mkdir Arduino
+$ cd Arduino
+$ git clone https://github.com/NicoHood/HoodLoader2.git
+$ cd HoodLoader2
 $ sudo make clean
 $ sudo make
 ```
