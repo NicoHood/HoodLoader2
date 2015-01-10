@@ -532,7 +532,7 @@ $ sudo make clean
 $ sudo make
 ```
 
-**HoodLoader2 Beta compiles with 3958(+2 for Mega) bytes with a Raspberry Pi.**
+**HoodLoader2.0.3 compiles with 3958(+2 for Mega) bytes with a Raspberry Pi.**
 
 ### How to compile with Ubuntu (avr-gcc 4.8.1)
 
@@ -556,14 +556,14 @@ $ sudo make
 
 [Package information](https://launchpad.net/~pmjdebruijn/+archive/ubuntu/gcc-avr-release)
 
-**HoodLoader2 Beta compiles with about 50 bytes less with this toolchain.**
+**HoodLoader2.0.3 compiles with 3908(+2 for Mega) bytes with this toolchain.**
 
 Licence and Copyright
 =====================
 If you use this library for any cool project let me know!
 
 ```
-Copyright (c) 2014 NicoHood
+Copyright (c) 2014-2015 NicoHood
 See the readme for credit to other people.
 
 This program is free software: you can redistribute it and/or modify
