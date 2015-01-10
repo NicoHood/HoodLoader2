@@ -81,6 +81,7 @@ HoodLoader2 - Installation
 
 **Caution: You will overwrite the DFU Bootloader. Read the installing instructions carefully, double check connections and __don't panic__!**
 It might be possible that you don't have a 16u2 on your Arduino board, if its a cheap clone.
+It might also be possible that your ICSP header of the 16u2 is flipped 180 degrees on some unofficial boards.
 
 **You wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx)
 via DFU any more** (but via avr-dude instead). You can switch back to DFU later.
@@ -239,7 +240,7 @@ For your interest you can also use this (somehow outdated) [older USB-Core](http
 
 #### Arduino IDE usage
 
-Using HoodLoader for the first time I recommend to simply upload an 'empty' sketch. If the drivers are installed correctly it will show up as HoodLoader2.
+Using HoodLoader2 for the first time I recommend to simply upload an 'empty' sketch. If the drivers are installed correctly it will show up as HoodLoader2.
 Once you have a sketch with USB-Core and CDC Serial running you can use the normal upload function. Switch to the new Serial port in your IDE and hit upload.
 The 16u2 will reset, enter BootLoader mode, reprogram and start the sketch. If it doesn't enter bootloader mode which might happen (also when using no USB-Core)
 you have to manually have to enter bootloader mode as described above.
@@ -252,17 +253,17 @@ Have a look at the examples in the HID Project and check out the [pinout](https:
 If you don't want to use the USB-Core you can also choose under *Tools/USB Core* "No USB functions" to get rid of the USB stuff
 and save the ram for other stuff if you don't need it. You also don't need the HID Project essentially if you don't want to use the USB functions.
 
-**No workaround is no longer needed with version 2.0.1 or newer.**
+**The workaround is no longer needed with version 2.0.1 or newer.**
 
 ### How to flash/erase firmwares (.hex files) with avr-dude
 
-If you want to upload a self compiled .hex file from a LUFA project for example like the
+If you want to upload a self compiled .hex file from a LUFA project like the
 [HoodLoader1](https://github.com/NicoHood/HoodLoader) for example
 you wont be able to use DFU via Flip any more. But you can use avr-dude instead:
 
 Download avr-dude [here](http://download.savannah.gnu.org/releases/avrdude/) (avrdude-6.1-mingw32.zip for windows).
 Open a cmd or bash and try the following code. You can also create a .bat file for easier uploading.
-The .bat files are also located in */tools*.
+The example .bat files are also located in */tools*.
 
 This can also be used to erase the program from your 16u2 if you always want to use it as normal USB-Serial bridge again (always stay in bootloader mode).
 And yes, it's correct that **you can have HoodLoader2 and HoodLoader1 running 'at the same time'** since v2 is a real bootloader and v1 'only' a firmware.
@@ -282,7 +283,7 @@ Arduino Uno/Mega 16u2 Pinout
 ![Arduino Uno Pinout](pictures/pinout.png)
 (c) [pighixxx](http://forum.arduino.cc/index.php/topic,146315.0.html)
 
-**Note: Some pins are not connected on a standard Arduino Uno R3** but still listed so you can use them if you have a custom board.
+**Note: Some pins are not connected on a standard Arduino Uno R3** but still listed so you can use them if you had a custom board. It might also be possible that your ICSP header of the 16u2 is flipped 180 degrees on some unofficial boards.
 You also need to solder the additional 4 pin header to access all 7 PB i/o pins. D7 has PWM! (other not connected pins with a timer as well).
 The 16u2 pinout is the same for Arduino Uno/Mega.
 
@@ -353,7 +354,7 @@ Baud 57600 cannot be used in bootloader mode since its used for CDC programming.
 
 The main MCU will always reset on a 16u2 reprogramming. There is no way to fix this (yet).
 
-The HoodLoader only ensures that you can upload sketches to the MCUs.
+The HoodLoader2 only ensures that you can upload sketches to the MCUs.
 If your USB HID device causes any problem please check the HID Project for known bugs/updates.
 
 The Magic BootKey is not stored properly in ram and may cause errors. This is a general Arduino
