@@ -227,6 +227,8 @@ right click and hit 'Update Driver Software... -> Search automatically [...]'.
 #### Installing board definitions
 To get the 16u2 board definitions for uploading, copy this HoodLoader2 folder into your sketchbook like this: *sketchbook/hardware/HoodLoader2/*
 
+![sketchbook installation](pictures/installation.png)
+
 #### Installing HID Project
 
 To actually use the USB functions you need a working USB-Core for the Arduino IDE. At the moment the Arduino IDE does not natively support the u2 series.
