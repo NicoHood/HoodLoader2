@@ -366,7 +366,8 @@ Version History
 2.0.3 Release (xx.01.2015)
 * added HID Project 2.1 board definition compatibility
 * fixed usb flag pass via boards.txt (instead of pins_arduino.h)
-* HoodLoader2.0.3 released (minor firmware identifier fix)
+* fixed 16u2 4 pin header pinout
+* HoodLoader2.0.3 released (minor firmware CDC identifier fix)
 
 2.0.2 Release (30.11.2014)
 * HID Project 2.0 official released:
@@ -531,7 +532,7 @@ $ sudo make clean
 $ sudo make
 ```
 
-**HoodLoader2 Beta compiles with 3966(+2 for Mega) bytes with a Raspberry Pi.**
+**HoodLoader2 Beta compiles with 3958(+2 for Mega) bytes with a Raspberry Pi.**
 
 ### How to compile with Ubuntu (avr-gcc 4.8.1)
 
