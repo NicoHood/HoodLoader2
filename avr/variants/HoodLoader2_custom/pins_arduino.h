@@ -39,7 +39,16 @@ You have to enable the specific hid apis on your own then, also the keyboard led
 */
 
 #define HID_AUTOMATIC
-#define HID_CUSTOM_SETTINGS
+//#define HID_CUSTOM_SETTINGS
+
+//================================================================================
+// Notice for HoodLoader2!
+//================================================================================
+
+/*
+HoodLoader2 sketches are limited to a maximum 15 byte HID report.
+Dont use more than that. (for a Leonardo/Micro it is 63 bytes).
+*/
 
 //================================================================================
 // Automatic
