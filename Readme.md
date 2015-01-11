@@ -3,6 +3,8 @@ HoodLoader2.0.3
 
 ![header](pictures/header.jpg)
 
+**HoodLoader2 is a CDC BootLoader with self reprogramming and USB-Serial function.**
+
 An Arduino Uno/Mega board has two Microcontroller of which one(16u2) is normally used for USB-Serial translation.
 But we can also use it as standalone AVR Microcontroller with (or without) USB functions as well.
 
@@ -30,7 +32,7 @@ and some online shops even sell the bigger 32u2 (I've got two of them :D).
 **HoodLoader2 functions:**
 * CDC Bootloader for the 16u2 (to upload .hex files via avr-dude/Arduino IDE)
 * USB-Serial programming of the 328/2560
-* No drivers needed for the HoodLoader2 itself
+* No drivers needed for the HoodLoader2 itself (default Arduino Uno/Mega drivers)
 * Self flashing sketch to burn the HoodLoader2 to the 16u2 (modified version from Nick Gammon)
 
 **[HID Project](https://github.com/NicoHood/HID) features (for HoodLoader2):**
@@ -38,7 +40,7 @@ and some online shops even sell the bigger 32u2 (I've got two of them :D).
 * IDE example sketches for HID devices (Mouse, Keyboard, Gamepad, Media/System Keys)
 * IDE example sketch for a working Serial + Keyboard demonstration
 * IDE example sketch for PWM demonstration
-* IDE example USB-Serial demo (equal to original firmware for baud rate 115200)
+* IDE example USB-Serial demo (equal to original firmware)
 * IDE example sketch for 16u2 - 328/2560 communication (HoodLoader1 technique)
 * Newer features are listed in the HID Project page itself.
 
@@ -130,6 +132,9 @@ The installation sketch is located in *tools/Atmega_Board_Programmer/Atmega_Boar
 
 In the first lines of the sketch you can optionally choose to what Arduino you are uploading to otherwise it will automatically detect the right Arduino.
 **Upload the installation sketch to your Arduino Uno/Mega, then put in the 100nF capacitor.**
+You can also use a 2nd Arduino to flash the firmware. For example if you can't access the first Arduino for some reason.
+Then you don not need the capacitor but you have to connect 5V-5V and GND-GND (unplug USB from the to be flashed Arduino!).
+
 The normal way is to control the uploading via Serial, so open the Serial port monitor at baud 115200.
 Follow the instructions (press H + Enter). Then your Arduino should be flashed with the new firmware. Remove all the wires now.
 Once you've done this, normally you don't need to do this again, maybe if there is a new HoodLoader2 version.
@@ -225,7 +230,8 @@ It happened to me that Windows 'lost' the drivers. Go to 'This Pc -> Manage -> D
 right click and hit 'Update Driver Software... -> Search automatically [...]'.
 
 #### Installing board definitions
-To get the 16u2 board definitions for uploading, copy this HoodLoader2 folder into your sketchbook like this: *sketchbook/hardware/HoodLoader2/*
+To get the 16u2 board definitions for uploading, copy this HoodLoader2 folder into your sketchbook like this:
+*sketchbook/hardware/HoodLoader2/* (remove the '-master' postfix).
 
 ![sketchbook installation](pictures/installation.png)
 
@@ -370,6 +376,7 @@ Version History
 * added HID Project 2.1 board definition compatibility
 * fixed usb flag pass via boards.txt (instead of pins_arduino.h)
 * fixed 16u2 4 pin header pinout
+* DFU burn bootloader fix
 * HoodLoader2.0.3 released (minor firmware CDC identifier fix)
 
 2.0.2 Release (30.11.2014)
