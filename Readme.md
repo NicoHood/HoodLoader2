@@ -131,7 +131,7 @@ PIN 7    - Force HoodLoader2 upload
 The installation sketch is located in *tools/Atmega_Board_Programmer/Atmega_Board_Programmer.ino*, open it with your Arduino IDE.
 
 In the first lines of the sketch you can optionally choose to what Arduino you are uploading to otherwise it will automatically detect the right Arduino.
-**Upload the installation sketch to your Arduino Uno/Mega, then put in the 100nF capacitor.**
+**Upload the installation sketch to your Arduino Uno/Mega, upload the Serial monitor and then put in the 100nF capacitor.**
 You can also use a 2nd Arduino to flash the firmware. For example if you can't access the first Arduino for some reason.
 Then you don not need the capacitor but you have to connect 5V-5V and GND-GND (unplug USB from the to be flashed Arduino!).
 
@@ -160,8 +160,8 @@ You can do this with your program if choice (e.g. avr-dude) or use the Arduino I
 ```
 HoodLoader2 Fuses:
 low_fuses=0xFF
-high_fuses=0xD9
-extended_fuses=0xF4
+high_fuses=0xD8
+extended_fuses=0xFC
 unlock_bits=0x3F
 lock_bits=0x2F
 
@@ -378,6 +378,7 @@ Version History
 * fixed 16u2 4 pin header pinout
 * DFU burn bootloader fix
 * HoodLoader2.0.3 released (minor firmware CDC identifier fix)
+* Added 32u2 bootloader to the installation sketch as well
 
 2.0.2 Release (30.11.2014)
 * HID Project 2.0 official released:
