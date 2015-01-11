@@ -255,21 +255,43 @@ HoodLoader2atmega8u2.menu.board.mega2560.bootloader.file=HoodLoader2_0_1_Mega_8u
 
 ##############################################################
 
-
 HoodLoader2atmega16u2DFU.name=Original 16u2 DFU Firmware
 HoodLoader2atmega16u2DFU.build.core=HID:hid
 HoodLoader2atmega16u2DFU.bootloader.tool=arduino:avrdude
 HoodLoader2atmega16u2DFU.upload.tool=arduino:avrdude
 
 # MCU properties
+HoodLoader2atmega16u2DFU.upload.maximum_size=12288
+HoodLoader2atmega16u2DFU.upload.maximum_data_size=512
 HoodLoader2atmega16u2DFU.build.mcu=atmega16u2
 
-#fuses (HoodLoader2 only, not suitable for DFU)
+#general settings for all boards:
+HoodLoader2atmega16u2DFU.build.board=HOODLOADER2
+HoodLoader2atmega16u2DFU.build.f_cpu=16000000L
+HoodLoader2atmega16u2DFU.vid.0=0x2341
+HoodLoader2atmega16u2DFU.pid.0=0x484C
+
+#uploading settings
+HoodLoader2atmega16u2DFU.upload.speed=57600
+HoodLoader2atmega16u2DFU.upload.protocol=avr109
+HoodLoader2atmega16u2DFU.upload.disable_flushing=true
+HoodLoader2atmega16u2DFU.upload.use_1200bps_touch=true
+HoodLoader2atmega16u2DFU.upload.wait_for_upload_port=true
+
+#fuses (DFU only, not suitable for HoodLoader2)
 HoodLoader2atmega16u2DFU.bootloader.low_fuses=0xEF
 HoodLoader2atmega16u2DFU.bootloader.high_fuses=0xD9
 HoodLoader2atmega16u2DFU.bootloader.extended_fuses=0xF4
 HoodLoader2atmega16u2DFU.bootloader.unlock_bits=0x3F
-HoodLoader2atmega16u2DFU.bootloader.lock_bits=0xCF
+HoodLoader2atmega16u2DFU.bootloader.lock_bits=0x0F
+
+#usb settings, manufacturer overwritten by the IDE because of the VID
+HoodLoader2atmega16u2DFU.build.vid=0x2341
+HoodLoader2atmega16u2DFU.build.pid=0x484C
+HoodLoader2atmega16u2DFU.build.usb_product="HoodLoader2 16u2"
+HoodLoader2atmega16u2DFU.build.usb_manufacturer="Nico Hood"
+HoodLoader2atmega16u2DFU.build.extra_flags={build.usb_flags}
+HoodLoader2atmega16u2DFU.build.variant=HoodLoader2_DFU
 
 
 #Board selection (only important for burning bootloaders)

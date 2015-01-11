@@ -55,6 +55,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // Version 1.26-B: Updated to HoodLoader 2.0.1
 // Version 1.26-C: Updated to HoodLoader 2.0.2
 // Version 1.26-D: Corrected Fuses to original Arduino values
+// Version 1.26-E: DFU lock bytes fix
 
 #define VERSION "1.26-D"
 
@@ -220,7 +221,7 @@ signatureType signatures [] =
         0xEF, // fuse low byte: external clock, m
         0xD9, // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
         0xF4, // fuse extended byte: brown-out detection at 2.6V
-        0xCF }, // lock bits
+        0x0F }, // lock bits
        
 #else // HOODLOADER2_16U2_UNO
   { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   512 ,
@@ -231,7 +232,7 @@ signatureType signatures [] =
         0xEF, // fuse low byte: external clock, m
         0xD9, // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
         0xF4, // fuse extended byte: brown-out detection at 2.6V
-        0xCF }, // lock bits
+        0x0F }, // lock bits
         
 #endif
   
