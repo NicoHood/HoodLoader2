@@ -261,7 +261,9 @@ Therefore you still need to get some software and install it properly. Arduino I
 #### CDC Driver installation:
 
 You have to install new drivers (Windows only) since it will conflict with the official due to new USB functions
-(it will use a different PID/VID). The driver files is named HoodLoader2.inf.
+(it will use a different PID/VID). The driver files is named HoodLoader2.inf. If you don't want to install the unsigned driver,
+you can also install the [Teensy driver](https://www.pjrc.com/teensy/serial_install.exe) which works for every USB-Serial device.
+It will then show up as Teensy USB-Serial and not as HoodLoader2 in the device manager. If you have both drivers installed it will show up as HoodLoader2.
 Also see [this tutorial](http://arduino.cc/en/guide/windows) on how to install the drivers (right click the .inf file and hit install).
 [How to install drivers for Windows 8/8.1](https://learn.sparkfun.com/tutorials/disabling-driver-signature-on-windows-8/disabling-signed-driver-enforcement-on-windows-8).
 
@@ -421,6 +423,7 @@ Version History
 * DFU burn bootloader fix
 * HoodLoader2.0.3 released (minor firmware CDC identifier fix)
 * Added 32u2 bootloader to the installation sketch as well
+* Improved flash.bat file and included avrdude for windows
 
 2.0.2 Release (30.11.2014)
 * HID Project 2.0 official released:
@@ -554,6 +557,24 @@ One thing to add is the address of the 16u2 in the end_addresses array (line 16)
 
 You need to download the MUSHclient as described in his instructions.
 He provides a simple, [ready to use zip file](http://www.gammon.com.au/downloads/dlmushclient.htm).
+
+### USB PID/VID
+
+The HoodLoader2 itself uses the official Arduinos VID and PID.
+The HID Project and the board definition files uses a special PID but this has nothing to do with the bootloader itself.
+
+```
+#define LUFA_VID					0x03EB
+#define LUFA_PID					0x204A
+
+#define ARDUINO_VID					0x2341
+#define ARDUINO_UNO_PID				0x0043 // R3 (0001 R1)
+#define ARDUINO_MEGA_PID			0x0042 // R3 (0010 R1)
+#define ARDUINO_MEGA_ADK_PID		0x0044 // R3 (003F R1)
+
+HoodLoader2atmega16u2.vid.0=0x2341
+HoodLoader2atmega16u2.pid.0=0x484C
+```
 
 ### How to compile with a Raspberry Pi (avr-gcc 4.7.2)
 
