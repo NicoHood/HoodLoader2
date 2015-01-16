@@ -143,9 +143,15 @@ Upload the installation sketch to your Arduino Uno/Mega. This may take a while.
 
 ##### 3. Burn the bootloader
 Once the installation sketch is uploaded to your main MCU you are able to burn the bootloader to your 16u2.
-The normal way is to control the uploading via Serial, so open the Serial port monitor at baud 115200.
-**Now put in the 100nF capacitor.** Follow the instructions (press H + Enter).
+To control the burning you have two options:
 
+**Control via Serial:**
+Open the Serial port monitor at baud 115200. **Now put in the 100nF capacitor.**
+Follow the instructions (press 'H' + Enter).
+Your USB device will disconnect and the 328/2560 will flash the new bootloader.
+You may close the Serial monitor now.
+
+**Control via pin 7**
 Optionally you can also connect pin 7 with ground to flash the HoodLoader2 if your serial port does not work for some reason.
 
 ##### 4. Check bootloader installation
@@ -167,6 +173,10 @@ Or you can try to access the recovery options of the installation sketch if its 
 The only way to manually flash the MCU without Serial access is to connect a button to pin 7 (HoodLoader2)
 or to pin 8 (DFU + USB-Serial). Therefore make sure all wires are connected properly,
 reset the main MCU (328/2560) and short the pin (7 or 8) to ground and wait a few seconds.
+
+##### 6. (optional) Switch back to the old DFU bootloader
+If you want to switch back to the original DFU bootloader with usbserial just do the same procedure.
+Enter 'D' for DFU on the Serial monitor or short pin 8 to ground.
 
 ### b) Flash the bootloader from another Arduino
 
