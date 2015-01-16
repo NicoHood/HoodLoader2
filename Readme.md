@@ -141,6 +141,8 @@ The installation sketch is located in *tools/Atmega_Board_Programmer/Atmega_Boar
 In the first lines of the sketch you can optionally choose to what Arduino you are uploading to otherwise it will automatically detect the correct Arduino.
 Upload the installation sketch to your Arduino Uno/Mega. This may take a while.
 
+![board-programmer](pictures/board-programmer.png)
+
 ##### 3. Burn the bootloader
 Once the installation sketch is uploaded to your main MCU you are able to burn the bootloader to your 16u2.
 To control the burning you have two options:
