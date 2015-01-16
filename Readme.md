@@ -154,7 +154,8 @@ Your USB device will disconnect and the 328/2560 will flash the new bootloader.
 You may close the Serial monitor now.
 
 **Control via pin 7**
-Optionally you can also connect pin 7 with ground to flash the HoodLoader2 if your serial port does not work for some reason.
+**Now put in the 100nF capacitor.** Optionally you can also connect pin 7 with ground to flash the HoodLoader2
+if your serial port does not work for some reason.
 
 ##### 4. Check bootloader installation
 Now your Arduino should be flashed with the new bootloader. Remove all the wires now.
