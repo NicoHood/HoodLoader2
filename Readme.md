@@ -94,9 +94,9 @@ In this case bricking 'only' means that you cannot use your Arduino's 16u2 USB-S
 Then you need a second working Arduino to burn the bootloader again. Normally this should not happen.
 
 **You have three options to burn the new bootloader:**
-* a) Burn it with the main MCU (328/2560) on a standalone Arduino Uno/Mega
-* b) Burn it from any other Arduino with the installation sketch
-* c) Burn with an ISP (advanced users)
+* [a) Burn it with the main MCU (328/2560) on a standalone Arduino Uno/Mega](https://github.com/NicoHood/HoodLoader2/tree/dev#a-installation-sketch-standalone-arduino-unomega)
+* [b) Burn it from any other Arduino with the installation sketch](https://github.com/NicoHood/HoodLoader2/tree/dev#b-burn-the-bootloader-from-another-arduino)
+* [c) Burn with an ISP (advanced users)](https://github.com/NicoHood/HoodLoader2/tree/dev#c-burning-via-isp-advanced)
 
 ### a) Installation sketch (standalone Arduino Uno/Mega)
 
@@ -139,7 +139,7 @@ Connect your Arduino to your PC, select the Arduino Uno/Mega board like you are 
 The installation sketch is located in *tools/Atmega_Board_Programmer/Atmega_Board_Programmer.ino*, open it with your Arduino IDE.
 
 In the first lines of the sketch you can optionally choose to what Arduino you are uploading to otherwise it will automatically detect the correct Arduino.
-Upload the installation sketch to your Arduino Uno/Mega. This may take a while.
+**Upload the installation sketch to your Arduino Uno/Mega.** This may take a while.
 
 ![board-programmer](pictures/board-programmer.png)
 
@@ -147,15 +147,14 @@ Upload the installation sketch to your Arduino Uno/Mega. This may take a while.
 Once the installation sketch is uploaded to your main MCU you are able to burn the bootloader to your 16u2.
 To control the burning you have two options:
 
-**Control via Serial:**
+##### Control via Serial:
 Open the Serial port monitor at baud 115200. **Now put in the 100nF capacitor.**
-Follow the instructions (press 'H' + Enter).
-Your USB device will disconnect and the 328/2560 will flash the new bootloader.
-You may close the Serial monitor now.
+Follow the instructions (press 'H' + Enter) and wait. You may close the Serial monitor now.
 
-**Control via pin 7**
-**Now put in the 100nF capacitor.** Optionally you can also connect pin 7 with ground to flash the HoodLoader2
-if your serial port does not work for some reason.
+##### (optional) Control via pin 7:
+**First put in the 100nF capacitor.** Connect pin 7 with ground to flash the HoodLoader2 if your serial port does not work for some reason.
+
+Your USB device will disconnect and the 328/2560 will flash the new bootloader.
 
 ##### 4. Check bootloader installation
 Now your Arduino should be flashed with the new bootloader. Remove all the wires now.
@@ -163,6 +162,8 @@ Once you've done this, normally you don't need to do this again, maybe if there 
 
 To check if the installation worked fine you may check your device like that:
 TODO picture
+
+You may **remove all wires now**, they are not needed anymore once the HoodLoader2 is flashed.
 
 **Read the [How to use](https://github.com/NicoHood/HoodLoader2#hoodloader2---how-to-use) section**
 on how to install and use the HID and USB core and upload new sketches to the 16u2.
@@ -181,7 +182,7 @@ reset the main MCU (328/2560) and short the pin (7 or 8) to ground and wait a fe
 If you want to switch back to the original DFU bootloader with usbserial just do the same procedure.
 Enter 'D' for DFU on the Serial monitor or short pin 8 to ground.
 
-### b) Flash the bootloader from another Arduino
+### b) Burn the bootloader from another Arduino
 
 You can also use a 2nd Arduino to flash the bootloader. For example if you can't access the first Arduino for some reason.
 In this case you do not need the capacitor but you have to connect 5V-5V and GND-GND (unplug USB from the to be flashed Arduino!).
