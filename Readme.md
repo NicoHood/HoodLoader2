@@ -81,34 +81,40 @@ So in bootloader mode your Arduino acts like its used to (except baud 57600).
 HoodLoader2 - Installation
 ==========================
 
-**Caution: You will overwrite the DFU Bootloader. Read the installing instructions carefully, double check connections and __don't panic__!**
+**Caution: You will overwrite the DFU Bootloader**
+You wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx) via DFU any more.
+But via avr-dude instead. You can switch back to DFU later.
+
+Read the installing instructions carefully, double check connections and __don't panic__!**
 It might be possible that you don't have a 16u2 on your Arduino board, if its a cheap clone.
 It might also be possible that your ICSP header of the 16u2 is flipped 180 degrees on some unofficial boards.
 
-**You wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx)
-via DFU any more** (but via avr-dude instead). You can switch back to DFU later.
-
 **If anything goes wrong while burning the bootloader you can 'brick' your Arduino.**
 In this case bricking 'only' means that you cannot use your Arduino's 16u2 USB-Serial bridge any more (and programming via USB too).
-Then you need a second working Arduino to burn the firmware again.
+Then you need a second working Arduino to burn the bootloader again. Normally this should not happen.
 
-To install a bootloader in general you would need an ISP (In system programmer).
-If you just want to use your own ISP to burn the hex file, see below.
-For those of you who only have a standalone Arduino Uno/Mega R3
-we use a modified version of Nick Gammon's [Atmega Board Programmmer](https://github.com/nickgammon/arduino_sketches).
-In this case the 328/2560 acts as ISP with a the HoodLoader .hex preloaded in PROGMEM.
+**You have three options to burn the new bootloader:**
+* a) Burn it with the main MCU (328/2560) on a standalone Arduino Uno/Mega
+* b) Burn it from any other Arduino with the installation sketch
+* c) Burn with an ISP (advanced users)
 
-### Installation sketch (standalone Arduino Uno/Mega)
+### a) Installation sketch (standalone Arduino Uno/Mega)
 
 This installation method is designed to work with a single Arduino Uno/Mega.
-The main MCU (328/2560) gets a sketch with a preloaded firmware and is able to flash the 16u2 via ISP.
-Its a special modification of [Nick Gammon's Atmega bootloader programmer](http://www.gammon.com.au/forum/?id=11635)
-to ensure high security to not brick your Arduino.
+To install a bootloader in general you would need an ISP (In system programmer).
+Most of you (me too) down own a professional ISP so we will use a trick here.
 
-First remove __all__ hardware from your Arduino to ensure nothing is messing up the upload.
-All you need to do is to connect the SPI lines correct together like this.
-**The 100nF Capacitor is needed to prevent the 328/2560 from not being reset.**
-Only plug it in __after__ the sketch is uploaded to the 16u2.
+We use a modified version of Nick Gammon's [Atmega Board Programmmer](https://github.com/nickgammon/arduino_sketches).
+In this case the 328/2560 acts as ISP with a the HoodLoader2.hex preloaded in PROGMEM.
+
+##### 1. Prepare your Arduino.
+First remove __all__ hardware/wires/usb-cable from your Arduino to ensure nothing is messing up the upload.
+Connect all wires like in the picture below. Double check connections!
+
+Note: It might be possible that your ICSP header of the 16u2 is flipped 180 degrees on some unofficial boards.
+
+The 100nF Capacitor is needed to prevent the 328/2560 from not being reset.
+Only plug it in __after__ the sketch is uploaded to the 16u2, you will see a note later in the instruction.
 
 ![Connections](pictures/connections.jpg)
 
@@ -128,21 +134,31 @@ PIN 8    - Force DFU upload
 PIN 7    - Force HoodLoader2 upload
 ```
 
+##### 2. Upload the installation sketch
+Connect your Arduino to your PC, select the Arduino Uno/Mega board like you are used to.
 The installation sketch is located in *tools/Atmega_Board_Programmer/Atmega_Board_Programmer.ino*, open it with your Arduino IDE.
 
-In the first lines of the sketch you can optionally choose to what Arduino you are uploading to otherwise it will automatically detect the right Arduino.
-**Upload the installation sketch to your Arduino Uno/Mega, upload the Serial monitor and then put in the 100nF capacitor.**
-You can also use a 2nd Arduino to flash the firmware. For example if you can't access the first Arduino for some reason.
-Then you don not need the capacitor but you have to connect 5V-5V and GND-GND (unplug USB from the to be flashed Arduino!).
+In the first lines of the sketch you can optionally choose to what Arduino you are uploading to otherwise it will automatically detect the correct Arduino.
+Upload the installation sketch to your Arduino Uno/Mega. This may take a while.
 
+##### 3. Burn the bootloader
+Once the installation sketch is uploaded to your main MCU you are able to burn the bootloader to your 16u2.
 The normal way is to control the uploading via Serial, so open the Serial port monitor at baud 115200.
-Follow the instructions (press H + Enter). Then your Arduino should be flashed with the new firmware. Remove all the wires now.
+**Now put in the 100nF capacitor.** Follow the instructions (press H + Enter).
+
+Optionally you can also connect pin 7 with ground to flash the HoodLoader2 if your serial port does not work for some reason.
+
+##### 4. Check bootloader installation
+Now your Arduino should be flashed with the new bootloader. Remove all the wires now.
 Once you've done this, normally you don't need to do this again, maybe if there is a new HoodLoader2 version.
+
+To check if the installation worked fine you may check your device like that:
+TODO picture
 
 **Read the [How to use](https://github.com/NicoHood/HoodLoader2#hoodloader2---how-to-use) section**
 on how to install and use the HID and USB core and upload new sketches to the 16u2.
 
-##### **Recovery options/how to get back to the original bootloader:**
+##### 5. (optional) Recovery options/how to get back to the original bootloader
 
 If anything goes wrong and you can't access the Serial via USB any more you still are able to try different methods to flash the 16u2.
 You can use another Arduino and upload the installation sketch there and try the flash again.
@@ -152,7 +168,14 @@ The only way to manually flash the MCU without Serial access is to connect a but
 or to pin 8 (DFU + USB-Serial). Therefore make sure all wires are connected properly,
 reset the main MCU (328/2560) and short the pin (7 or 8) to ground and wait a few seconds.
 
-### Burning via ISP (advanced)
+### b) Flash the bootloader from another Arduino
+
+You can also use a 2nd Arduino to flash the bootloader. For example if you can't access the first Arduino for some reason.
+In this case you do not need the capacitor but you have to connect 5V-5V and GND-GND (unplug USB from the to be flashed Arduino!).
+
+TODO picture
+
+### c) Burning via ISP (advanced)
 
 This is for advanced users who want to burn the bootloader with an external ISP directly.
 You can do this with your program if choice (e.g. avr-dude) or use the Arduino IDE and select the correct MCU, board, bootloader and hit "burn bootloader".
@@ -203,6 +226,11 @@ The HoodLoader2 itself just needs the standard Arduino drivers.**
 
 ![16u2 Reset](pictures/reset.jpg)
 
+
+**To actually use the new HoodLoader2 you have a few options**
+* a)
+* b)
+* c) 
 
 ### How to upload sketches to the 328/2560
 
