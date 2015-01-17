@@ -61,8 +61,8 @@ Dont use more than that. (for a Leonardo/Micro it is 63 bytes).
 #define HID_KEYBOARD_LEDS_ENABLE // leds OR keys
 //#define HID_KEYBOARD_KEYS_ENABLE
 //#define HID_RAWHID_ENABLE // currently not working
-//#define HID_CONSUMER_ENABLE
-//#define HID_SYSTEM_ENABLE
+//#define HID_CONSUMERCONTROL_ENABLE
+//#define HID_SYSTEMCONTROL_ENABLE
 //#define HID_GAMEPAD_ENABLE // only works without mouse absolute
 
 //================================================================================
@@ -86,8 +86,8 @@ HID_REPORT_MOUSE(HID_REPORTID_MOUSE)
 #define HID_MOUSE_API_ENABLE
 #define HID_KEYBOARD_API_ENABLE
 //#define HID_RAWHID_API_ENABLE
-//#define HID_CONSUMER_API_ENABLE
-//#define HID_SYSTEM_API_ENABLE
+//#define HID_CONSUMERCONTROL_API_ENABLE
+//#define HID_SYSTEMCONTROL_API_ENABLE
 //#define HID_GAMEPAD_API_ENABLE
 //#define HID_ENABLE_ALL_APIS // enables all of the ones above
 
@@ -132,8 +132,8 @@ HID_REPORT_MOUSE(HID_REPORTID_MOUSE)
 ////#define HID_MOUSE_API_ENABLE
 ////#define HID_KEYBOARD_API_ENABLE
 ////#define HID_RAWHID_API_ENABLE
-////#define HID_CONSUMER_API_ENABLE
-////#define HID_SYSTEM_API_ENABLE
+////#define HID_CONSUMERCONTROL_API_ENABLE
+////#define HID_SYSTEMCONTROL_API_ENABLE
 ////#define HID_GAMEPAD_API_ENABLE
 ////#define HID_ENABLE_ALL_APIS // enables all of the ones above
 
