@@ -84,7 +84,7 @@ HoodLoader2at90usb162.build.mcu=at90usb162
 HoodLoader2at90usb162.build.board=HOODLOADER2
 HoodLoader2at90usb162.build.f_cpu=16000000L
 HoodLoader2at90usb162.vid.0=0x2341
-HoodLoader2at90usb162.pid.0=0x484C
+HoodLoader2at90usb162.pid.0=0x484F
 
 #uploading settings
 HoodLoader2at90usb162.upload.speed=57600
@@ -146,7 +146,7 @@ HoodLoader2atmega32u2.build.mcu=atmega32u2
 HoodLoader2atmega32u2.build.board=HOODLOADER2
 HoodLoader2atmega32u2.build.f_cpu=16000000L
 HoodLoader2atmega32u2.vid.0=0x2341
-HoodLoader2atmega32u2.pid.0=0x484C
+HoodLoader2atmega32u2.pid.0=0x484D
 
 #uploading settings
 HoodLoader2atmega32u2.upload.speed=57600
@@ -208,7 +208,7 @@ HoodLoader2atmega8u2.build.mcu=atmega8u2
 HoodLoader2atmega8u2.build.board=HOODLOADER2
 HoodLoader2atmega8u2.build.f_cpu=16000000L
 HoodLoader2atmega8u2.vid.0=0x2341
-HoodLoader2atmega8u2.pid.0=0x484C
+HoodLoader2atmega8u2.pid.0=0x484E
 
 #uploading settings
 HoodLoader2atmega8u2.upload.speed=57600
