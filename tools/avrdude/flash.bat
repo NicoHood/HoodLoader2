@@ -9,7 +9,7 @@ REM reset all variables
 set com=
 set mcu=
 set mode=
-REM set command=
+set command=
 
 
 REM comport selection

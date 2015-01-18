@@ -10,16 +10,16 @@ But we can also use it as standalone AVR Microcontroller with (or without) USB f
 
 HoodLoader2 gives you the option to **reprogram the 16u2** of a normal Arduino Uno/Mega R3 with **custom sketches**.
 This means you can use the 16u2 as a normal USB AVR like a Leonardo.
-You have a full compatible **USB-HID core, CDC Serial** and you can also use the **7 i/o pins of the 16u2**.
-The **extended HID devices and USB-Core improvements** of the [HID Project](https://github.com/NicoHood/HID) also apply for the HoodLoader2.
+You have a full compatible USB-HID core, CDC Serial and you can also use the 7 i/o pins of the 16u2.
+The extended HID devices and USB-Core improvements of the [HID Project](https://github.com/NicoHood/HID) also apply for the HoodLoader2.
 
 The 16u2 is somehow limited in its functions but still a great addition if you know how to use it. It also compatible with
 [FastLED](https://github.com/FastLED/FastLED) and [IRLremote](https://github.com/NicoHood/IRLremote)(with PCINT) for example.
 
 The great thing about this is that you actually have **two fully Arduino compatible Microcontrollers in one Arduino Uno/Mega board**
-– the board most of you already own. Your **main MCU (328/2560) is still reprogrammable** if you enter bootloader mode.
-**All you need for this is a normal Arduino Uno/Mega R3 and some cables** to install the new HoodLoader2.
-Please __read the readme carfully__ to avoid any problems. You will find most of the answers to your questions in the readme.
+– the board most of you already own. Your main MCU (328/2560) is **still reprogrammable** if you enter bootloader mode.
+All you need for this is a normal Arduino Uno/Mega R3 and some cables to install the new HoodLoader2.
+Please __read the readme carfully__ to avoid any problems. You will find most of the answers to your questions already in the readme.
 
 **See http://nicohood.wordpress.com/ for more tutorials, projects and contact.**
 
@@ -78,8 +78,8 @@ So in bootloader mode your Arduino acts like its used to (except baud 57600).
 
 **See [HID Project](https://github.com/NicoHood/HID) for the Arduino IDE core files/examples.**
 
-HoodLoader2 - Installation
-==========================
+HoodLoader2 - Hardware Installation
+===================================
 
 **Caution: You will overwrite the DFU Bootloader**
 You wont be able to flash any hex file with [Flip](http://www.atmel.com/tools/flip.aspx) via DFU any more.
@@ -151,48 +151,40 @@ To control the burning you have two options:
 Open the Serial port monitor at baud 115200. **Now put in the 100nF capacitor.**
 Follow the instructions (press 'H' + Enter) and wait. You may close the Serial monitor now.
 
-##### (optional) Control via pin 7:
-**First put in the 100nF capacitor.** Connect pin 7 with ground to flash the HoodLoader2 if your serial port does not work for some reason.
+![installation-sketch](pictures/installation-sketch.png)
+
+##### (Optional) Control via pin 7:
+**First put in the 100nF capacitor.** Press the reset button.
+Connect pin 7 with ground to flash the HoodLoader2 if your serial port does not work for some reason.
 
 Your USB device will disconnect and the 328/2560 will flash the new bootloader.
 
 ##### 4. Check bootloader installation
-Now your Arduino should be flashed with the new bootloader. Remove all the wires now.
-Once you've done this, normally you don't need to do this again, maybe if there is a new HoodLoader2 version.
+Now your Arduino should be flashed with the new bootloader. If its not correctly installed read the instructions carefully and try again.
+To check if the installation worked fine you may check your device like that in "Devices and Printers" for Windows:
 
-To check if the installation worked fine you may check your device like that:
-TODO picture
+![version](pictures/version.png)
 
 You may **remove all wires now**, they are not needed anymore once the HoodLoader2 is flashed.
+Normally you don't need to do this again, maybe if there is a new HoodLoader2 version.
 
-**Read the [How to use](https://github.com/NicoHood/HoodLoader2#hoodloader2---how-to-use) section**
-on how to install and use the HID and USB core and upload new sketches to the 16u2.
+**Keep on reading** on how to install the board definition files and use the HoodLoader2.
 
-##### 5. (optional) Recovery options/how to get back to the original bootloader
-
-If anything goes wrong and you can't access the Serial via USB any more you still are able to try different methods to flash the 16u2.
-You can use another Arduino and upload the installation sketch there and try the flash again.
-Or you can try to access the recovery options of the installation sketch if its still on the 328/2560:
-
-The only way to manually flash the MCU without Serial access is to connect a button to pin 7 (HoodLoader2)
-or to pin 8 (DFU + USB-Serial). Therefore make sure all wires are connected properly,
-reset the main MCU (328/2560) and short the pin (7 or 8) to ground and wait a few seconds.
-
-##### 6. (optional) Switch back to the old DFU bootloader
+##### 5. (Optional) Switch back to the old DFU bootloader
 If you want to switch back to the original DFU bootloader with usbserial just do the same procedure.
-Enter 'D' for DFU on the Serial monitor or short pin 8 to ground.
+Enter 'D' for DFU on the Serial monitor or short pin 8 to ground. You can use avrdude to flash .hex files so DFU is not really needed anymore.
 
 ### b) Burn the bootloader from another Arduino
 
 You can also use a 2nd Arduino to flash the bootloader. For example if you can't access the first Arduino for some reason.
-In this case you do not need the capacitor but you have to connect 5V-5V and GND-GND (unplug USB from the to be flashed Arduino!).
-
-TODO picture
+Just connect all wires from the 2nd Arduinos main MCU to the 16u2. You also need to connect 5V-5V and GND-GND to power the board.
+Unplug the USB cable of the Arduino you are flashing. In this case you do not need the capacitor.
 
 ### c) Burning via ISP (advanced)
 
 This is for advanced users who want to burn the bootloader with an external ISP directly.
-You can do this with your program if choice (e.g. avr-dude) or use the Arduino IDE and select the correct MCU, board, bootloader and hit "burn bootloader".
+You can do this with your program if choice (e.g. avr-dude) or use the Arduino IDE and
+select the correct MCU, board, bootloader, programmer and hit "burn bootloader".
 
 ```
 HoodLoader2 Fuses:
@@ -214,14 +206,58 @@ lock_bits=0xCF
 ### Updating HoodLoader2 to a newer version
 
 Updating to a newer HoodLoader2 version just works like the first install.
-Upload the installation sketch and follow the instructions again carefully.
+Upload the installation sketch and follow the instructions again.
+
 For the HID Project read the updating instructions carefully since they might change from version to version.
 Also ensure that your HoodLoader2 board definitions (the avr/ folder) is up to date when you use the newest HID-Project.
 
-**Updating to 2.0.3 just burn the new HoodLoader2 and update to the newest HID Project.**
+**Updating to 2.0.3 just burn the new HoodLoader2.0.3, install the new drivers(for 32u2, 8u2, at90usb162 only) and update to the newest HID Project.**
+
+
+HoodLoader2 - Software Installation
+===================================
+
+You can now use the 16u2 as normal Arduino USB board like a Leonardo/Micro/Teensy with the Arduino IDE.
+Therefore you still need to get some software and install it properly. Arduino IDE 1.5.8 or higher is recommended.
+
+##### 1. CDC Driver installation (Windows only):
+You have to install new drivers since it will conflict with the official due to new USB functions it will use a different PID/VID).
+You can install the proper (unsigned) driver from the .inf file or as an alternative you can also install the (signed)Teensy drivers.
+
+The driver file is named *HoodLoader2.inf*. Also see [this tutorial](http://arduino.cc/en/guide/windows) on how to install the drivers (right click the .inf file and hit install).
+[How to install drivers for Windows 8/8.1](https://learn.sparkfun.com/tutorials/disabling-driver-signature-on-windows-8/disabling-signed-driver-enforcement-on-windows-8).
+
+If you don't want to install the unsigned driver, you can also install the [Teensy driver](https://www.pjrc.com/teensy/serial_install.exe) which works for every USB Serial device.
+It will then show up as Teensy USB-Serial and not as HoodLoader2 in the device manager. If you have both drivers installed it will show up as HoodLoader2.
+The Teensy driver recognizes any CDC USB device as Teensy USB Serial if no other driver is installed. This might be usefull if you plan to change the PID/VID for developing.
+
+If you want it to be recognized as Uno/Mega edit the boards.txt definitions' VID and PID. I don't recommend this to a) know what
+Bootloader currently is on your board and b) it seems that with the official signed drivers wont work with unofficial HID modification.
+
+##### 2. Installing board definitions
+To get the 16u2 board definitions for uploading, copy this HoodLoader2 folder into your sketchbook like this: *sketchbook/hardware/HoodLoader2/*
+Remove the '-master' postfix.
+
+![sketchbook installation](pictures/installation.png)
+
+##### 3. Installing HID Project
+
+To actually use the USB functions you need a working USB-Core for the Arduino IDE. At the moment the Arduino IDE does not natively support the u2 series.
+Therefore you need to get the new USB-Core with the HID Project. The HID Project also adds new HID Devices to your USB-Core and some more improvements.
+(The HID Project can also be used for Arduino Leonardo/Micro and HoodLoader1.)
+
+Go to the [HID Project](https://github.com/NicoHood/HID) page to get the newest Arduino USB-Core for the 16u2.
+Follow the installation instructions __carefully__ and **try out the HoodLoader 2 related examples**.
+If you update the HID Project files also ensure you have the newest HoodLoader2 board definition files.
+
+For your interest you can also use this (somehow outdated) [older USB-Core](https://www.mattairtech.com/index.php/development-boards/mt-db-u1.html) with Lufa from Mattairtech.
+
+You should now have installed the bootloader itself, drivers, HL2 board definitions and HID Project. Read on how to use the bootloader and upload programs.
 
 HoodLoader2 - How to use
-==========================
+========================
+
+### How to use the reset
 
 ![Bootloader Modes](pictures/bootloader.png)
 
@@ -240,94 +276,58 @@ The HoodLoader2 itself just needs the standard Arduino drivers.**
 
 ![16u2 Reset](pictures/reset.jpg)
 
+### Uploading programs
 
 **To actually use the new HoodLoader2 you have a few options**
-* a)
-* b)
-* c) 
+* a) Upload sketches to the 328/2560 via Arduino IDE
+* b) Upload sketches to the 16u2 via Arduino IDE
+* c) Upload firmwares(.hex files) to the 16u2 via Avrdude
 
 ### How to upload sketches to the 328/2560
 
 Short the 16u2's reset pin twice to enter bootloader mode. You can upload your Arduino sketch like you are used to.
-You might need to check the correct Serial port though. To start the 16u2 sketch again short reset once.
+You might need to check the correct Serial port in the IDE though. To start the 16u2 sketch again short reset once.
 To get Serial Debug output from the 328/2560 you also have to enter bootloader mode again.
 
 
 ### How to upload sketches to the 16u2 via IDE
 
 You can now use the 16u2 as normal Arduino USB board like a Leonardo/Micro/Teensy.
-Therefore you still need to get some software and install it properly. Arduino IDE 1.5.8 or higher is recommended.
-
-#### CDC Driver installation:
-
-You have to install new drivers (Windows only) since it will conflict with the official due to new USB functions
-(it will use a different PID/VID). The driver files is named HoodLoader2.inf. If you don't want to install the unsigned driver,
-you can also install the [Teensy driver](https://www.pjrc.com/teensy/serial_install.exe) which works for every USB-Serial device.
-It will then show up as Teensy USB-Serial and not as HoodLoader2 in the device manager. If you have both drivers installed it will show up as HoodLoader2.
-Also see [this tutorial](http://arduino.cc/en/guide/windows) on how to install the drivers (right click the .inf file and hit install).
-[How to install drivers for Windows 8/8.1](https://learn.sparkfun.com/tutorials/disabling-driver-signature-on-windows-8/disabling-signed-driver-enforcement-on-windows-8).
-
-If you want it to be recognized as Uno/Mega edit the board definitions' VID and PID. I don't recommend this to a) know what
-Bootloader currently is on your board and b) it seems that with the official signed drivers wont work with unofficial HID modification.
-
-It happened to me that Windows 'lost' the drivers. Go to 'This Pc -> Manage -> Device Manager -> Other devices -> HoodLoader2',
-right click and hit 'Update Driver Software... -> Search automatically [...]'.
-
-#### Installing board definitions
-To get the 16u2 board definitions for uploading, copy this HoodLoader2 folder into your sketchbook like this:
-*sketchbook/hardware/HoodLoader2/* (remove the '-master' postfix).
-
-![sketchbook installation](pictures/installation.png)
-
-#### Installing HID Project
-
-To actually use the USB functions you need a working USB-Core for the Arduino IDE. At the moment the Arduino IDE does not natively support the u2 series.
-Therefore you need to get the new USB-Core with the HID Project. The HID Project also adds new HID Devices to your USB-Core and some more improvements.
-(The HID Project can also be used for Arduino Leonardo/Micro and HoodLoader1.)
-
-Go to the [HID Project](https://github.com/NicoHood/HID) page to get the newest Arduino core library for the 16u2.
-Follow the installation instructions __carefully__ and **try out the HoodLoader 2 related examples**.
-
-For your interest you can also use this (somehow outdated) [older USB-Core](https://www.mattairtech.com/index.php/development-boards/mt-db-u1.html) with Lufa from Mattairtech.
-
-#### Arduino IDE usage
-
-Using HoodLoader2 for the first time I recommend to simply upload an 'empty' sketch. If the drivers are installed correctly it will show up as HoodLoader2.
-Once you have a sketch with USB-Core and CDC Serial running you can use the normal upload function. Switch to the new Serial port in your IDE and hit upload.
-The 16u2 will reset, enter BootLoader mode, reprogram and start the sketch. If it doesn't enter bootloader mode which might happen (also when using no USB-Core)
-you have to manually have to enter bootloader mode as described above.
+Therefore you need the HID-Project which you should have installed above.
+[Read the how to use section for HoodLoader2 of the HID Project.](https://github.com/NicoHood/HID/tree/Official-Integration#microleonardo--hoodloader2)
 
 Have a look at the examples in the HID Project and check out the [pinout](https://github.com/NicoHood/HoodLoader2#arduino-unomega-16u2-pinout) below.
 **Keep in mind that the Leds have inverted logic. Writing LOW means turn them on.**
+Once you've uploaded your first HoodLoader2 sketch it should switch to a different Serial comport and show up as HoodLoader2 16u2:
 
-#### Deactivating USB-Core
+![hoodloader2device](pictures/hoodloader2device.png)
 
+##### Deactivating USB-Core
 If you don't want to use the USB-Core you can also choose under *Tools/USB Core* "No USB functions" to get rid of the USB stuff
 and save the ram for other stuff if you don't need it. You also don't need the HID Project essentially if you don't want to use the USB functions.
 
 **The workaround is no longer needed with version 2.0.1 or newer.**
 
-### How to flash/erase firmwares (.hex files) with avr-dude
+### How to flash/erase firmwares (.hex files) with avrdude
 
-If you want to upload a self compiled .hex file from a LUFA project like the
-[HoodLoader1](https://github.com/NicoHood/HoodLoader) for example
-you wont be able to use DFU via Flip any more. But you can use avr-dude instead:
+If you want to upload a self compiled firmware(.hex file) from for example a LUFA project like the
+[HoodLoader1](https://github.com/NicoHood/HoodLoader) you wont be able to use DFU via Flip any more. But you can use avrdude instead:
 
-Download avr-dude [here](http://download.savannah.gnu.org/releases/avrdude/) (avrdude-6.1-mingw32.zip for windows).
-Open a cmd or bash and try the following code. You can also create a .bat file for easier uploading.
-The example .bat files are also located in */tools*.
+A copy of avrdude for windows is already included in *tools/avrdude/*. The libusb0.dll was taken from an Arduino IDE installation.
+You can download the newest avrdude [here](http://download.savannah.gnu.org/releases/avrdude/).
+
+Open a cmd or terminal and try the following code. You can also use the provided *tools/flash.bat* file (windows only) for easier uploading.
+
+```bash
+#select com port, device and .hex file yourself
+avrdude.exe -C avrdude.conf -p atmega16u2 -c avr109 -b 57600 -P COM1 -U flash:w:HoodLoader1_8.hex
+
+avrdude.exe -C avrdude.conf -p atmega16u2 -c avr109 -b 57600 -P COM1 -e
+```
 
 This can also be used to erase the program from your 16u2 if you always want to use it as normal USB-Serial bridge again (always stay in bootloader mode).
 And yes, it's correct that **you can have HoodLoader2 and HoodLoader1 running 'at the same time'** since v2 is a real bootloader and v1 'only' a firmware.
 
-```
-#select com port, device and .hex file yourself
-avrdude.exe -C avrdude.conf -p atmega16u2 -c avr109 -b 57600 -P COM1 -U flash:w:HoodLoader1_8.hex
-pause
-
-avrdude.exe -C avrdude.conf -p atmega16u2 -c avr109 -b 57600 -P COM1 -e
-pause
-```
 
 Arduino Uno/Mega 16u2 Pinout
 ============================
@@ -370,6 +370,37 @@ D19 - [NC] PD6 INT5
 D20 - PD7 INT7 328/2560 RESET
 ```
 
+Troubleshoot
+============
+
+##### Installation sketch fails to upload
+Try to check your wires again. If you have an unofficial board your ISP header (those 6 pins) might be flipped 180 degree.
+Also ensure to add a 100nF capacitor, nothing less than 100nF!
+![installation-sketch-fail](pictures/installation-sketch-fail.png)
+
+##### Driver installation failed
+Read the driver installation section in the readme carefully again. There is a link on how to install the drivers for Windows 8.1.
+Optionally you can use the Teensy drivers as described there.
+
+Feel free to [open an issue on github](https://github.com/NicoHood/HoodLoader2/issues) if you have any problems
+or [contact](https://nicohood.wordpress.com/about/) me for any questions!
+
+Known Bugs
+==========
+
+HoodLoader2 seems to have problems to work properly on some USB hubs.
+
+Baud 57600 cannot be used in bootloader mode since its used for CDC programming.
+
+The main MCU will always reset on a 16u2 reprogramming. There is no way to fix this (yet).
+
+The HoodLoader2 only ensures that you can upload sketches to the MCUs.
+If your USB HID device causes any problem please check the HID Project for known bugs/updates.
+
+The Magic BootKey is not stored properly in ram and may cause errors. This is a general Arduino
+Software problem, we have to do this to keep compatible. Normally there shouldn't be any noticeable error.
+This bug has a workaround in the HID Project so it wont matter any ways. Just want to mention it here.
+
 Useful Links
 ============
 
@@ -392,38 +423,19 @@ Useful Links
 * [Hackaday post about HoodLoader2](hackaday.com/2014/11/30/using-the-second-microcontroller-on-an-arduino)
 * See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
 
-FAQ
-===
-
-Questions might be added here. Feel free to contact me for any questions!
-
-See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
-
-Known Bugs
-==========
-
-Baud 57600 cannot be used in bootloader mode since its used for CDC programming.
-
-The main MCU will always reset on a 16u2 reprogramming. There is no way to fix this (yet).
-
-The HoodLoader2 only ensures that you can upload sketches to the MCUs.
-If your USB HID device causes any problem please check the HID Project for known bugs/updates.
-
-The Magic BootKey is not stored properly in ram and may cause errors. This is a general Arduino
-Software problem, we have to do this to keep compatible. Normally there shouldn't be any noticeable error.
-This bug has a workaround in the HID Project so it wont matter any ways. Just want to mention it here.
-
 Version History
 ===============
 ```
 2.0.3 Release (xx.01.2015)
 * added HID Project 2.1 board definition compatibility
 * fixed usb flag pass via boards.txt (instead of pins_arduino.h)
-* fixed 16u2 4 pin header pinout
+* fixed 16u2 4 pin header pinout picture
 * DFU burn bootloader fix
 * HoodLoader2.0.3 released (minor firmware CDC identifier fix)
 * Added 32u2 bootloader to the installation sketch as well
 * Improved flash.bat file and included avrdude for windows
+* Improved Readme instructions
+* Updated USB drivers with 4 different PIDs
 
 2.0.2 Release (30.11.2014)
 * HID Project 2.0 official released:
