@@ -57,8 +57,9 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // Version 1.26-D: Corrected Fuses to original Arduino values
 // Version 1.26-E: DFU lock bytes fix
 // Version 1.27: Added HoodLoader2.0.3, also for 32u2 (IDE 1.5.8 or higher)
+// Version 1.27-B: Fixed Mega uploading, added timeout, added Leonardo compatibity again (flash size problem)
 
-#define VERSION "1.27"
+#define VERSION "1.27-B"
 
 //================================================================================
 // HoodLoader2 definitions
@@ -78,7 +79,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 #else
 // by default use the file for Arduino Uno. Its no problem to upload an Uno file to a Mega though.
 #define HOODLOADER2_16U2_UNO
-#if ARDUINO >= 158
+#if (ARDUINO >= 158)
 #define HOODLOADER2_32U2_UNO
 #endif
 #endif
@@ -206,10 +207,10 @@ signatureType signatures [] =
 
   { { 0x1E, 0x95, 0x14 }, "ATmega328",  32 * kb,       512 },
 
-  // Atmega644 family
-  { { 0x1E, 0x94, 0x0A }, "ATmega164P",   16 * kb,      256 },
-  { { 0x1E, 0x95, 0x08 }, "ATmega324P",   32 * kb,      512 },
-  { { 0x1E, 0x96, 0x0A }, "ATmega644P",   64 * kb,   1 * kb },
+  //  // Atmega644 family
+  //  { { 0x1E, 0x94, 0x0A }, "ATmega164P",   16 * kb,      256 },
+  //  { { 0x1E, 0x95, 0x08 }, "ATmega324P",   32 * kb,      512 },
+  //  { { 0x1E, 0x96, 0x0A }, "ATmega644P",   64 * kb,   1 * kb },
 
   // Atmega2560 family
   { { 0x1E, 0x96, 0x08 }, "ATmega640",    64 * kb,   1 * kb },
@@ -222,7 +223,7 @@ signatureType signatures [] =
   // Atmega32U2 family
   { { 0x1E, 0x93, 0x89 }, "ATmega8U2",    8 * kb,   512 },
 
-#ifdef HOODLOADER2_16U2_MEGA
+#ifdef HOODLOADER2_16U2_MEGA && !defined(__AVR_ATmega32U4__)
   { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   512 ,
     Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex,   // loader image
     0x0000,                   // start address (0x0000-0x4000)
@@ -234,7 +235,7 @@ signatureType signatures [] =
     0x0F
   }, // lock bits
 
-#else // HOODLOADER2_16U2_UNO
+#elif !defined(__AVR_ATmega32U4__) // HOODLOADER2_16U2_UNO
   { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   512 ,
     Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex,   // loader image
     0x0000,                   // start address (0x0000-0x4000)
@@ -246,10 +247,21 @@ signatureType signatures [] =
     0x0F
   }, // lock bits
 
+#else // 32u4 is only able to burn the HoodLoader2 without the DFU (workaround)
+  { { 0x1E, 0x94, 0x89 }, "ATmega16U2",  16 * kb,   512 ,
+    HoodLoader2_0_3_Uno_16u2_hex,   // loader image
+    0x0300,                   // start address (0x0000-0x4000)
+    sizeof HoodLoader2_0_3_Uno_16u2_hex,
+    128, // page size in bytes (for committing)
+    0xFF, // fuse low byte: external clock, m
+    0xD8, // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
+    0xFC, // fuse extended byte: brown-out detection at 2.6V
+    0x2F
+  }, // lock bits
 #endif
 
   { { 0x1E, 0x95, 0x8A }, "ATmega32U2",  32 * kb,   512
-#ifdef HOODLOADER2_32U2_UNO
+#if defined(HOODLOADER2_32U2_UNO) && !defined(__AVR_ATmega32U4__)
     ,
     HoodLoader2_0_3_Uno_32u2_hex,   // loader image
     0x7000,                   // start address (0x0000-0x4000)
@@ -260,7 +272,8 @@ signatureType signatures [] =
     0xFC, // fuse extended byte: brown-out detection at 2.6V
     0x2F
   }, // lock bits
-#elif defined(HOODLOADER2_32U2_MEGA)
+#elif defined(HOODLOADER2_32U2_MEGA) && !defined(__AVR_ATmega32U4__)
+    ,
     HoodLoader2_0_3_Mega_32u2_hex,   // loader image
     0x7000,                   // start address (0x0000-0x4000)
     sizeof HoodLoader2_0_3_Mega_32u2_hex,
@@ -613,7 +626,7 @@ void writeBootloader ()
 } // end of writeBootloader
 
 
-void startProgramming ()
+bool startProgramming ()
 {
   SERIAL.println (F("Attempting to enter programming mode ..."));
   digitalWrite (RESET, HIGH); // ensure SS stays high for now
@@ -623,6 +636,7 @@ void startProgramming ()
   byte confirm;
   pinMode (RESET, OUTPUT);
   pinMode (SCK, OUTPUT);
+  uint8_t timeout = 0;
 
   // we are in sync if we get back programAcknowledge on the third byte
   do
@@ -639,9 +653,15 @@ void startProgramming ()
     SPI.transfer (programAcknowledge);
     confirm = SPI.transfer (0);
     SPI.transfer (0);
+    timeout++;
+    if (timeout == 50) {
+      SERIAL.println (F("Failed to enter programming mode. Double check all wires!"));
+      return false;
+    }
   } while (confirm != programAcknowledge);
 
   SERIAL.println (F("Entered programming mode OK."));
+  return true;
 }  // end of startProgramming
 
 void stopProgramming ()
@@ -743,13 +763,14 @@ void loop ()
 
   } while (force16u2 != 'H' && force16u2 != 'D' && force16u2 != '0');
 
-  startProgramming ();
-  getSignature ();
-  getFuseBytes ();
+  if (startProgramming ()) {
+    getSignature ();
+    getFuseBytes ();
 
-  // if we found a signature try to write a bootloader
-  if (foundSig != -1)
-    writeBootloader ();
+    // if we found a signature try to write a bootloader
+    if (foundSig != -1)
+      writeBootloader ();
+  }
 
   stopProgramming();
 
