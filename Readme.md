@@ -279,18 +279,18 @@ The HoodLoader2 itself just needs the standard Arduino drivers.**
 ### Uploading programs
 
 **To actually use the new HoodLoader2 you have a few options**
-* a) Upload sketches to the 328/2560 via Arduino IDE
-* b) Upload sketches to the 16u2 via Arduino IDE
-* c) Upload firmwares(.hex files) to the 16u2 via Avrdude
+* a) [Upload sketches to the 328/2560 via Arduino IDE](https://github.com/NicoHood/HoodLoader2/tree/dev#how-to-upload-sketches-to-the-3282560)
+* b) [Upload sketches to the 16u2 via Arduino IDE](https://github.com/NicoHood/HoodLoader2/tree/dev#how-to-upload-sketches-to-the-16u2-via-ide)
+* c) [Upload firmwares(.hex files) to the 16u2 via Avrdude](https://github.com/NicoHood/HoodLoader2/tree/dev#how-to-flasherase-firmwares-hex-files-with-avrdude)
 
-### How to upload sketches to the 328/2560
+### a) How to upload sketches to the 328/2560
 
 Short the 16u2's reset pin twice to enter bootloader mode. You can upload your Arduino sketch like you are used to.
 You might need to check the correct Serial port in the IDE though. To start the 16u2 sketch again short reset once.
 To get Serial Debug output from the 328/2560 you also have to enter bootloader mode again.
 
 
-### How to upload sketches to the 16u2 via IDE
+### b) How to upload sketches to the 16u2 via IDE
 
 You can now use the 16u2 as normal Arduino USB board like a Leonardo/Micro/Teensy.
 Therefore you need the HID-Project which you should have installed above.
@@ -308,7 +308,7 @@ and save the ram for other stuff if you don't need it. You also don't need the H
 
 **The workaround is no longer needed with version 2.0.1 or newer.**
 
-### How to flash/erase firmwares (.hex files) with avrdude
+### c) How to flash/erase firmwares (.hex files) with avrdude
 
 If you want to upload a self compiled firmware(.hex file) from for example a LUFA project like the
 [HoodLoader1](https://github.com/NicoHood/HoodLoader) you wont be able to use DFU via Flip any more. But you can use avrdude instead:
@@ -370,6 +370,7 @@ D19 - [NC] PD6 INT5
 D20 - PD7 INT7 328/2560 RESET
 ```
 
+
 Troubleshoot
 ============
 
@@ -384,6 +385,7 @@ Optionally you can use the Teensy drivers as described there.
 
 Feel free to [open an issue on github](https://github.com/NicoHood/HoodLoader2/issues) if you have any problems
 or [contact](https://nicohood.wordpress.com/about/) me for any questions!
+
 
 Known Bugs
 ==========
@@ -400,6 +402,7 @@ If your USB HID device causes any problem please check the HID Project for known
 The Magic BootKey is not stored properly in ram and may cause errors. This is a general Arduino
 Software problem, we have to do this to keep compatible. Normally there shouldn't be any noticeable error.
 This bug has a workaround in the HID Project so it wont matter any ways. Just want to mention it here.
+
 
 Useful Links
 ============
@@ -422,6 +425,7 @@ Useful Links
 * [IRLremote is also HoodLoader2 compatible](https://github.com/NicoHood/IRLremote)
 * [Hackaday post about HoodLoader2](hackaday.com/2014/11/30/using-the-second-microcontroller-on-an-arduino)
 * See http://nicohood.wordpress.com/ for more tutorials, projects and contact.
+
 
 Version History
 ===============
@@ -484,6 +488,7 @@ Version History
 * Added private Github repository with readme
 * Added basic functions with dev states
 ```
+
 
 Additional Information
 ======================
@@ -586,6 +591,9 @@ The HID Project and the board definition files uses a special PID but this has n
 
 HoodLoader2atmega16u2.vid.0=0x2341
 HoodLoader2atmega16u2.pid.0=0x484C
+HoodLoader2atmega32u2.pid.0=0x484D
+HoodLoader2atmega8u2.pid.0=0x484E
+HoodLoader2at90usb162.pid.0=0x484F
 ```
 
 ### How to compile with a Raspberry Pi (avr-gcc 4.7.2)
