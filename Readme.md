@@ -31,11 +31,17 @@ All documentation moved to the [wiki page](https://github.com/NicoHood/HoodLoade
 
 An offline version will be available soon.
 
+Contact
+=======
+
+You can contact me on my wordpress blog in the contact section.
+
+www.nicohood.de
 
 Version History
 ===============
 ```
-2.0.3 Release (xx.01.2015)
+2.0.3 Release (28.01.2015)
 * added HID Project 2.1 board definition compatibility
 * fixed usb flag pass via boards.txt (instead of pins_arduino.h)
 * fixed 16u2 4 pin header pinout picture
@@ -45,6 +51,7 @@ Version History
 * Improved flash.bat file and included avrdude for windows
 * Improved Readme instructions
 * Updated USB drivers with 4 different PIDs
+* Moved documentation to the wiki
 
 2.0.2 Release (30.11.2014)
 * HID Project 2.0 official released:

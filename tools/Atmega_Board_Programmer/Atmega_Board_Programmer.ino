@@ -58,8 +58,9 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // Version 1.26-E: DFU lock bytes fix
 // Version 1.27: Added HoodLoader2.0.3, also for 32u2 (IDE 1.5.8 or higher)
 // Version 1.27-B: Fixed Mega uploading, added timeout, added Leonardo compatibity again (flash size problem)
+// Version 1.27-C: Outcommented 32u2 due to a 4kb 328 bootloader problem if no optiboot is installed
 
-#define VERSION "1.27-B"
+#define VERSION "1.27-C"
 
 //================================================================================
 // HoodLoader2 definitions
@@ -69,18 +70,18 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 #ifdef ARDUINO_AVR_MEGA2560
 #define HOODLOADER2_16U2_MEGA
 #if ARDUINO >= 158
-#define HOODLOADER2_32U2_MEGA
+//#define HOODLOADER2_32U2_MEGA
 #endif
 #elif defined ARDUINO_AVR_UNO
 #define HOODLOADER2_16U2_UNO
 #if ARDUINO >= 158
-#define HOODLOADER2_32U2_UNO
+//#define HOODLOADER2_32U2_UNO
 #endif
 #else
 // by default use the file for Arduino Uno. Its no problem to upload an Uno file to a Mega though.
 #define HOODLOADER2_16U2_UNO
 #if (ARDUINO >= 158)
-#define HOODLOADER2_32U2_UNO
+//#define HOODLOADER2_32U2_UNO
 #endif
 #endif
 
