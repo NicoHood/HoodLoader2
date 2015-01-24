@@ -630,6 +630,7 @@ void writeBootloader ()
 bool startProgramming ()
 {
   SERIAL.println (F("Attempting to enter programming mode ..."));
+  SERIAL.println (F("Device will disconnect and reconnect on success, no more output here."));
   digitalWrite (RESET, HIGH); // ensure SS stays high for now
   SPI.begin ();
   SPI.setClockDivider (SPI_CLOCK_DIV64);
