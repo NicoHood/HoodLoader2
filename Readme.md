@@ -3,6 +3,8 @@ HoodLoader2.0.2
 
 ![header](pictures/header.jpg)
 
+### [See dev tree for HID Project 2.1 compatibility.](https://github.com/NicoHood/HoodLoader2/tree/dev)
+
 An Arduino Uno/Mega board has two Microcontroller of which one(16u2) is normally used for USB-Serial translation.
 But we can also use it as standalone AVR Microcontroller with (or without) USB functions as well.
 
