@@ -5,8 +5,6 @@ HoodLoader2.0.3
 
 **HoodLoader2 is a CDC BootLoader with self reprogramming and USB-Serial function.**
 
-### [See dev tree for HID Project 2.1 compatibility.](https://github.com/NicoHood/HoodLoader2/tree/dev)
-
 An Arduino Uno/Mega board has two Microcontroller of which one(16u2) is normally used for USB-Serial translation.
 But we can also use it as standalone AVR Microcontroller with (or without) USB functions as well.
 
@@ -26,12 +24,27 @@ Please __read the readme carfully__ to avoid any problems. You will find most of
 **See http://nicohood.wordpress.com/ for more tutorials, projects and contact.**
 
 
+Download
+========
+
+You have 3 versions you can download:
+* The master includes all fixes to the current stable release. Download it by clicking download at the right.
+Use the [online Wiki](https://github.com/NicoHood/HoodLoader2/wiki) to get the newest documentation.
+* Download an offline version in [releases](https://github.com/NicoHood/HoodLoader2/releases).
+It's a snapshot of the current stable release but might have missed some updates that the current master branch has included.
+This also includes an offline version of the wiki.
+* Select branch 'dev' to test the bleeding edge of this software. It might now work at all or has a lot of debugging stuff in it.
+If the dev version gets near to a new release a note will be placed here, that you can test the new dev beta.
+Currently there is no beta available.
+
+
 Wiki
 ====
 
 All documentation moved to the [wiki page](https://github.com/NicoHood/HoodLoader2/wiki).
 
-An offline version will be available soon.
+An offline snapshot is available in [releases](https://github.com/NicoHood/HoodLoader2/releases).
+
 
 Contact
 =======
@@ -39,6 +52,7 @@ Contact
 You can contact me on my wordpress blog in the contact section.
 
 www.nicohood.de
+
 
 Version History
 ===============
@@ -102,6 +116,7 @@ Version History
 * Added private Github repository with readme
 * Added basic functions with dev states
 ```
+
 
 Licence and Copyright
 =====================
