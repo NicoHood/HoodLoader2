@@ -32,7 +32,7 @@ You have 3 versions you can download:
 Use the [online Wiki](https://github.com/NicoHood/HoodLoader2/wiki) to get the newest documentation.
 * Download an offline version in [releases](https://github.com/NicoHood/HoodLoader2/releases).
 It's a snapshot of the current stable release but might have missed some updates that the current master branch has included.
-This also includes an offline version of the wiki.
+This also includes an offline version of the wiki. Offline versions will be available after some time when the official release is out.
 * Select branch 'dev' to test the bleeding edge of this software. It might now work at all or has a lot of debugging stuff in it.
 If the dev version gets near to a new release a note will be placed here, that you can test the new dev beta.
 Currently there is no beta available.
