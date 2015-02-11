@@ -1,4 +1,4 @@
-HoodLoader2.0.3
+HoodLoader2.0.4
 ===============
 
 ![header](header.jpg)
@@ -57,6 +57,10 @@ www.nicohood.de
 Version History
 ===============
 ```
+2.0.4 Release (xx.xx.2015)
+* added HID-Project 2.2 compatibility
+* added boards.txt for Uno/Mega + HID-Bridge
+
 2.0.3 Release (28.01.2015)
 * added HID Project 2.1 board definition compatibility
 * fixed usb flag pass via boards.txt (instead of pins_arduino.h)
