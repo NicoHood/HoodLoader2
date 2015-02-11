@@ -328,7 +328,7 @@ uno.bootloader.lock_bits=0x0F
 uno.bootloader.file=arduino:optiboot/optiboot_atmega328.hex
 
 uno.build.mcu=atmega328p
-uno.build.f_cpu=8000000L
+uno.build.f_cpu=16000000L
 uno.build.board=AVR_UNO
 uno.build.core=HID:hid
 
