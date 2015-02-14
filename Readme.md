@@ -58,13 +58,17 @@ Version History
 ===============
 ```
 2.0.4 Release (xx.xx.2015)
-* added HID-Project 2.2 compatibility
-* added boards.txt for Uno/Mega + HID-Bridge
+* Added HID-Project 2.2 compatibility
+* Added boards.txt for Uno/Mega + HID-Bridge
+* Improved Uno/Mega uploading (no double tab needed any more)
+* Updated USB drivers for better PC side recognition
+  (Each USB core has a different PID + Windows driver)
+* Fixed wrong PIDs in boards.txt
 
 2.0.3 Release (28.01.2015)
-* added HID Project 2.1 board definition compatibility
-* fixed usb flag pass via boards.txt (instead of pins_arduino.h)
-* fixed 16u2 4 pin header pinout picture
+* Added HID Project 2.1 board definition compatibility
+* Fixed usb flag pass via boards.txt (instead of pins_arduino.h)
+* Fixed 16u2 4 pin header pinout picture
 * DFU burn bootloader fix
 * HoodLoader2.0.3 released (minor firmware CDC identifier fix)
 * Added 32u2 bootloader to the installation sketch as well

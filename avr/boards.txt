@@ -21,6 +21,12 @@ HoodLoader2atmega16u2.build.board=HOODLOADER2
 HoodLoader2atmega16u2.build.f_cpu=16000000L
 HoodLoader2atmega16u2.vid.0=0x2341
 HoodLoader2atmega16u2.pid.0=0x484C
+HoodLoader2atmega16u2.vid.1=0x2341
+HoodLoader2atmega16u2.pid.1=0x485C
+HoodLoader2atmega16u2.vid.2=0x2341
+HoodLoader2atmega16u2.pid.2=0x486C
+HoodLoader2atmega16u2.vid.3=0x2341
+HoodLoader2atmega16u2.pid.3=0x487C
 
 #uploading settings
 HoodLoader2atmega16u2.upload.speed=57600
@@ -38,7 +44,6 @@ HoodLoader2atmega16u2.bootloader.lock_bits=0x2F
 
 #usb settings, manufacturer overwritten by the IDE because of the VID
 HoodLoader2atmega16u2.build.vid=0x2341
-HoodLoader2atmega16u2.build.pid=0x484C
 HoodLoader2atmega16u2.build.usb_product="HoodLoader2 16u2"
 HoodLoader2atmega16u2.build.usb_manufacturer="Nico Hood"
 HoodLoader2atmega16u2.build.extra_flags={build.usb_flags}
@@ -48,14 +53,19 @@ HoodLoader2atmega16u2.build.extra_flags={build.usb_flags}
 #HID Project needs to be installed https://github.com/NicoHood/HID
 HoodLoader2atmega16u2.menu.usbcore.hid=Serial + Extended HID
 HoodLoader2atmega16u2.menu.usbcore.hid.build.variant=HoodLoader2_hid
+HoodLoader2atmega16u2.menu.usbcore.hid.build.pid=0x484C
 HoodLoader2atmega16u2.menu.usbcore.gamepad=Serial + Gamepad HID
 HoodLoader2atmega16u2.menu.usbcore.gamepad.build.variant=HoodLoader2_gamepad
+HoodLoader2atmega16u2.menu.usbcore.gamepad.build.pid=0x486C
 HoodLoader2atmega16u2.menu.usbcore.custom=Serial + Custom HID
 HoodLoader2atmega16u2.menu.usbcore.custom.build.variant=HoodLoader2_custom
+HoodLoader2atmega16u2.menu.usbcore.custom.build.pid=0x485C
 HoodLoader2atmega16u2.menu.usbcore.USB_CORE=Default HID Project Core
 HoodLoader2atmega16u2.menu.usbcore.USB_CORE.build.variant=HoodLoader2
+HoodLoader2atmega16u2.menu.usbcore.USB_CORE.build.pid=0x487C
 HoodLoader2atmega16u2.menu.usbcore.NO_USB=No USB functions
 HoodLoader2atmega16u2.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
+HoodLoader2atmega16u2.menu.usbcore.NO_USB.build.pid=0x484C
 
 
 #Board selection (only important for burning bootloaders)
@@ -65,68 +75,6 @@ HoodLoader2atmega16u2.menu.board.mega2560=HoodLoader2 Mega
 HoodLoader2atmega16u2.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2_0_3_Mega_16u2.hex
 HoodLoader2atmega16u2.menu.board.dev=HoodLoader2 Dev
 HoodLoader2atmega16u2.menu.board.dev.bootloader.file=HoodLoader2/HoodLoader2.hex
-
-
-##############################################################
-
-
-HoodLoader2at90usb162.name=HoodLoader2 at90usb162
-HoodLoader2at90usb162.build.core=HID:hid
-HoodLoader2at90usb162.bootloader.tool=arduino:avrdude
-HoodLoader2at90usb162.upload.tool=arduino:avrdude
-
-# MCU properties
-HoodLoader2at90usb162.upload.maximum_size=12288
-HoodLoader2at90usb162.upload.maximum_data_size=512
-HoodLoader2at90usb162.build.mcu=at90usb162
-
-#general settings for all boards:
-HoodLoader2at90usb162.build.board=HOODLOADER2
-HoodLoader2at90usb162.build.f_cpu=16000000L
-HoodLoader2at90usb162.vid.0=0x2341
-HoodLoader2at90usb162.pid.0=0x484F
-
-#uploading settings
-HoodLoader2at90usb162.upload.speed=57600
-HoodLoader2at90usb162.upload.protocol=avr109
-HoodLoader2at90usb162.upload.disable_flushing=true
-HoodLoader2at90usb162.upload.use_1200bps_touch=true
-HoodLoader2at90usb162.upload.wait_for_upload_port=true
-
-#fuses (HoodLoader2 only, not suitable for DFU)
-HoodLoader2at90usb162.bootloader.low_fuses=0xFF
-HoodLoader2at90usb162.bootloader.high_fuses=0xD8
-HoodLoader2at90usb162.bootloader.extended_fuses=0xFC
-HoodLoader2at90usb162.bootloader.unlock_bits=0x3F
-HoodLoader2at90usb162.bootloader.lock_bits=0x2F
-
-#usb settings, manufacturer overwritten by the IDE because of the VID
-HoodLoader2at90usb162.build.vid=0x2341
-HoodLoader2at90usb162.build.pid=0x484C
-HoodLoader2at90usb162.build.usb_product="HoodLoader2 at90usb162"
-HoodLoader2at90usb162.build.usb_manufacturer="Nico Hood"
-HoodLoader2at90usb162.build.extra_flags={build.usb_flags}
-
-
-#USB core selection
-#HID Project needs to be installed https://github.com/NicoHood/HID
-HoodLoader2at90usb162.menu.usbcore.hid=Serial + Extended HID
-HoodLoader2at90usb162.menu.usbcore.hid.build.variant=HoodLoader2_hid
-HoodLoader2at90usb162.menu.usbcore.gamepad=Serial + Gamepad HID
-HoodLoader2at90usb162.menu.usbcore.gamepad.build.variant=HoodLoader2_gamepad
-HoodLoader2at90usb162.menu.usbcore.custom=Serial + Custom HID
-HoodLoader2at90usb162.menu.usbcore.custom.build.variant=HoodLoader2_custom
-HoodLoader2at90usb162.menu.usbcore.USB_CORE=Default HID Project Core
-HoodLoader2at90usb162.menu.usbcore.USB_CORE.build.variant=HoodLoader2
-HoodLoader2at90usb162.menu.usbcore.NO_USB=No USB functions
-HoodLoader2at90usb162.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
-
-
-#Board selection (only important for burning bootloaders)
-HoodLoader2at90usb162.menu.board.uno=HoodLoader2 Uno
-HoodLoader2at90usb162.menu.board.uno.bootloader.file=HoodLoader2/HoodLoader2_0_1_Uno_at90usb162.hex
-HoodLoader2at90usb162.menu.board.mega2560=HoodLoader2 Mega
-HoodLoader2at90usb162.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2_0_1_Mega_at90usb162.hex
 
 
 ##############################################################
@@ -147,6 +95,12 @@ HoodLoader2atmega32u2.build.board=HOODLOADER2
 HoodLoader2atmega32u2.build.f_cpu=16000000L
 HoodLoader2atmega32u2.vid.0=0x2341
 HoodLoader2atmega32u2.pid.0=0x484D
+HoodLoader2atmega32u2.vid.1=0x2341
+HoodLoader2atmega32u2.pid.1=0x485D
+HoodLoader2atmega32u2.vid.2=0x2341
+HoodLoader2atmega32u2.pid.2=0x486D
+HoodLoader2atmega32u2.vid.3=0x2341
+HoodLoader2atmega32u2.pid.3=0x487D
 
 #uploading settings
 HoodLoader2atmega32u2.upload.speed=57600
@@ -164,7 +118,6 @@ HoodLoader2atmega32u2.bootloader.lock_bits=0x2F
 
 #usb settings, manufacturer overwritten by the IDE because of the VID
 HoodLoader2atmega32u2.build.vid=0x2341
-HoodLoader2atmega32u2.build.pid=0x484C
 HoodLoader2atmega32u2.build.usb_product="HoodLoader2 32u2"
 HoodLoader2atmega32u2.build.usb_manufacturer="Nico Hood"
 HoodLoader2atmega32u2.build.extra_flags={build.usb_flags}
@@ -174,14 +127,19 @@ HoodLoader2atmega32u2.build.extra_flags={build.usb_flags}
 #HID Project needs to be installed https://github.com/NicoHood/HID
 HoodLoader2atmega32u2.menu.usbcore.hid=Serial + Extended HID
 HoodLoader2atmega32u2.menu.usbcore.hid.build.variant=HoodLoader2_hid
+HoodLoader2atmega32u2.menu.usbcore.hid.build.pid=0x484D
 HoodLoader2atmega32u2.menu.usbcore.gamepad=Serial + Gamepad HID
 HoodLoader2atmega32u2.menu.usbcore.gamepad.build.variant=HoodLoader2_gamepad
+HoodLoader2atmega32u2.menu.usbcore.gamepad.build.pid=0x486D
 HoodLoader2atmega32u2.menu.usbcore.custom=Serial + Custom HID
 HoodLoader2atmega32u2.menu.usbcore.custom.build.variant=HoodLoader2_custom
+HoodLoader2atmega32u2.menu.usbcore.custom.build.pid=0x485D
 HoodLoader2atmega32u2.menu.usbcore.USB_CORE=Default HID Project Core
 HoodLoader2atmega32u2.menu.usbcore.USB_CORE.build.variant=HoodLoader2
+HoodLoader2atmega32u2.menu.usbcore.USB_CORE.build.pid=0x487D
 HoodLoader2atmega32u2.menu.usbcore.NO_USB=No USB functions
 HoodLoader2atmega32u2.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
+HoodLoader2atmega32u2.menu.usbcore.NO_USB.build.pid=0x484D
 
 
 #Board selection (only important for burning bootloaders)
@@ -209,6 +167,12 @@ HoodLoader2atmega8u2.build.board=HOODLOADER2
 HoodLoader2atmega8u2.build.f_cpu=16000000L
 HoodLoader2atmega8u2.vid.0=0x2341
 HoodLoader2atmega8u2.pid.0=0x484E
+HoodLoader2atmega8u2.vid.1=0x2341
+HoodLoader2atmega8u2.pid.1=0x485E
+HoodLoader2atmega8u2.vid.2=0x2341
+HoodLoader2atmega8u2.pid.2=0x486E
+HoodLoader2atmega8u2.vid.3=0x2341
+HoodLoader2atmega8u2.pid.3=0x487E
 
 #uploading settings
 HoodLoader2atmega8u2.upload.speed=57600
@@ -226,7 +190,6 @@ HoodLoader2atmega8u2.bootloader.lock_bits=0x2F
 
 #usb settings, manufacturer overwritten by the IDE because of the VID
 HoodLoader2atmega8u2.build.vid=0x2341
-HoodLoader2atmega8u2.build.pid=0x484C
 HoodLoader2atmega8u2.build.usb_product="HoodLoader2 8u2"
 HoodLoader2atmega8u2.build.usb_manufacturer="Nico Hood"
 HoodLoader2atmega8u2.build.extra_flags={build.usb_flags}
@@ -236,14 +199,19 @@ HoodLoader2atmega8u2.build.extra_flags={build.usb_flags}
 #HID Project needs to be installed https://github.com/NicoHood/HID
 HoodLoader2atmega8u2.menu.usbcore.hid=Serial + Extended HID
 HoodLoader2atmega8u2.menu.usbcore.hid.build.variant=HoodLoader2_hid
+HoodLoader2atmega8u2.menu.usbcore.hid.build.pid=0x484E
 HoodLoader2atmega8u2.menu.usbcore.gamepad=Serial + Gamepad HID
 HoodLoader2atmega8u2.menu.usbcore.gamepad.build.variant=HoodLoader2_gamepad
+HoodLoader2atmega8u2.menu.usbcore.gamepad.build.pid=0x486E
 HoodLoader2atmega8u2.menu.usbcore.custom=Serial + Custom HID
 HoodLoader2atmega8u2.menu.usbcore.custom.build.variant=HoodLoader2_custom
+HoodLoader2atmega8u2.menu.usbcore.custom.build.pid=0x485E
 HoodLoader2atmega8u2.menu.usbcore.USB_CORE=Default HID Project Core
 HoodLoader2atmega8u2.menu.usbcore.USB_CORE.build.variant=HoodLoader2
+HoodLoader2atmega8u2.menu.usbcore.USB_CORE.build.pid=0x487E
 HoodLoader2atmega8u2.menu.usbcore.NO_USB=No USB functions
 HoodLoader2atmega8u2.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
+HoodLoader2atmega8u2.menu.usbcore.NO_USB.build.pid=0x484E
 
 
 #Board selection (only important for burning bootloaders)
@@ -251,6 +219,78 @@ HoodLoader2atmega8u2.menu.board.uno=HoodLoader2 Uno
 HoodLoader2atmega8u2.menu.board.uno.bootloader.file=HoodLoader2/HoodLoader2_0_1_Uno_8u2.hex
 HoodLoader2atmega8u2.menu.board.mega2560=HoodLoader2 Mega
 HoodLoader2atmega8u2.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2_0_1_Mega_8u2.hex
+
+
+##############################################################
+
+
+HoodLoader2at90usb162.name=HoodLoader2 at90usb162
+HoodLoader2at90usb162.build.core=HID:hid
+HoodLoader2at90usb162.bootloader.tool=arduino:avrdude
+HoodLoader2at90usb162.upload.tool=arduino:avrdude
+
+# MCU properties
+HoodLoader2at90usb162.upload.maximum_size=12288
+HoodLoader2at90usb162.upload.maximum_data_size=512
+HoodLoader2at90usb162.build.mcu=at90usb162
+
+#general settings for all boards:
+HoodLoader2at90usb162.build.board=HOODLOADER2
+HoodLoader2at90usb162.build.f_cpu=16000000L
+HoodLoader2at90usb162.vid.0=0x2341
+HoodLoader2at90usb162.pid.0=0x484F
+HoodLoader2at90usb162.vid.1=0x2341
+HoodLoader2at90usb162.pid.1=0x485F
+HoodLoader2at90usb162.vid.2=0x2341
+HoodLoader2at90usb162.pid.2=0x486F
+HoodLoader2at90usb162.vid.3=0x2341
+HoodLoader2at90usb162.pid.3=0x487F
+
+#uploading settings
+HoodLoader2at90usb162.upload.speed=57600
+HoodLoader2at90usb162.upload.protocol=avr109
+HoodLoader2at90usb162.upload.disable_flushing=true
+HoodLoader2at90usb162.upload.use_1200bps_touch=true
+HoodLoader2at90usb162.upload.wait_for_upload_port=true
+
+#fuses (HoodLoader2 only, not suitable for DFU)
+HoodLoader2at90usb162.bootloader.low_fuses=0xFF
+HoodLoader2at90usb162.bootloader.high_fuses=0xD8
+HoodLoader2at90usb162.bootloader.extended_fuses=0xFC
+HoodLoader2at90usb162.bootloader.unlock_bits=0x3F
+HoodLoader2at90usb162.bootloader.lock_bits=0x2F
+
+#usb settings, manufacturer overwritten by the IDE because of the VID
+HoodLoader2at90usb162.build.vid=0x2341
+HoodLoader2at90usb162.build.usb_product="HoodLoader2 at90usb162"
+HoodLoader2at90usb162.build.usb_manufacturer="Nico Hood"
+HoodLoader2at90usb162.build.extra_flags={build.usb_flags}
+
+
+#USB core selection
+#HID Project needs to be installed https://github.com/NicoHood/HID
+HoodLoader2at90usb162.menu.usbcore.hid=Serial + Extended HID
+HoodLoader2at90usb162.menu.usbcore.hid.build.variant=HoodLoader2_hid
+HoodLoader2at90usb162.menu.usbcore.hid.build.pid=0x484F
+HoodLoader2at90usb162.menu.usbcore.gamepad=Serial + Gamepad HID
+HoodLoader2at90usb162.menu.usbcore.gamepad.build.variant=HoodLoader2_gamepad
+HoodLoader2at90usb162.menu.usbcore.gamepad.build.pid=0x486F
+HoodLoader2at90usb162.menu.usbcore.custom=Serial + Custom HID
+HoodLoader2at90usb162.menu.usbcore.custom.build.variant=HoodLoader2_custom
+HoodLoader2at90usb162.menu.usbcore.custom.build.pid=0x485F
+HoodLoader2at90usb162.menu.usbcore.USB_CORE=Default HID Project Core
+HoodLoader2at90usb162.menu.usbcore.USB_CORE.build.variant=HoodLoader2
+HoodLoader2at90usb162.menu.usbcore.USB_CORE.build.pid=0x487F
+HoodLoader2at90usb162.menu.usbcore.NO_USB=No USB functions
+HoodLoader2at90usb162.menu.usbcore.NO_USB.build.variant=HoodLoader2_NoUSB
+HoodLoader2at90usb162.menu.usbcore.NO_USB.build.pid=0x484F
+
+
+#Board selection (only important for burning bootloaders)
+HoodLoader2at90usb162.menu.board.uno=HoodLoader2 Uno
+HoodLoader2at90usb162.menu.board.uno.bootloader.file=HoodLoader2/HoodLoader2_0_1_Uno_at90usb162.hex
+HoodLoader2at90usb162.menu.board.mega2560=HoodLoader2 Mega
+HoodLoader2at90usb162.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2_0_1_Mega_at90usb162.hex
 
 
 ##############################################################
