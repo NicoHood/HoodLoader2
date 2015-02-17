@@ -346,10 +346,10 @@ HoodLoader2atmega16u2DFU.menu.board.mega2560.bootloader.file=HoodLoader2/Arduino
 
 uno.name=Arduino Uno HID-Bridge
 
-#uno.vid.0=0x2341
-#uno.pid.0=0x0043
-#uno.vid.1=0x2341
-#uno.pid.1=0x0001
+uno.vid.0=0x2341
+uno.pid.0=0x0043
+uno.vid.1=0x2341
+uno.pid.1=0x0001
 
 uno.upload.tool=arduino:avrdude
 uno.upload.protocol=arduino
@@ -389,10 +389,10 @@ uno.menu.usbcore.NO_USB.build.variant=standard
 
 mega.name=Arduino Mega 2560 HID-Bridge
 
-#mega.vid.0=0x2341
-#mega.pid.0=0x0010
-#mega.vid.1=0x2341
-#mega.pid.1=0x0042
+mega.vid.0=0x2341
+mega.pid.0=0x0010
+mega.vid.1=0x2341
+mega.pid.1=0x0042
 
 mega.upload.tool=arduino:avrdude
 mega.upload.maximum_data_size=8192
