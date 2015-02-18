@@ -60,6 +60,7 @@ Version History
 2.0.4 Release (xx.xx.2015)
 * HoodLoader2.0.4
  * Upload verification on USB hubs fix in bootloader
+ * Fixed 1 byte buffer overflow
  * Improved installation sketch
 * Added HID-Project 2.2 compatibility
  * Added boards.txt for Uno/Mega + HID-Bridge
