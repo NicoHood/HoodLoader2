@@ -58,12 +58,15 @@ Version History
 ===============
 ```
 2.0.4 Release (xx.xx.2015)
+* HoodLoader2.0.4
+ * Upload verification on USB hubs fix in bootloader
+ * Improved installation sketch
 * Added HID-Project 2.2 compatibility
-* Added boards.txt for Uno/Mega + HID-Bridge
-* Improved Uno/Mega uploading (no double tab needed any more)
-* Updated USB drivers for better PC side recognition
-  (Each USB core has a different PID + Windows driver)
-* Fixed wrong PIDs in boards.txt
+ * Added boards.txt for Uno/Mega + HID-Bridge
+ * Improved Uno/Mega uploading (no double tab needed any more)
+ * Updated USB drivers for better PC side recognition
+   (Each USB core has a different PID + Windows driver)
+ * Fixed wrong PIDs in boards.txt
 
 2.0.3 Release (28.01.2015)
 * Added HID Project 2.1 board definition compatibility
