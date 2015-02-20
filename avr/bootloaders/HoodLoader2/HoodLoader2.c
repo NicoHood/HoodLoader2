@@ -201,7 +201,6 @@ int main(void)
 
 			// break if programming has finished
 			if (!RunBootloader){
-				PORTB |= (1 << 1);
 				/* We nearly run out the bootloader timeout clock,
 				* leaving just a few hundred milliseconds so the
 				* bootloder has time to respond and service any
