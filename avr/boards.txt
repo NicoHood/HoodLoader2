@@ -147,7 +147,8 @@ HoodLoader2atmega32u2.menu.board.uno=HoodLoader2 Uno
 HoodLoader2atmega32u2.menu.board.uno.bootloader.file=HoodLoader2/HoodLoader2_0_3_Uno_32u2.hex
 HoodLoader2atmega32u2.menu.board.mega2560=HoodLoader2 Mega
 HoodLoader2atmega32u2.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2_0_3_Mega_32u2.hex
-
+HoodLoader2atmega32u2.menu.board.dev=HoodLoader2 Dev
+HoodLoader2atmega32u2.menu.board.dev.bootloader.file=HoodLoader2/HoodLoader2.hex
 
 ##############################################################
 
