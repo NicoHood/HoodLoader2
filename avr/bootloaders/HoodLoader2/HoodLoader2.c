@@ -156,7 +156,6 @@ void Application_Jump_Check(void)
 		else if ((mcusr_state & (1 << WDRF)) && (bootKeyPtrVal != MAGIC_BOOT_KEY))
 			// If it looks like an "accidental" watchdog reset then start the sketch.
 			StartSketch();
-
 	}
 }
 
@@ -166,7 +165,8 @@ static void StartSketch(void)
 	ARDUINO_PORT |= LEDS_ALL_LEDS;
 
 	// jump to beginning of application space
-	__asm__ volatile("jmp 0x0000");
+	// cppcheck-suppress constStatement
+	((void(*)(void))0x0000)();
 }
 
 /** Main program entry point. This routine configures the hardware required by the bootloader, then continuously
@@ -181,9 +181,10 @@ int main(void)
 	/* Enable global interrupts so that the USB stack can function */
 	GlobalInterruptEnable();
 
-	while (RunBootloader)
+	while (true)
 	{
 		CDC_Task();
+		USB_USBTask();
 
 		// check Leds (this methode takes less flash than an ISR)
 		if (TIFR0 & (1 << TOV0)){
@@ -197,9 +198,23 @@ int main(void)
 			// Turn off RX LED(s) once the RX pulse period has elapsed
 			if (RxLEDPulse && !(--RxLEDPulse))
 				LEDs_TurnOffLEDs(LEDMASK_RX);
-		}
 
-		USB_USBTask();
+			// break if programming has finished
+			if (!RunBootloader){
+				PORTB |= (1 << 1);
+				/* We nearly run out the bootloader timeout clock,
+				* leaving just a few hundred milliseconds so the
+				* bootloder has time to respond and service any
+				* subsequent requests
+				* This ensures that we wait long enough(time)
+				* and also at least call the USB Tasks 256 times.
+				* Measured delay of about 0.5s */
+				static uint8_t timeout = 0;
+				timeout++;
+				if (!timeout)
+					break;
+			}
+		}
 	}
 
 	/* Disconnect from the host - USB interface will be reset later along with the AVR */
@@ -225,7 +240,7 @@ static void SetupHardware(void)
 	/* Initialize the USB and other board hardware drivers */
 	USB_Init();
 
-	/* Start the flush timer so that overflows occur rapidly to push received bytes to the USB interface */
+	/* Start the flush timer for Leds */
 	TCCR0B = (1 << CS02);
 
 	// compacter setup for Leds, RX, TX, Reset Line
@@ -366,7 +381,7 @@ ISR(USART1_RX_vect, ISR_BLOCK)
 	uint8_t ReceivedByte = UDR1;
 
 	// only save the new byte if USB device is ready and buffer is not full
-	if (!CDCActive && (USB_DeviceState == DEVICE_STATE_Configured) && (BufferCount <= BUFFER_SIZE)){
+	if (!CDCActive && (USB_DeviceState == DEVICE_STATE_Configured) && (BufferCount < BUFFER_SIZE)){
 		// save new byte
 		USARTtoUSB_Buffer_Data[BufferEnd++] = ReceivedByte;
 
@@ -898,18 +913,11 @@ static void CDC_Device_LineEncodingChanged(void)
 	UCSR1C = 0;
 
 	/* Set the new baud rate before configuring the USART */
-	/* Special case 57600 baud for compatibility with the ATmega328 bootloader. */
-	// Special mode not needed/possible since our CDC Bootloader uses this speed!
-	UBRR1 = SERIAL_2X_UBBRVAL(LineEncoding.BaudRateBPS); // Lufa standard
-	//bool compat = LineEncoding.BaudRateBPS == 57600;
-	//UBRR1 = compat
-	//	? SERIAL_UBBRVAL(LineEncoding.BaudRateBPS)
-	//	: SERIAL_2X_UBBRVAL(LineEncoding.BaudRateBPS);
+	UBRR1 = SERIAL_2X_UBBRVAL(LineEncoding.BaudRateBPS);
 
 	/* Reconfigure the USART in double speed mode for a wider baud rate range at the expense of accuracy */
 	UCSR1C = ConfigMask;
-	UCSR1A = (1 << U2X1); // Lufa standard
-	//UCSR1A = compat ? 0 : (1 << U2X1);
+	UCSR1A = (1 << U2X1);
 	UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1));
 
 	/* Release the TX line after the USART has been reconfigured */
