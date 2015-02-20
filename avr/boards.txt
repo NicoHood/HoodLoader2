@@ -344,94 +344,84 @@ HoodLoader2atmega16u2DFU.menu.board.mega2560.bootloader.file=HoodLoader2/Arduino
 ##############################################################
 
 
-uno.name=Arduino Uno HID-Bridge
+unoHIDBridge.name=Arduino Uno HID-Bridge
 
-#uno.vid.0=0x2341
-#uno.pid.0=0x0043
-#uno.vid.1=0x2341
-#uno.pid.1=0x0001
+#unoHIDBridge.vid.0=0x2341
+#unoHIDBridge.pid.0=0x0043
+#unoHIDBridge.vid.1=0x2341
+#unoHIDBridge.pid.1=0x0001
 
-uno.upload.tool=arduino:avrdude
-uno.upload.protocol=arduino
-uno.upload.maximum_size=32256
-uno.upload.maximum_data_size=2048
-uno.upload.speed=115200
-uno.upload.use_1200bps_touch=true
-uno.upload.wait_for_upload_port=true
+unoHIDBridge.upload.tool=arduino:avrdude
+unoHIDBridge.upload.protocol=arduino
+unoHIDBridge.upload.maximum_size=32256
+unoHIDBridge.upload.maximum_data_size=2048
+unoHIDBridge.upload.speed=115200
+unoHIDBridge.upload.use_1200bps_touch=true
+unoHIDBridge.upload.wait_for_upload_port=true
 
-uno.bootloader.tool=arduino:avrdude
-uno.bootloader.low_fuses=0xFF
-uno.bootloader.high_fuses=0xDE
-uno.bootloader.extended_fuses=0x05
-uno.bootloader.unlock_bits=0x3F
-uno.bootloader.lock_bits=0x0F
-uno.bootloader.file=arduino:optiboot/optiboot_atmega328.hex
+unoHIDBridge.bootloader.tool=arduino:avrdude
+unoHIDBridge.bootloader.low_fuses=0xFF
+unoHIDBridge.bootloader.high_fuses=0xDE
+unoHIDBridge.bootloader.extended_fuses=0x05
+unoHIDBridge.bootloader.unlock_bits=0x3F
+unoHIDBridge.bootloader.lock_bits=0x0F
+unoHIDBridge.bootloader.file=arduino:optiboot/optiboot_atmega328.hex
 
-uno.build.mcu=atmega328p
-uno.build.f_cpu=16000000L
-uno.build.board=AVR_UNO
-uno.build.core=HID:hid
+unoHIDBridge.build.mcu=atmega328p
+unoHIDBridge.build.f_cpu=16000000L
+unoHIDBridge.build.board=AVR_UNO
+unoHIDBridge.build.core=HID:hid
 
 #USB core selection
 #HID Project needs to be installed https://github.com/NicoHood/HID
-uno.menu.usbcore.hid=Serial + Extended HID
-uno.menu.usbcore.hid.build.variant=standard_hid
-uno.menu.usbcore.gamepad=Serial + Gamepad HID
-uno.menu.usbcore.gamepad.build.variant=standard_gamepad
-uno.menu.usbcore.custom=Serial + Custom HID
-uno.menu.usbcore.custom.build.variant=standard_custom
-uno.menu.usbcore.NO_USB=Default Core
-uno.menu.usbcore.NO_USB.build.variant=standard
+unoHIDBridge.menu.usbcore.hid=Serial + Extended HID
+unoHIDBridge.menu.usbcore.hid.build.variant=standard_hid
+unoHIDBridge.menu.usbcore.gamepad=Serial + Gamepad HID
+unoHIDBridge.menu.usbcore.gamepad.build.variant=standard_gamepad
+unoHIDBridge.menu.usbcore.custom=Serial + Custom HID
+unoHIDBridge.menu.usbcore.custom.build.variant=standard_custom
+unoHIDBridge.menu.usbcore.NO_USB=Default Core
+unoHIDBridge.menu.usbcore.NO_USB.build.variant=standard
 
 
 ##############################################################
 
 
-mega.name=Arduino Mega 2560 HID-Bridge
+megaHIDBridge.name=Arduino Mega 2560 HID-Bridge
 
-#mega.vid.0=0x2341
-#mega.pid.0=0x0010
-#mega.vid.1=0x2341
-#mega.pid.1=0x0042
+#megaHIDBridge.vid.0=0x2341
+#megaHIDBridge.pid.0=0x0010
+#megaHIDBridge.vid.1=0x2341
+#megaHIDBridge.pid.1=0x0042
 
-mega.upload.tool=arduino:avrdude
-mega.upload.maximum_data_size=8192
-mega.upload.use_1200bps_touch=true
-mega.upload.wait_for_upload_port=true
+megaHIDBridge.upload.tool=arduino:avrdude
+megaHIDBridge.upload.maximum_data_size=8192
+megaHIDBridge.upload.protocol=wiring
+megaHIDBridge.upload.maximum_size=253952
+megaHIDBridge.upload.speed=115200
+megaHIDBridge.upload.use_1200bps_touch=true
+megaHIDBridge.upload.wait_for_upload_port=true
 
-mega.bootloader.tool=arduino:avrdude
-mega.bootloader.low_fuses=0xFF
-mega.bootloader.unlock_bits=0x3F
-mega.bootloader.lock_bits=0x0F
+megaHIDBridge.bootloader.tool=arduino:avrdude
+megaHIDBridge.bootloader.low_fuses=0xFF
+megaHIDBridge.bootloader.unlock_bits=0x3F
+megaHIDBridge.bootloader.lock_bits=0x0F
+megaHIDBridge.bootloader.high_fuses=0xD8
+megaHIDBridge.bootloader.extended_fuses=0xFD
+megaHIDBridge.bootloader.file=arduino:stk500v2/stk500boot_v2_mega2560.hex
 
-mega.build.f_cpu=16000000L
-mega.build.core=HID:hid
-# default board  may be overridden by the cpu menu
-mega.build.board=AVR_MEGA2560
-
-## Arduino Mega w/ ATmega2560
-## -------------------------
-
-mega.upload.protocol=wiring
-mega.upload.maximum_size=253952
-mega.upload.speed=115200
-
-mega.bootloader.high_fuses=0xD8
-mega.bootloader.extended_fuses=0xFD
-mega.bootloader.file=arduino:stk500v2/stk500boot_v2_mega2560.hex
-
-mega.build.mcu=atmega2560
-mega.build.board=AVR_MEGA2560
+megaHIDBridge.build.f_cpu=16000000L
+megaHIDBridge.build.core=HID:hid
+megaHIDBridge.build.mcu=atmega2560
+megaHIDBridge.build.board=AVR_MEGA2560
 
 #USB core selection
 #HID Project needs to be installed https://github.com/NicoHood/HID
-mega.menu.usbcore.hid=Serial + Extended HID
-mega.menu.usbcore.hid.build.variant=mega_hid
-mega.menu.usbcore.gamepad=Serial + Gamepad HID
-mega.menu.usbcore.gamepad.build.variant=mega_gamepad
-mega.menu.usbcore.custom=Serial + Custom HID
-mega.menu.usbcore.custom.build.variant=mega_custom
-mega.menu.usbcore.NO_USB=Default Core
-mega.menu.usbcore.NO_USB.build.variant=mega
-
-
+megaHIDBridge.menu.usbcore.hid=Serial + Extended HID
+megaHIDBridge.menu.usbcore.hid.build.variant=mega_hid
+megaHIDBridge.menu.usbcore.gamepad=Serial + Gamepad HID
+megaHIDBridge.menu.usbcore.gamepad.build.variant=mega_gamepad
+megaHIDBridge.menu.usbcore.custom=Serial + Custom HID
+megaHIDBridge.menu.usbcore.custom.build.variant=mega_custom
+megaHIDBridge.menu.usbcore.NO_USB=Default Core
+megaHIDBridge.menu.usbcore.NO_USB.build.variant=mega
