@@ -72,6 +72,7 @@ static uint8_t BufferIndex = 0; // position of the first buffer byte (Buffer out
 static uint8_t BufferEnd = 0; // position of the last buffer byte (Serial in)
 
 // Led Pulse count
+#define TX_RX_LED_PULSE_MS 3
 static uint8_t TxLEDPulse = 0;
 static uint8_t RxLEDPulse = 0;
 
@@ -162,7 +163,7 @@ void Application_Jump_Check(void)
 static void StartSketch(void)
 {
 	// turn off leds on every startup
-	ARDUINO_PORT |= LEDS_ALL_LEDS;
+	LEDs_TurnOffLEDs(LEDS_ALL_LEDS);
 
 	// jump to beginning of application space
 	// cppcheck-suppress constStatement
@@ -181,8 +182,7 @@ int main(void)
 	/* Enable global interrupts so that the USB stack can function */
 	GlobalInterruptEnable();
 
-	while (true)
-	{
+	do {
 		CDC_Task();
 		USB_USBTask();
 
@@ -198,23 +198,11 @@ int main(void)
 			// Turn off RX LED(s) once the RX pulse period has elapsed
 			if (RxLEDPulse && !(--RxLEDPulse))
 				LEDs_TurnOffLEDs(LEDMASK_RX);
-
-			// break if programming has finished
-			if (!RunBootloader){
-				/* We nearly run out the bootloader timeout clock,
-				* leaving just a few hundred milliseconds so the
-				* bootloder has time to respond and service any
-				* subsequent requests
-				* This ensures that we wait long enough(time)
-				* and also at least call the USB Tasks 256 times.
-				* Measured delay of about 0.5s */
-				static uint8_t timeout = 0;
-				timeout++;
-				if (!timeout)
-					break;
-			}
 		}
-	}
+	} while (RunBootloader);
+
+	/* Wait a short time to end all USB transactions and then disconnect */
+	_delay_us(1000);
 
 	/* Disconnect from the host - USB interface will be reset later along with the AVR */
 	USB_Detach();
@@ -275,9 +263,8 @@ void EVENT_USB_Device_ControlRequest(void)
 	}
 
 	/* Process CDC specific control requests */
-	switch (USB_ControlRequest.bRequest)
-	{
-	case CDC_REQ_GetLineEncoding:
+	uint8_t bRequest = USB_ControlRequest.bRequest;
+	if (bRequest == CDC_REQ_GetLineEncoding){
 		if (USB_ControlRequest.bmRequestType == (REQDIR_DEVICETOHOST | REQTYPE_CLASS | REQREC_INTERFACE))
 		{
 			Endpoint_ClearSETUP();
@@ -287,9 +274,8 @@ void EVENT_USB_Device_ControlRequest(void)
 			Endpoint_Write_Control_Stream_LE(&LineEncoding, sizeof(CDC_LineEncoding_t));
 			Endpoint_ClearOUT();
 		}
-
-		break;
-	case CDC_REQ_SetLineEncoding:
+	}
+	else if (bRequest == CDC_REQ_SetLineEncoding){
 		if (USB_ControlRequest.bmRequestType == (REQDIR_HOSTTODEVICE | REQTYPE_CLASS | REQREC_INTERFACE))
 		{
 			Endpoint_ClearSETUP();
@@ -336,21 +322,10 @@ void EVENT_USB_Device_ControlRequest(void)
 
 			Endpoint_ClearIN();
 
-			if (LineEncoding.BaudRateBPS == BAUDRATE_CDC_BOOTLOADER)
-				CDCActive = true;
-			else
-				CDCActive = false;
-
-			// reset buffer
-			BufferCount = 0;
-			BufferIndex = 0;
-			BufferEnd = 0;
-
 			CDC_Device_LineEncodingChanged();
 		}
-
-		break;
-	case CDC_REQ_SetControlLineState:
+	}
+	else if (bRequest == CDC_REQ_SetControlLineState){
 		if (USB_ControlRequest.bmRequestType == (REQDIR_HOSTTODEVICE | REQTYPE_CLASS | REQREC_INTERFACE))
 		{
 			Endpoint_ClearSETUP();
@@ -366,8 +341,6 @@ void EVENT_USB_Device_ControlRequest(void)
 				AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
 
 		}
-
-		break;
 	}
 }
 
@@ -875,6 +848,18 @@ static void ReadWriteMemoryBlock(const uint8_t Command)
 */
 static void CDC_Device_LineEncodingChanged(void)
 {
+	uint32_t BaudRateBPS = LineEncoding.BaudRateBPS;
+
+	if (BaudRateBPS == BAUDRATE_CDC_BOOTLOADER)
+		CDCActive = true;
+	else
+		CDCActive = false;
+
+	// reset buffer
+	BufferCount = 0;
+	BufferIndex = 0;
+	BufferEnd = 0;
+
 	uint8_t ConfigMask = 0;
 
 	switch (LineEncoding.ParityType)
@@ -912,7 +897,7 @@ static void CDC_Device_LineEncodingChanged(void)
 	UCSR1C = 0;
 
 	/* Set the new baud rate before configuring the USART */
-	UBRR1 = SERIAL_2X_UBBRVAL(LineEncoding.BaudRateBPS);
+	UBRR1 = SERIAL_2X_UBBRVAL(BaudRateBPS);
 
 	/* Reconfigure the USART in double speed mode for a wider baud rate range at the expense of accuracy */
 	UCSR1C = ConfigMask;
