@@ -33,7 +33,8 @@ Use the [online Wiki](https://github.com/NicoHood/HoodLoader2/wiki) to get the n
 * Download an offline version in [releases](https://github.com/NicoHood/HoodLoader2/releases).
 It's a snapshot of the current stable release but might have missed some updates that the current master branch has included.
 This also includes an offline version of the wiki. Offline versions will be available after some time when the official release is out.
-* Select [branch 'dev'](https://github.com/NicoHood/HoodLoader2/tree/dev) to test the bleeding edge of this software. It might now work at all or has a lot of debugging stuff in it.
+* Select [branch 'dev'](https://github.com/NicoHood/HoodLoader2/tree/dev) to test the bleeding edge of this software.
+It might not work at all or has a lot of debugging stuff in it.
 If the dev version gets near to a new release a note will be placed here, that you can test the new dev beta.
 Currently there is no beta available.
 
@@ -62,6 +63,7 @@ Version History
  * Upload verification on USB hubs fix in bootloader
  * Fixed 1 byte buffer overflow
  * Improved installation sketch
+ * Moved to Lufa Board definition (with a fix)
 * Added HID-Project 2.2 compatibility
  * Added boards.txt for Uno/Mega + HID-Bridge
  * Improved Uno/Mega uploading (no double tab needed any more)
