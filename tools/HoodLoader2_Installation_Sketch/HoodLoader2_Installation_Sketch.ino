@@ -55,6 +55,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // Version 1.29: Display message if cannot enter programming mode.
 // Version 1.30: Various tidy-ups
 // Version 1.31: Fixed bug in doing second lot of programming under IDE 1.6.0
+// Version 1.32: Bug fixes, added support for At90USB82, At90USB162 signatures
 
 // Changes by NicoHood:
 // Version 1.23: Added support for Leonardo bootloader
@@ -74,8 +75,9 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // Version 1.29-HL203-A: Updated to 1.29, reworked the whole sketch
 // Version 1.30-HL204-A: Updated HL to version 2.0.4
 // Version 1.31-HL204-A: Added 8u2, 16u2, 32u2 Support
+// Version 1.32-HL204-A: Bug fixes, added support for At90USB82, At90USB162 signatures
 
-#define VERSION "1.31-HL204-A"
+#define VERSION "1.32-HL204-A"
 
 //================================================================================
 // HoodLoader2 Settings
@@ -255,6 +257,10 @@ signatureType signatures [] =
   { { 0x1E, 0x97, 0x04 }, "ATmega1281",  128 * kb,   1 * kb },
   { { 0x1E, 0x98, 0x01 }, "ATmega2560",  256 * kb,   1 * kb },
   { { 0x1E, 0x98, 0x02 }, "ATmega2561",  256 * kb,   1 * kb },
+
+  // AT90USB family
+  { { 0x1E, 0x93, 0x82 }, "At90USB82", 8 * kb, 512 },
+  { { 0x1E, 0x94, 0x82 }, "At90USB162", 16 * kb, 512 },
 
   // Atmega32U2 family
 #if USE_ATMEGA8U2
@@ -482,25 +488,22 @@ void writeBootloader ()
 
 #if USE_ATMEGA16U2_DFU_FULL
 #if defined(ARDUINO_AVR_MEGA2560) || FORCE_MEGA_BOOTLOADER
-      bootloader = Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full, // loader image
+      bootloader = Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full; // loader image
       len = sizeof(Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full);
 #else
-      bootloader = Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex_Full, // loader image
+      bootloader = Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex_Full; // loader image
       len = sizeof(Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex_Full);
 #endif
-      addr = 0x0000, // start address
+      addr = 0x0000; // start address
 #else
-#if defined(ARDUINO_AVR_MEGA2560) || FORCE_MEGA_BOOTLOADER
-#error no Mega support for smaller DFU firmware yet
-#else
-      bootloader = Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex, // loader image
+      // DFU bootloader only is the same for Uno/Mega
+      bootloader = Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex; // loader image
       len = sizeof(Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex);
-      addr = 0x3000, // start address
-#endif
+      addr = 0x3000; // start address
 #endif
 
       newhFuse = 0xD9;  // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
-      newextFuse = 0xF4, // fuse extended byte: brown-out detection at 2.6V
+      newextFuse = 0xF4; // fuse extended byte: brown-out detection at 2.6V
     }
 #endif
 #endif
