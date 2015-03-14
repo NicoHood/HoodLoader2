@@ -62,6 +62,7 @@ adder = 0
 -- given a start address, deduce where the bootloader ends
 end_addresses = {
   [0x0000] = 0x4000,
+  [0x1000] = 0x2000,
   [0x1C00] = 0x2000,
   [0x1D00] = 0x2000,
   [0x1E00] = 0x2000,
