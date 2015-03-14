@@ -336,9 +336,9 @@ HoodLoader2atmega16u2DFU.build.variant=HoodLoader2_DFU
 
 
 #Board selection (only important for burning bootloaders)
-HoodLoader2atmega16u2DFU.menu.board.uno=HoodLoader2 Uno
+HoodLoader2atmega16u2DFU.menu.board.uno=DFU Uno
 HoodLoader2atmega16u2DFU.menu.board.uno.bootloader.file=Arduino-COMBINED-dfu-usbserial-atmega16u2-Uno-Rev3.hex
-HoodLoader2atmega16u2DFU.menu.board.mega2560=HoodLoader2 Mega
+HoodLoader2atmega16u2DFU.menu.board.mega2560=DFU Mega
 HoodLoader2atmega16u2DFU.menu.board.mega2560.bootloader.file=Arduino-COMBINED-dfu-usbserial-atmega16u2-Mega2560-Rev3.hex
 
 
