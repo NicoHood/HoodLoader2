@@ -70,9 +70,9 @@ HoodLoader2atmega16u2.menu.usbcore.NO_USB.build.pid=0x484C
 
 #Board selection (only important for burning bootloaders)
 HoodLoader2atmega16u2.menu.board.uno=HoodLoader2 Uno
-HoodLoader2atmega16u2.menu.board.uno.bootloader.file=HoodLoader2/HoodLoader2_0_3_Uno_16u2.hex
+HoodLoader2atmega16u2.menu.board.uno.bootloader.file=HoodLoader2/HoodLoader2_0_4_Uno_16u2.hex
 HoodLoader2atmega16u2.menu.board.mega2560=HoodLoader2 Mega
-HoodLoader2atmega16u2.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2_0_3_Mega_16u2.hex
+HoodLoader2atmega16u2.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2_0_4_Mega_16u2.hex
 HoodLoader2atmega16u2.menu.board.dev=HoodLoader2 Dev
 HoodLoader2atmega16u2.menu.board.dev.bootloader.file=HoodLoader2/HoodLoader2.hex
 
@@ -144,9 +144,9 @@ HoodLoader2atmega32u2.menu.usbcore.NO_USB.build.pid=0x484D
 
 #Board selection (only important for burning bootloaders)
 HoodLoader2atmega32u2.menu.board.uno=HoodLoader2 Uno
-HoodLoader2atmega32u2.menu.board.uno.bootloader.file=HoodLoader2/HoodLoader2_0_3_Uno_32u2.hex
+HoodLoader2atmega32u2.menu.board.uno.bootloader.file=HoodLoader2/HoodLoader2_0_4_Uno_32u2.hex
 HoodLoader2atmega32u2.menu.board.mega2560=HoodLoader2 Mega
-HoodLoader2atmega32u2.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2_0_3_Mega_32u2.hex
+HoodLoader2atmega32u2.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2_0_4_Mega_32u2.hex
 HoodLoader2atmega32u2.menu.board.dev=HoodLoader2 Dev
 HoodLoader2atmega32u2.menu.board.dev.bootloader.file=HoodLoader2/HoodLoader2.hex
 
@@ -217,9 +217,9 @@ HoodLoader2atmega8u2.menu.usbcore.NO_USB.build.pid=0x484E
 
 #Board selection (only important for burning bootloaders)
 HoodLoader2atmega8u2.menu.board.uno=HoodLoader2 Uno
-HoodLoader2atmega8u2.menu.board.uno.bootloader.file=HoodLoader2/HoodLoader2_0_1_Uno_8u2.hex
+HoodLoader2atmega8u2.menu.board.uno.bootloader.file=HoodLoader2/HoodLoader2_0_4_Uno_8u2.hex
 HoodLoader2atmega8u2.menu.board.mega2560=HoodLoader2 Mega
-HoodLoader2atmega8u2.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2_0_1_Mega_8u2.hex
+HoodLoader2atmega8u2.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2_0_4_Mega_8u2.hex
 
 
 ##############################################################
@@ -289,9 +289,9 @@ HoodLoader2at90usb162.menu.usbcore.NO_USB.build.pid=0x484F
 
 #Board selection (only important for burning bootloaders)
 HoodLoader2at90usb162.menu.board.uno=HoodLoader2 Uno
-HoodLoader2at90usb162.menu.board.uno.bootloader.file=HoodLoader2/HoodLoader2_0_1_Uno_at90usb162.hex
+HoodLoader2at90usb162.menu.board.uno.bootloader.file=HoodLoader2/HoodLoader2_0_4_Uno_at90usb162.hex
 HoodLoader2at90usb162.menu.board.mega2560=HoodLoader2 Mega
-HoodLoader2at90usb162.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2_0_1_Mega_at90usb162.hex
+HoodLoader2at90usb162.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2_0_4_Mega_at90usb162.hex
 
 
 ##############################################################

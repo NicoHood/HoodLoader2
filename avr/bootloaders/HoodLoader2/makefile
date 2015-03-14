@@ -11,7 +11,7 @@
 
 # Run "make help" for target help.
 
-MCU          = atmega32u2
+MCU          = atmega16u2
 ARCH         = AVR8
 BOARD        = UNO
 F_CPU        = 16000000
@@ -37,7 +37,7 @@ HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID
 # Flash size and bootloader section sizes of the target, in KB. These must
 # match the target's total FLASH size and the bootloader size set in the
 # device's fuses.
-FLASH_SIZE_KB         = 32
+FLASH_SIZE_KB         = 16
 BOOT_SECTION_SIZE_KB  = 4
 
 # Bootloader address calculation formulas

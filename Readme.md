@@ -132,7 +132,7 @@ Version History
 ```
 
 
-Licence and Copyright
+License and Copyright
 =====================
 If you use this library for any cool project let me know!
 
