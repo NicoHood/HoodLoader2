@@ -265,7 +265,7 @@ signatureType signatures [] =
     128, // page size in bytes (for committing)
     0xEF, // fuse low byte: external clock, m
     0xD8, // fuse high byte: SPI enable, boot into bootloader, 4096 byte bootloader
-    0xF4, // fuse extended byte: brown-out detection at 2.6V
+    0xFC, // fuse extended byte: brown-out detection at 2.6V
     0xCF // lock bits
   },
 #else
@@ -280,7 +280,7 @@ signatureType signatures [] =
     128, // page size in bytes (for committing)
     0xEF, // fuse low byte: external clock, m
     0xD8, // fuse high byte: SPI enable, boot into bootloader, 4096 byte bootloader
-    0xF4, // fuse extended byte: brown-out detection at 2.6V
+    0xFC, // fuse extended byte: brown-out detection at 2.6V
     0xCF // lock bits
   },
 #else
@@ -295,7 +295,7 @@ signatureType signatures [] =
     128, // page size in bytes (for committing)
     0xEF, // fuse low byte: external clock, m
     0xD8, // fuse high byte: SPI enable, boot into bootloader, 4096 byte bootloader
-    0xF4, // fuse extended byte: brown-out detection at 2.6V
+    0xFC, // fuse extended byte: brown-out detection at 2.6V
     0xCF // lock bits
   },
 #else
@@ -500,6 +500,7 @@ void writeBootloader ()
 #endif
 
       newhFuse = 0xD9;  // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
+      newextFuse = 0xF4, // fuse extended byte: brown-out detection at 2.6V
     }
 #endif
 #endif
