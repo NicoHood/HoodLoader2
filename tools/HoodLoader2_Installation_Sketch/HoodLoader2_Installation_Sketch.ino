@@ -78,7 +78,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 #define VERSION "1.31-HL204-A"
 
 //================================================================================
-// HoodLoader2 definitions
+// HoodLoader2 Settings
 //================================================================================
 
 // make some of these false to reduce compile size (the ones you don't want)

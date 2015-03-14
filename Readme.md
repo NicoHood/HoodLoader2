@@ -29,12 +29,14 @@ Download
 
 You have 3 versions you can download:
 * The master includes all fixes to the current stable release. Download it by clicking download at the right.
-Use the [online Wiki](https://github.com/NicoHood/HoodLoader2/wiki) to get the newest documentation.
+The [online Wiki](https://github.com/NicoHood/HoodLoader2/wiki) should have the newest documentation
+but might have some updated stuff which is only available in the dev tree.
 * Download an offline version in [releases](https://github.com/NicoHood/HoodLoader2/releases).
 It's a snapshot of the current stable release but might have missed some updates that the current master branch has included.
 This also includes an offline version of the wiki. Offline versions will be available after some time when the official release is out.
 * Select [branch 'dev'](https://github.com/NicoHood/HoodLoader2/tree/dev) to test the bleeding edge of this software.
 It might not work at all or has a lot of debugging stuff in it.
+Use the [online Wiki](https://github.com/NicoHood/HoodLoader2/wiki) to get the newest documentation.
 If the dev version gets near to a new release a note will be placed here, that you can test the new dev beta.
 Currently there is no beta available.
 
