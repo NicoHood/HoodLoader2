@@ -36,11 +36,11 @@ HoodLoader2atmega16u2.upload.use_1200bps_touch=true
 HoodLoader2atmega16u2.upload.wait_for_upload_port=true
 
 #fuses (HoodLoader2 only, not suitable for DFU)
-HoodLoader2atmega16u2.bootloader.low_fuses=0xFF
+HoodLoader2atmega16u2.bootloader.low_fuses=0xEF
 HoodLoader2atmega16u2.bootloader.high_fuses=0xD8
 HoodLoader2atmega16u2.bootloader.extended_fuses=0xFC
 HoodLoader2atmega16u2.bootloader.unlock_bits=0x3F
-HoodLoader2atmega16u2.bootloader.lock_bits=0x2F
+HoodLoader2atmega16u2.bootloader.lock_bits=0x0F
 
 #usb settings, manufacturer overwritten by the IDE because of the VID
 HoodLoader2atmega16u2.build.vid=0x2341
@@ -110,11 +110,11 @@ HoodLoader2atmega32u2.upload.use_1200bps_touch=true
 HoodLoader2atmega32u2.upload.wait_for_upload_port=true
 
 #fuses (HoodLoader2 only, not suitable for DFU)
-HoodLoader2atmega32u2.bootloader.low_fuses=0xFF
+HoodLoader2atmega32u2.bootloader.low_fuses=0xEF
 HoodLoader2atmega32u2.bootloader.high_fuses=0xD8
 HoodLoader2atmega32u2.bootloader.extended_fuses=0xFC
 HoodLoader2atmega32u2.bootloader.unlock_bits=0x3F
-HoodLoader2atmega32u2.bootloader.lock_bits=0x2F
+HoodLoader2atmega32u2.bootloader.lock_bits=0x0F
 
 #usb settings, manufacturer overwritten by the IDE because of the VID
 HoodLoader2atmega32u2.build.vid=0x2341
@@ -183,11 +183,11 @@ HoodLoader2atmega8u2.upload.use_1200bps_touch=true
 HoodLoader2atmega8u2.upload.wait_for_upload_port=true
 
 #fuses (HoodLoader2 only, not suitable for DFU)
-HoodLoader2atmega8u2.bootloader.low_fuses=0xFF
+HoodLoader2atmega8u2.bootloader.low_fuses=0xEF
 HoodLoader2atmega8u2.bootloader.high_fuses=0xD8
 HoodLoader2atmega8u2.bootloader.extended_fuses=0xFC
 HoodLoader2atmega8u2.bootloader.unlock_bits=0x3F
-HoodLoader2atmega8u2.bootloader.lock_bits=0x2F
+HoodLoader2atmega8u2.bootloader.lock_bits=0x0F
 
 #usb settings, manufacturer overwritten by the IDE because of the VID
 HoodLoader2atmega8u2.build.vid=0x2341
@@ -255,11 +255,11 @@ HoodLoader2at90usb162.upload.use_1200bps_touch=true
 HoodLoader2at90usb162.upload.wait_for_upload_port=true
 
 #fuses (HoodLoader2 only, not suitable for DFU)
-HoodLoader2at90usb162.bootloader.low_fuses=0xFF
+HoodLoader2at90usb162.bootloader.low_fuses=0xEF
 HoodLoader2at90usb162.bootloader.high_fuses=0xD8
 HoodLoader2at90usb162.bootloader.extended_fuses=0xFC
 HoodLoader2at90usb162.bootloader.unlock_bits=0x3F
-HoodLoader2at90usb162.bootloader.lock_bits=0x2F
+HoodLoader2at90usb162.bootloader.lock_bits=0x0F
 
 #usb settings, manufacturer overwritten by the IDE because of the VID
 HoodLoader2at90usb162.build.vid=0x2341
@@ -337,9 +337,9 @@ HoodLoader2atmega16u2DFU.build.variant=HoodLoader2_DFU
 
 #Board selection (only important for burning bootloaders)
 HoodLoader2atmega16u2DFU.menu.board.uno=HoodLoader2 Uno
-HoodLoader2atmega16u2DFU.menu.board.uno.bootloader.file=HoodLoader2/Arduino-COMBINED-dfu-usbserial-atmega16u2-Uno-Rev3.hex
+HoodLoader2atmega16u2DFU.menu.board.uno.bootloader.file=Arduino-COMBINED-dfu-usbserial-atmega16u2-Uno-Rev3.hex
 HoodLoader2atmega16u2DFU.menu.board.mega2560=HoodLoader2 Mega
-HoodLoader2atmega16u2DFU.menu.board.mega2560.bootloader.file=HoodLoader2/Arduino-COMBINED-dfu-usbserial-atmega16u2-Mega2560-Rev3.hex
+HoodLoader2atmega16u2DFU.menu.board.mega2560.bootloader.file=Arduino-COMBINED-dfu-usbserial-atmega16u2-Mega2560-Rev3.hex
 
 
 ##############################################################
