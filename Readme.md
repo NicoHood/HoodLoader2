@@ -1,4 +1,4 @@
-HoodLoader2.0.3
+HoodLoader2.0.4
 ===============
 
 ![header](header.jpg)
@@ -29,11 +29,14 @@ Download
 
 You have 3 versions you can download:
 * The master includes all fixes to the current stable release. Download it by clicking download at the right.
-Use the [online Wiki](https://github.com/NicoHood/HoodLoader2/wiki) to get the newest documentation.
+The [online Wiki](https://github.com/NicoHood/HoodLoader2/wiki) should have the newest documentation
+but might have some updated stuff which is only available in the dev tree.
 * Download an offline version in [releases](https://github.com/NicoHood/HoodLoader2/releases).
 It's a snapshot of the current stable release but might have missed some updates that the current master branch has included.
 This also includes an offline version of the wiki. Offline versions will be available after some time when the official release is out.
-* Select [branch 'dev'](https://github.com/NicoHood/HoodLoader2/tree/dev) to test the bleeding edge of this software. It might now work at all or has a lot of debugging stuff in it.
+* Select [branch 'dev'](https://github.com/NicoHood/HoodLoader2/tree/dev) to test the bleeding edge of this software.
+It might not work at all or has a lot of debugging stuff in it.
+Use the [online Wiki](https://github.com/NicoHood/HoodLoader2/wiki) to get the newest documentation.
 If the dev version gets near to a new release a note will be placed here, that you can test the new dev beta.
 Currently there is no beta available.
 
@@ -57,10 +60,23 @@ www.nicohood.de
 Version History
 ===============
 ```
+2.0.4 Release (20.03.2015)
+* HoodLoader2.0.4
+ * Upload verification on USB hubs fix in bootloader
+ * Fixed 1 byte buffer overflow
+ * Improved installation sketch
+ * Moved to Lufa Board definition (with a fix)
+* Added HID-Project 2.2 compatibility
+ * Added boards.txt for Uno/Mega + HID-Bridge
+ * Improved Uno/Mega uploading (no double tab needed any more)
+ * Updated USB drivers for better PC side recognition
+   (Each USB core has a different PID + Windows driver)
+ * Fixed wrong PIDs in boards.txt
+
 2.0.3 Release (28.01.2015)
-* added HID Project 2.1 board definition compatibility
-* fixed usb flag pass via boards.txt (instead of pins_arduino.h)
-* fixed 16u2 4 pin header pinout picture
+* Added HID Project 2.1 board definition compatibility
+* Fixed usb flag pass via boards.txt (instead of pins_arduino.h)
+* Fixed 16u2 4 pin header pinout picture
 * DFU burn bootloader fix
 * HoodLoader2.0.3 released (minor firmware CDC identifier fix)
 * Added 32u2 bootloader to the installation sketch as well
@@ -118,7 +134,7 @@ Version History
 ```
 
 
-Licence and Copyright
+License and Copyright
 =====================
 If you use this library for any cool project let me know!
 

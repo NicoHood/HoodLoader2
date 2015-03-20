@@ -1,0 +1,141 @@
+;************************************************************
+; Windows USB CDC ACM Setup File
+; Copyright (c) 2000 Microsoft Corporation
+;************************************************************
+
+[DefaultInstall]
+CopyINF="HoodLoader2.inf"
+
+[Version]
+Signature="$Windows NT$"
+Class=Ports
+ClassGuid={4D36E978-E325-11CE-BFC1-08002BE10318}
+Provider=%MFGNAME%
+DriverVer=7/1/2012,10.0.0.0
+
+[Manufacturer]
+%MFGNAME%=DeviceList, NTx86, NTamd64, NTia64
+
+[SourceDisksNames]
+
+[SourceDisksFiles]
+
+[DestinationDirs]
+DefaultDestDir=12
+
+[DriverInstall]
+Include=mdmcpq.inf
+CopyFiles=FakeModemCopyFileSection
+AddReg=DriverInstall.AddReg
+
+[DriverInstall.Services]
+Include=mdmcpq.inf
+AddService=usbser, 0x00000002, LowerFilter_Service_Inst
+
+[DriverInstall.AddReg]
+HKR,,EnumPropPages32,,"msports.dll,SerialPortPropPageProvider"
+
+;------------------------------------------------------------------------------
+;  Vendor and Product ID Definitions
+;------------------------------------------------------------------------------
+; When developing your USB device, the VID and PID used in the PC side
+; application program and the firmware on the microcontroller must match.
+; Modify the below line to use your VID and PID.  Use the format as shown below.
+; Note: One INF file can be used for multiple devices with different VID and PIDs.
+; For each supported device, append ",USB\VID_xxxx&PID_yyyy" to the end of the line.
+;------------------------------------------------------------------------------
+[DeviceList]
+%hoodloader2_16u2_extended.name%=DriverInstall, USB\VID_2341&PID_484C&MI_00
+%hoodloader2_32u2_extended.name%=DriverInstall, USB\VID_2341&PID_484D&MI_00
+%hoodloader2_8u2_extended.name%=DriverInstall, USB\VID_2341&PID_484E&MI_00
+%hoodloader2_at90usb1622_extended.name%=DriverInstall, USB\VID_2341&PID_484F&MI_00
+%hoodloader2_16u2_custom.name%=DriverInstall, USB\VID_2341&PID_485C&MI_00
+%hoodloader2_32u2_custom.name%=DriverInstall, USB\VID_2341&PID_485D&MI_00
+%hoodloader2_8u2_custom.name%=DriverInstall, USB\VID_2341&PID_485E&MI_00
+%hoodloader2_at90usb1622_custom.name%=DriverInstall, USB\VID_2341&PID_485F&MI_00
+%hoodloader2_16u2_gamepad.name%=DriverInstall, USB\VID_2341&PID_486C&MI_00
+%hoodloader2_32u2_gamepad.name%=DriverInstall, USB\VID_2341&PID_486D&MI_00
+%hoodloader2_8u2_gamepad.name%=DriverInstall, USB\VID_2341&PID_486E&MI_00
+%hoodloader2_at90usb1622_gamepad.name%=DriverInstall, USB\VID_2341&PID_486F&MI_00
+%hoodloader2_16u2_default.name%=DriverInstall, USB\VID_2341&PID_487C&MI_00
+%hoodloader2_32u2_default.name%=DriverInstall, USB\VID_2341&PID_487D&MI_00
+%hoodloader2_8u2_default.name%=DriverInstall, USB\VID_2341&PID_487E&MI_00
+%hoodloader2_at90usb1622_default.name%=DriverInstall, USB\VID_2341&PID_487F&MI_00
+
+[DeviceList.NTx86]
+%hoodloader2_16u2_extended.name%=DriverInstall, USB\VID_2341&PID_484C&MI_00
+%hoodloader2_32u2_extended.name%=DriverInstall, USB\VID_2341&PID_484D&MI_00
+%hoodloader2_8u2_extended.name%=DriverInstall, USB\VID_2341&PID_484E&MI_00
+%hoodloader2_at90usb1622_extended.name%=DriverInstall, USB\VID_2341&PID_484F&MI_00
+%hoodloader2_16u2_custom.name%=DriverInstall, USB\VID_2341&PID_485C&MI_00
+%hoodloader2_32u2_custom.name%=DriverInstall, USB\VID_2341&PID_485D&MI_00
+%hoodloader2_8u2_custom.name%=DriverInstall, USB\VID_2341&PID_485E&MI_00
+%hoodloader2_at90usb1622_custom.name%=DriverInstall, USB\VID_2341&PID_485F&MI_00
+%hoodloader2_16u2_gamepad.name%=DriverInstall, USB\VID_2341&PID_486C&MI_00
+%hoodloader2_32u2_gamepad.name%=DriverInstall, USB\VID_2341&PID_486D&MI_00
+%hoodloader2_8u2_gamepad.name%=DriverInstall, USB\VID_2341&PID_486E&MI_00
+%hoodloader2_at90usb1622_gamepad.name%=DriverInstall, USB\VID_2341&PID_486F&MI_00
+%hoodloader2_16u2_default.name%=DriverInstall, USB\VID_2341&PID_487C&MI_00
+%hoodloader2_32u2_default.name%=DriverInstall, USB\VID_2341&PID_487D&MI_00
+%hoodloader2_8u2_default.name%=DriverInstall, USB\VID_2341&PID_487E&MI_00
+%hoodloader2_at90usb1622_default.name%=DriverInstall, USB\VID_2341&PID_487F&MI_00
+
+[DeviceList.NTamd64]
+%hoodloader2_16u2_extended.name%=DriverInstall, USB\VID_2341&PID_484C&MI_00
+%hoodloader2_32u2_extended.name%=DriverInstall, USB\VID_2341&PID_484D&MI_00
+%hoodloader2_8u2_extended.name%=DriverInstall, USB\VID_2341&PID_484E&MI_00
+%hoodloader2_at90usb1622_extended.name%=DriverInstall, USB\VID_2341&PID_484F&MI_00
+%hoodloader2_16u2_custom.name%=DriverInstall, USB\VID_2341&PID_485C&MI_00
+%hoodloader2_32u2_custom.name%=DriverInstall, USB\VID_2341&PID_485D&MI_00
+%hoodloader2_8u2_custom.name%=DriverInstall, USB\VID_2341&PID_485E&MI_00
+%hoodloader2_at90usb1622_custom.name%=DriverInstall, USB\VID_2341&PID_485F&MI_00
+%hoodloader2_16u2_gamepad.name%=DriverInstall, USB\VID_2341&PID_486C&MI_00
+%hoodloader2_32u2_gamepad.name%=DriverInstall, USB\VID_2341&PID_486D&MI_00
+%hoodloader2_8u2_gamepad.name%=DriverInstall, USB\VID_2341&PID_486E&MI_00
+%hoodloader2_at90usb1622_gamepad.name%=DriverInstall, USB\VID_2341&PID_486F&MI_00
+%hoodloader2_16u2_default.name%=DriverInstall, USB\VID_2341&PID_487C&MI_00
+%hoodloader2_32u2_default.name%=DriverInstall, USB\VID_2341&PID_487D&MI_00
+%hoodloader2_8u2_default.name%=DriverInstall, USB\VID_2341&PID_487E&MI_00
+%hoodloader2_at90usb1622_default.name%=DriverInstall, USB\VID_2341&PID_487F&MI_00
+
+[DeviceList.NTia64]
+%hoodloader2_16u2_extended.name%=DriverInstall, USB\VID_2341&PID_484C&MI_00
+%hoodloader2_32u2_extended.name%=DriverInstall, USB\VID_2341&PID_484D&MI_00
+%hoodloader2_8u2_extended.name%=DriverInstall, USB\VID_2341&PID_484E&MI_00
+%hoodloader2_at90usb1622_extended.name%=DriverInstall, USB\VID_2341&PID_484F&MI_00
+%hoodloader2_16u2_custom.name%=DriverInstall, USB\VID_2341&PID_485C&MI_00
+%hoodloader2_32u2_custom.name%=DriverInstall, USB\VID_2341&PID_485D&MI_00
+%hoodloader2_8u2_custom.name%=DriverInstall, USB\VID_2341&PID_485E&MI_00
+%hoodloader2_at90usb1622_custom.name%=DriverInstall, USB\VID_2341&PID_485F&MI_00
+%hoodloader2_16u2_gamepad.name%=DriverInstall, USB\VID_2341&PID_486C&MI_00
+%hoodloader2_32u2_gamepad.name%=DriverInstall, USB\VID_2341&PID_486D&MI_00
+%hoodloader2_8u2_gamepad.name%=DriverInstall, USB\VID_2341&PID_486E&MI_00
+%hoodloader2_at90usb1622_gamepad.name%=DriverInstall, USB\VID_2341&PID_486F&MI_00
+%hoodloader2_16u2_default.name%=DriverInstall, USB\VID_2341&PID_487C&MI_00
+%hoodloader2_32u2_default.name%=DriverInstall, USB\VID_2341&PID_487D&MI_00
+%hoodloader2_8u2_default.name%=DriverInstall, USB\VID_2341&PID_487E&MI_00
+%hoodloader2_at90usb1622_default.name%=DriverInstall, USB\VID_2341&PID_487F&MI_00
+
+;------------------------------------------------------------------------------
+;  String Definitions
+;------------------------------------------------------------------------------
+;Modify these strings to customize your device
+;------------------------------------------------------------------------------
+[Strings]
+MFGNAME="NicoHood"
+hoodloader2_16u2_extended.name="HoodLoader2 16u2 Extended"
+hoodloader2_32u2_extended.name="HoodLoader2 32u2 Extended"
+hoodloader2_8u2_extended.name="HoodLoader2 8u2 Extended"
+hoodloader2_at90usb162_extended.name="HoodLoader2 at90usb162 Extended"
+hoodloader2_16u2_custom.name="HoodLoader2 16u2 Custom"
+hoodloader2_32u2_custom.name="HoodLoader2 32u2 Custom"
+hoodloader2_8u2_custom.name="HoodLoader2 8u2 Custom"
+hoodloader2_at90usb162_custom.name="HoodLoader2 at90usb162 Custom"
+hoodloader2_16u2_gamepad.name="HoodLoader2 16u2 Gamepad"
+hoodloader2_32u2_gamepad.name="HoodLoader2 32u2 Gamepad"
+hoodloader2_8u2_gamepad.name="HoodLoader2 8u2 Gamepad"
+hoodloader2_at90usb162_gamepad.name="HoodLoader2 at90usb162 Gamepad"
+hoodloader2_16u2_default.name="HoodLoader2 16u2 Default"
+hoodloader2_32u2_default.name="HoodLoader2 32u2 Default"
+hoodloader2_8u2_default.name="HoodLoader2 8u2 Default"
+hoodloader2_at90usb162_default.name="HoodLoader2 at90usb162 Default"
