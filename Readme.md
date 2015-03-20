@@ -60,7 +60,7 @@ www.nicohood.de
 Version History
 ===============
 ```
-2.0.4 Release (xx.xx.2015)
+2.0.4 Release (20.03.2015)
 * HoodLoader2.0.4
  * Upload verification on USB hubs fix in bootloader
  * Fixed 1 byte buffer overflow
