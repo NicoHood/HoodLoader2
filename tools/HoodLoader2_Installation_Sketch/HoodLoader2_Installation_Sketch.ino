@@ -76,8 +76,9 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // Version 1.30-HL204-A: Updated HL to version 2.0.4
 // Version 1.31-HL204-A: Added 8u2, 16u2, 32u2 Support
 // Version 1.32-HL204-A: Bug fixes, added support for At90USB82, At90USB162 signatures
+// Version 1.32-HL204-B: Signature fixes
 
-#define VERSION "1.32-HL204-A"
+#define VERSION "1.32-HL204-B"
 
 //================================================================================
 // HoodLoader2 Settings
@@ -483,7 +484,7 @@ void writeBootloader ()
 #if USE_ATMEGA16U2_DFU
     // Atmega16u2
     if (signatures [foundSig].sig [0] == 0x1E &&
-        signatures [foundSig].sig [1] == 0x95 &&
+        signatures [foundSig].sig [1] == 0x94 &&
         signatures [foundSig].sig [2] == 0x89) {
 
 #if USE_ATMEGA16U2_DFU_FULL
@@ -514,7 +515,7 @@ void writeBootloader ()
 #if USE_ATMEGA8U2
     // Atmega8u2
     if (signatures [foundSig].sig [0] == 0x1E &&
-        signatures [foundSig].sig [1] == 0x94 &&
+        signatures [foundSig].sig [1] == 0x93 &&
         signatures [foundSig].sig [2] == 0x89) {
       bootloader = HoodLoader2_0_4_Mega_8u2_hex, // loader image
       len = sizeof(HoodLoader2_0_4_Mega_8u2_hex);
@@ -524,7 +525,7 @@ void writeBootloader ()
 #if USE_ATMEGA16U2
     // Atmega16u2
     if (signatures [foundSig].sig [0] == 0x1E &&
-        signatures [foundSig].sig [1] == 0x95 &&
+        signatures [foundSig].sig [1] == 0x94 &&
         signatures [foundSig].sig [2] == 0x89) {
       bootloader = HoodLoader2_0_4_Mega_16u2_hex, // loader image
       len = sizeof(HoodLoader2_0_4_Mega_16u2_hex);
@@ -534,7 +535,7 @@ void writeBootloader ()
 #if USE_ATMEGA32U2
     // Atmega32u2
     if (signatures [foundSig].sig [0] == 0x1E &&
-        signatures [foundSig].sig [1] == 0x96 &&
+        signatures [foundSig].sig [1] == 0x95 &&
         signatures [foundSig].sig [2] == 0x89) {
       bootloader = HoodLoader2_0_4_Mega_32u2_hex, // loader image
       len = sizeof(HoodLoader2_0_4_Mega_32u2_hex);
