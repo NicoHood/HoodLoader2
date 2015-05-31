@@ -1,0 +1,50 @@
+{
+  "packages": [
+    {
+      "name": "HoodLoader2",
+      "maintainer": "NicoHood",
+      "websiteURL": "https://github.com/NicoHood/HoodLoader2",
+      "email": "",
+      "help": {
+        "online": ""
+      },
+      "platforms": [
+        {
+          "name": "HoodLoader2",
+          "architecture": "avr",
+          "version": "2.0.4",
+          "category": "HoodLoader2",
+          "help": {
+            "online": ""
+          },
+          "url": "https://github.com/NicoHood/HoodLoader2/releases/download/2.0.4/2.0.4-boards_manager.zip",
+          "archiveFileName": "2.0.4-boards_manager.zip",
+          "checksum": "SHA-256:743dd8d9154638a7f77b60379cd3dea6395c19791e99cbd054ef5a549197533e",
+          "size": "3315537",
+          "boards": [
+            {"name": "16u2"},
+            {"name": "32u2"},
+            {"name": "8u2"},
+            {"name": "at90usb162"},
+            {"name": "Original 16u2 DFU Firmware"},
+            {"name": "Arduino Uno HID-Bridge"},
+            {"name": "Arduino Mega 2560 HID-Bridge"}
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "arduino",
+              "name": "avr-gcc",
+              "version": "4.8.1-arduino5"
+            },
+            {
+              "packager": "arduino",
+              "name": "avrdude",
+              "version": "6.0.1-arduino5"
+            }
+          ]
+        }
+      ],
+      "tools": []
+    }
+  ]
+}
