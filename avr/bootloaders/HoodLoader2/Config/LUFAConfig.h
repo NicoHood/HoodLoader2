@@ -64,6 +64,9 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 
 	#if (ARCH == ARCH_AVR8)
 
+// Pull in RAMEND definitions
+#include "avr/io.h"
+
 		/* Non-USB Related Configuration Tokens: */
 //		#define DISABLE_TERMINAL_CODES
 
@@ -86,8 +89,13 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#define NO_SOF_EVENTS
 
 		/* USB Device Mode Driver Related Tokens: */
-//		#define USE_RAM_DESCRIPTORS
+// Only use RAM Descriptors if we have enough ram
+#if ((RAMEND - RAMSTART) >= 512)
+		#define USE_RAM_DESCRIPTORS
+#else
 		#define USE_FLASH_DESCRIPTORS
+#endif
+
 //		#define USE_EEPROM_DESCRIPTORS
 		#define NO_INTERNAL_SERIAL
 		#define FIXED_CONTROL_ENDPOINT_SIZE      8

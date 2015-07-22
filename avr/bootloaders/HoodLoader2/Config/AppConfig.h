@@ -63,7 +63,9 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 #define _APP_CONFIG_H_
 
 //	#define NO_BLOCK_SUPPORT
+#ifdef __AVR_ATmega32U4__
 	#define NO_EEPROM_BYTE_SUPPORT
+#endif
 	#define NO_FLASH_BYTE_SUPPORT
 //	#define NO_LOCK_BYTE_WRITE_SUPPORT
 

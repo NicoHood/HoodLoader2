@@ -65,12 +65,21 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 #define ARDUINO_MEGA_PID			0x0042 // R3 (0010 R1)
 #define ARDUINO_MEGA_ADK_PID		0x0044 // R3 (003F R1)
 
+// Only use RAM Descriptors if we have enough ram
+#ifdef USE_RAM_DESCRIPTORS
+#define DESCRIPTOR_PROGMEM
+#define STRING_PROGMEM(x) (x)
+#else // PROGMEM descriptors
+#define DESCRIPTOR_PROGMEM PROGMEM
+#define STRING_PROGMEM(x) pgm_read_byte(x)
+#endif
+
 /** Device descriptor structure. This descriptor, located in SRAM memory, describes the overall
  *  device characteristics, including the supported USB version, control endpoint size and the
  *  number of device configurations. The descriptor is read out by the USB host when the enumeration
  *  process begins.
  */
-const USB_Descriptor_Device_t PROGMEM DeviceDescriptor =
+const USB_Descriptor_Device_t DESCRIPTOR_PROGMEM DeviceDescriptor =
 {
 	.Header                 = {.Size = sizeof(USB_Descriptor_Device_t), .Type = DTYPE_Device},
 
@@ -98,7 +107,7 @@ const USB_Descriptor_Device_t PROGMEM DeviceDescriptor =
  *  and endpoints. The descriptor is read out by the USB host during the enumeration process when selecting
  *  a configuration so that the host may correctly communicate with the USB device.
  */
-const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
+const USB_Descriptor_Configuration_t DESCRIPTOR_PROGMEM ConfigurationDescriptor =
 {
 	.Config =
 		{
@@ -207,26 +216,26 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
  *  the string descriptor with index 0 (the first index). It is actually an array of 16-bit integers, which indicate
  *  via the language ID table available at USB.org what languages the device supports for its string descriptors.
  */
-const USB_Descriptor_String_t PROGMEM LanguageString = USB_STRING_DESCRIPTOR_ARRAY(LANGUAGE_ID_ENG);
+const USB_Descriptor_String_t DESCRIPTOR_PROGMEM LanguageString = USB_STRING_DESCRIPTOR_ARRAY(LANGUAGE_ID_ENG);
 
 /** Manufacturer descriptor string. This is a Unicode string containing the manufacturer's details in human readable
  *  form, and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
  *  Descriptor.
  */
-const USB_Descriptor_String_t PROGMEM ManufacturerString = USB_STRING_DESCRIPTOR(L"NicoHood");
+const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ManufacturerString = USB_STRING_DESCRIPTOR(L"NicoHood");
 
 /** Product descriptor string. This is a Unicode string containing the product's details in human readable form,
  *  and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
  *  Descriptor.
  */
 #if (PRODUCTID == ARDUINO_UNO_PID)
-const USB_Descriptor_String_t PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Uno");
+const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Uno");
 #elif (PRODUCTID == ARDUINO_MEGA_PID)
-const USB_Descriptor_String_t PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Mega");
+const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Mega");
 #elif (PRODUCTID == ARDUINO_ADK_PID)
-const USB_Descriptor_String_t PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 ADK");
+const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 ADK");
 #else
-const USB_Descriptor_String_t PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Lufa");
+const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Lufa");
 #endif
 
 /** This function is called by the library when in device mode, and must be overridden (see LUFA library "USB Descriptors"
@@ -259,17 +268,17 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 			if (DescriptorNumber == STRING_ID_Language)
 			{
 				Address = &LanguageString;
-				Size    = pgm_read_byte(&LanguageString.Header.Size);
+				Size    = STRING_PROGMEM(&LanguageString.Header.Size);
 			}
 			else if (DescriptorNumber == STRING_ID_Manufacturer)
 			{
 				Address = &ManufacturerString;
-				Size    = pgm_read_byte(&ManufacturerString.Header.Size);
+				Size    = STRING_PROGMEM(&ManufacturerString.Header.Size);
 			}
 			else if (DescriptorNumber == STRING_ID_Product)
 			{
 				Address = &ProductString;
-				Size    = pgm_read_byte(&ProductString.Header.Size);
+				Size    = STRING_PROGMEM(&ProductString.Header.Size);
 			}
 
 			break;

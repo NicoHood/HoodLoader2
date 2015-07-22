@@ -60,6 +60,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#include <LUFA/Drivers/USB/USB.h>
 
 		#include "Config/AppConfig.h"
+        #include "Config/LUFAConfig.h"
 
 	/* Macros: */
 		#if defined(__AVR_AT90USB1287__)

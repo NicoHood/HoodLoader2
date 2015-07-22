@@ -280,8 +280,45 @@ void EVENT_USB_Device_ControlRequest(void)
 		{
 			Endpoint_ClearSETUP();
 
-			// Read the line coding data in from the host into the global struct
-			Endpoint_Read_Control_Stream_LE(&LineEncoding, sizeof(CDC_LineEncoding_t));
+			// Read the line coding data in from the host into the global struct (made inline)
+			//Endpoint_Read_Control_Stream_LE(&LineEncoding, sizeof(CDC_LineEncoding_t));
+
+			uint8_t Length = sizeof(CDC_LineEncoding_t);
+			uint8_t* DataStream = (uint8_t*)&LineEncoding;
+
+			bool skip = false;
+			while (Length)
+			{
+				uint8_t USB_DeviceState_LCL = USB_DeviceState;
+
+				if ((USB_DeviceState_LCL == DEVICE_STATE_Unattached) || (USB_DeviceState_LCL == DEVICE_STATE_Suspended) || (Endpoint_IsSETUPReceived())){
+					skip = true;
+					break;
+				}
+
+				if (Endpoint_IsOUTReceived())
+				{
+					while (Length && Endpoint_BytesInEndpoint())
+					{
+						*DataStream = Endpoint_Read_8();
+						DataStream++;
+						Length--;
+					}
+
+					Endpoint_ClearOUT();
+				}
+			}
+
+			if (!skip)
+				while (!(Endpoint_IsINReady()))
+				{
+					uint8_t USB_DeviceState_LCL = USB_DeviceState;
+
+					if ((USB_DeviceState_LCL == DEVICE_STATE_Unattached) || (USB_DeviceState_LCL == DEVICE_STATE_Suspended))
+						break;
+				}
+
+			// end of inline Endpoint_Read_Control_Stream_LE
 
 			Endpoint_ClearIN();
 
