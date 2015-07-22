@@ -906,7 +906,7 @@ static void CDC_Device_LineEncodingChanged(void)
 		uint16_t brr = SERIAL_2X_UBBRVAL(BaudRateBPS);
 		// No need U2X or cant have U2X.
 		if ((brr & 1) || (brr > 4095)) {
-			brr >= 1;
+			brr >>= 1;
 			clockSpeed = 0;
 		}
 		UBRR1 = brr;
