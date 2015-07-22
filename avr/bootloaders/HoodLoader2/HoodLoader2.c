@@ -65,13 +65,13 @@ static CDC_LineEncoding_t LineEncoding = { .BaudRateBPS = 0,
 .DataBits = 8 };
 
 /** Underlying data buffer for \ref USARTtoUSB_Buffer, where the stored bytes are located. */
-#define BUFFER_SIZE 128 // 2^x is for better performence (32,64,128,256)
-static uint8_t      USARTtoUSB_Buffer_Data[BUFFER_SIZE];
+#define BUFFER_SIZE 256 // 2^x is for better performence (32,64,128,256)
+volatile uint8_t *const USARTtoUSB_Buffer_Data = (volatile uint8_t *)0x0100;
 static volatile uint8_t BufferCount = 0; // Number of bytes currently stored in the buffer
 static uint8_t BufferIndex = 0; // position of the first buffer byte (Buffer out)
 static uint8_t BufferEnd = 0; // position of the last buffer byte (Serial in)
 
-// Led Pulse count
+// Led Pulse count TODO inline them as local vaiable?
 #define TX_RX_LED_PULSE_MS 3
 static uint8_t TxLEDPulse = 0;
 static uint8_t RxLEDPulse = 0;
