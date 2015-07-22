@@ -1,4 +1,4 @@
-HoodLoader2.0.4
+HoodLoader2.0.5
 ===============
 
 ![header](header.jpg)
@@ -60,6 +60,10 @@ www.nicohood.de
 Version History
 ===============
 ```
+2.0.5 Release (xx.xx.2015)
+* Improved USART reconfiguration
+* Changed Magic Key to RAMEND
+
 2.0.4 Release (20.03.2015)
 * HoodLoader2.0.4
  * Upload verification on USB hubs fix in bootloader
