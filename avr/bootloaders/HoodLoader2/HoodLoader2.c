@@ -77,7 +77,7 @@ static uint8_t TxLEDPulse = 0;
 static uint8_t RxLEDPulse = 0;
 
 // variable to determine if CDC baudrate is for the bootloader mode or not
-static volatile bool CDCActive = false;
+static volatile bool bootloaderMode = false;
 
 /** Current address counter. This stores the current address of the FLASH or EEPROM as set by the host,
  *  and is used when reading or writing to the AVRs memory (either FLASH or EEPROM depending on the issued
@@ -335,7 +335,7 @@ void EVENT_USB_Device_ControlRequest(void)
 			// You could add the OUTPUT declaration here but it wont help since the pc always tries to open the serial port once.
 			// At least if the usb is connected this always results in a main MCU reset if the bootloader is executed.
 			// From my testings there is no way to avoid this. Its needed as far as I tested, no way.
-			if (!CDCActive && USB_ControlRequest.wValue & CDC_CONTROL_LINE_OUT_DTR)
+			if (!bootloaderMode && USB_ControlRequest.wValue & CDC_CONTROL_LINE_OUT_DTR)
 				AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
 			else
 				AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
@@ -353,7 +353,7 @@ ISR(USART1_RX_vect, ISR_BLOCK)
 	uint8_t ReceivedByte = UDR1;
 
 	// only save the new byte if USB device is ready and buffer is not full
-	if (!CDCActive && (USB_DeviceState == DEVICE_STATE_Configured) && (BufferCount < BUFFER_SIZE)){
+	if (!bootloaderMode && (USB_DeviceState == DEVICE_STATE_Configured) && (BufferCount < BUFFER_SIZE)){
 		// save new byte
 		USARTtoUSB_Buffer_Data[BufferEnd++] = ReceivedByte;
 
@@ -432,7 +432,7 @@ static void CDC_Task(void)
 		uint8_t Command = FetchNextCommandByte();
 
 		// USB-Serial Mode
-		if (!CDCActive){
+		if (!bootloaderMode){
 			/* Store received byte into the USART transmit buffer */
 			Serial_SendByte(Command);
 
@@ -450,7 +450,7 @@ static void CDC_Task(void)
 			Bootloader_Task(Command);
 	}
 	// nothing received in Bootloader mode
-	else if (CDCActive)
+	else if (bootloaderMode)
 		return;
 
 	// get the number of bytes in the USB-Serial Buffer
@@ -465,7 +465,7 @@ static void CDC_Task(void)
 	SetGlobalInterruptMask(CurrentGlobalInt);
 
 	// dont try to flush data in USB-Serial mode if there is no data. This will block the USB
-	if (!CDCActive){
+	if (!bootloaderMode){
 		if (!BytesToSend)
 			return;
 		else{
@@ -496,7 +496,7 @@ static void CDC_Task(void)
 	FlushCDC();
 
 	// in Bootloader mode clear the Out endpoint
-	if (CDCActive){
+	if (bootloaderMode){
 
 		/* Select the OUT endpoint */
 		Endpoint_SelectEndpoint(CDC_RX_EPADDR);
@@ -848,46 +848,6 @@ static void ReadWriteMemoryBlock(const uint8_t Command)
 */
 static void CDC_Device_LineEncodingChanged(void)
 {
-	uint32_t BaudRateBPS = LineEncoding.BaudRateBPS;
-
-	if (BaudRateBPS == BAUDRATE_CDC_BOOTLOADER)
-		CDCActive = true;
-	else
-		CDCActive = false;
-
-	// reset buffer
-	BufferCount = 0;
-	BufferIndex = 0;
-	BufferEnd = 0;
-
-	uint8_t ConfigMask = 0;
-
-	switch (LineEncoding.ParityType)
-	{
-	case CDC_PARITY_Odd:
-		ConfigMask = ((1 << UPM11) | (1 << UPM10));
-		break;
-	case CDC_PARITY_Even:
-		ConfigMask = (1 << UPM11);
-		break;
-	}
-
-	if (LineEncoding.CharFormat == CDC_LINEENCODING_TwoStopBits)
-		ConfigMask |= (1 << USBS1);
-
-	switch (LineEncoding.DataBits)
-	{
-	case 6:
-		ConfigMask |= (1 << UCSZ10);
-		break;
-	case 7:
-		ConfigMask |= (1 << UCSZ11);
-		break;
-	case 8:
-		ConfigMask |= ((1 << UCSZ11) | (1 << UCSZ10));
-		break;
-	}
-
 	/* Keep the TX line held high (idle) while the USART is reconfigured */
 	PORTD |= (1 << 3);
 
@@ -896,13 +856,55 @@ static void CDC_Device_LineEncodingChanged(void)
 	UCSR1A = 0;
 	UCSR1C = 0;
 
-	/* Set the new baud rate before configuring the USART */
-	UBRR1 = SERIAL_2X_UBBRVAL(BaudRateBPS);
+	// reset buffer
+	BufferCount = 0;
+	BufferIndex = 0;
+	BufferEnd = 0;
 
-	/* Reconfigure the USART in double speed mode for a wider baud rate range at the expense of accuracy */
-	UCSR1C = ConfigMask;
-	UCSR1A = (1 << U2X1);
-	UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1));
+	// only reconfigure USART if we are not in self reprogramming mode
+	uint32_t BaudRateBPS = LineEncoding.BaudRateBPS;
+	if (BaudRateBPS == BAUDRATE_CDC_BOOTLOADER)
+		bootloaderMode = true;
+	else
+	{
+		bootloaderMode = false;
+
+		uint8_t ConfigMask = 0;
+
+		switch (LineEncoding.ParityType)
+		{
+		case CDC_PARITY_Odd:
+			ConfigMask = ((1 << UPM11) | (1 << UPM10));
+			break;
+		case CDC_PARITY_Even:
+			ConfigMask = (1 << UPM11);
+			break;
+		}
+
+		if (LineEncoding.CharFormat == CDC_LINEENCODING_TwoStopBits)
+			ConfigMask |= (1 << USBS1);
+
+		switch (LineEncoding.DataBits)
+		{
+		case 6:
+			ConfigMask |= (1 << UCSZ10);
+			break;
+		case 7:
+			ConfigMask |= (1 << UCSZ11);
+			break;
+		case 8:
+			ConfigMask |= ((1 << UCSZ11) | (1 << UCSZ10));
+			break;
+		}
+
+		/* Set the new baud rate before configuring the USART */
+		UBRR1 = SERIAL_2X_UBBRVAL(BaudRateBPS);
+
+		/* Reconfigure the USART in double speed mode for a wider baud rate range at the expense of accuracy */
+		UCSR1C = ConfigMask;
+		UCSR1A = (1 << U2X1);
+		UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1));
+	}
 
 	/* Release the TX line after the USART has been reconfigured */
 	PORTD &= ~(1 << 3);
