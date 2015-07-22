@@ -7,7 +7,7 @@ menu.board=BootLoader
 
 
 HoodLoader2atmega16u2.name=HoodLoader2 16u2
-HoodLoader2atmega16u2.build.core=HID:hid
+HoodLoader2atmega16u2.build.core=arduino:arduino
 HoodLoader2atmega16u2.bootloader.tool=arduino:avrdude
 HoodLoader2atmega16u2.upload.tool=arduino:avrdude
 
@@ -81,7 +81,7 @@ HoodLoader2atmega16u2.menu.board.dev.bootloader.file=HoodLoader2/HoodLoader2.hex
 
 
 HoodLoader2atmega32u2.name=HoodLoader2 32u2
-HoodLoader2atmega32u2.build.core=HID:hid
+HoodLoader2atmega32u2.build.core=arduino:arduino
 HoodLoader2atmega32u2.bootloader.tool=arduino:avrdude
 HoodLoader2atmega32u2.upload.tool=arduino:avrdude
 
@@ -154,7 +154,7 @@ HoodLoader2atmega32u2.menu.board.dev.bootloader.file=HoodLoader2/HoodLoader2.hex
 
 
 HoodLoader2atmega8u2.name=HoodLoader2 8u2
-HoodLoader2atmega8u2.build.core=HID:hid
+HoodLoader2atmega8u2.build.core=arduino:arduino
 HoodLoader2atmega8u2.bootloader.tool=arduino:avrdude
 HoodLoader2atmega8u2.upload.tool=arduino:avrdude
 
@@ -226,7 +226,7 @@ HoodLoader2atmega8u2.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader2
 
 
 HoodLoader2at90usb162.name=HoodLoader2 at90usb162
-HoodLoader2at90usb162.build.core=HID:hid
+HoodLoader2at90usb162.build.core=arduino:arduino
 HoodLoader2at90usb162.bootloader.tool=arduino:avrdude
 HoodLoader2at90usb162.upload.tool=arduino:avrdude
 
@@ -297,7 +297,7 @@ HoodLoader2at90usb162.menu.board.mega2560.bootloader.file=HoodLoader2/HoodLoader
 ##############################################################
 
 HoodLoader2atmega16u2DFU.name=Original 16u2 DFU Firmware
-HoodLoader2atmega16u2DFU.build.core=HID:hid
+HoodLoader2atmega16u2DFU.build.core=arduino:arduino
 HoodLoader2atmega16u2DFU.bootloader.tool=arduino:avrdude
 HoodLoader2atmega16u2DFU.upload.tool=arduino:avrdude
 
@@ -371,7 +371,7 @@ unoHIDBridge.bootloader.file=arduino:optiboot/optiboot_atmega328.hex
 unoHIDBridge.build.mcu=atmega328p
 unoHIDBridge.build.f_cpu=16000000L
 unoHIDBridge.build.board=AVR_UNO
-unoHIDBridge.build.core=HID:hid
+unoHIDBridge.build.core=arduino:arduino
 
 #USB core selection
 #HID Project needs to be installed https://github.com/NicoHood/HID
@@ -412,7 +412,7 @@ megaHIDBridge.bootloader.extended_fuses=0xFD
 megaHIDBridge.bootloader.file=arduino:stk500v2/stk500boot_v2_mega2560.hex
 
 megaHIDBridge.build.f_cpu=16000000L
-megaHIDBridge.build.core=HID:hid
+megaHIDBridge.build.core=arduino:arduino
 megaHIDBridge.build.mcu=atmega2560
 megaHIDBridge.build.board=AVR_MEGA2560
 
