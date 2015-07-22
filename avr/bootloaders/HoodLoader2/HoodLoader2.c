@@ -66,7 +66,7 @@ static CDC_LineEncoding_t LineEncoding = { .BaudRateBPS = 0,
 
 /** Underlying data buffer for \ref USARTtoUSB_Buffer, where the stored bytes are located. */
 #define BUFFER_SIZE 256 // 2^x is for better performence (32,64,128,256)
-volatile uint8_t *const USARTtoUSB_Buffer_Data = (volatile uint8_t *)0x0100;
+volatile uint8_t *const USARTtoUSB_Buffer_Data = (volatile uint8_t *)RAMSTART;
 static volatile uint8_t BufferCount = 0; // Number of bytes currently stored in the buffer
 static uint8_t BufferIndex = 0; // position of the first buffer byte (Buffer out)
 static uint8_t BufferEnd = 0; // position of the last buffer byte (Serial in)

@@ -93,6 +93,15 @@
 			/** LED mask for none of the board LEDs. */
 			#define LEDS_NO_LEDS     0
 
+			/** LED mask for the library LED driver, to indicate TX activity. */
+			#define LEDMASK_TX       LEDS_LED2
+
+			/** LED mask for the library LED driver, to indicate RX activity. */
+			#define LEDMASK_RX       LEDS_LED1
+
+			/** LED mask for the library LED driver, to indicate other activity. */
+			#define LEDMASK_13       LEDS_LED3
+
 		/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void LEDs_Init(void)

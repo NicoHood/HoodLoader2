@@ -22,7 +22,7 @@ SRC          = $(TARGET).c Descriptors.c BootloaderAPI.c BootloaderAPITable.S $(
 LUFA_PATH    = ../../../tools/lufa-LUFA-140928/LUFA
 REGS  = -ffixed-r2 -ffixed-r3 -ffixed-r4 -ffixed-r5
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_START_ADDR=$(BOOT_START_OFFSET) $(REGS) -flto -fuse-linker-plugin
-LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=0x800280 -flto -fuse-linker-plugin
+LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=$(RAM_OFFSET) -flto -fuse-linker-plugin
 
 #define LUFA_VID					0x03EB
 #define LUFA_PID					0x204A
@@ -38,8 +38,12 @@ HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID
 # Flash size and bootloader section sizes of the target, in KB. These must
 # match the target's total FLASH size and the bootloader size set in the
 # device's fuses.
-FLASH_SIZE_KB         = 16
+FLASH_SIZE_KB         = 32
 BOOT_SECTION_SIZE_KB  = 4
+# u2 Series:
+RAM_OFFSET            = 0x800280
+# u4 Series:
+# TODO
 
 # Bootloader address calculation formulas
 # Do not modify these macros, but rather modify the dependent values above.

@@ -104,6 +104,19 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#define ARDUINO_PORT PORTD
 		#define ARDUINO_DDR DDRD
 
+// Avoid to select the wrong BOARD in the makefile
+#if !defined(__LEDS_LEONARDO_H__) && defined(__AVR_ATmega32U4__) || defined(__LEDS_LEONARDO_H__) && !defined(__AVR_ATmega32U4__)
+#error Please select LEONARDO as BOARD in the makefile
+#endif
+
+#ifdef __AVR_ATmega32U4__
+		/** Pin that can reset the main MCU. */
+		#define AVR_RESET_LINE_PORT PORTD
+		#define AVR_RESET_LINE_DDR DDRD
+		#define AVR_RESET_LINE_PIN PIND
+		#define AVR_RESET_LINE_MASK (1 << PD7)
+#endif
+
 	/* Enums: */
 		/** Possible memory types that can be addressed via the bootloader. */
 		enum AVR109_Memories
