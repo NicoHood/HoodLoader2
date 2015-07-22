@@ -865,6 +865,10 @@ static void CDC_Device_LineEncodingChanged(void)
 	uint32_t BaudRateBPS = LineEncoding.BaudRateBPS;
 	if (BaudRateBPS == BAUDRATE_CDC_BOOTLOADER)
 		bootloaderMode = true;
+	else if(BaudRateBPS == 0)
+	{
+		// Just turn off USART
+	}
 	else
 	{
 		bootloaderMode = false;
@@ -898,11 +902,18 @@ static void CDC_Device_LineEncodingChanged(void)
 		}
 
 		/* Set the new baud rate before configuring the USART */
-		UBRR1 = SERIAL_2X_UBBRVAL(BaudRateBPS);
+		uint8_t sreg = (1 << U2X1);
+		uint16_t brr = SERIAL_2X_UBBRVAL(BaudRateBPS);
+		// No need U2X or cant have U2X.
+		if ((brr & 1) || (brr > 4095)) {
+			brr >= 1;
+			sreg = 0;
+		}
+		UBRR1 = brr;
 
-		/* Reconfigure the USART in double speed mode for a wider baud rate range at the expense of accuracy */
+		/* Reconfigure the USART */
 		UCSR1C = ConfigMask;
-		UCSR1A = (1 << U2X1);
+		UCSR1A = sreg;
 		UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1));
 	}
 
