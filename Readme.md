@@ -63,6 +63,8 @@ Version History
 2.0.5 Release (xx.xx.2015)
 * Improved USART reconfiguration
 * Changed Magic Key to RAMEND
+* Switch to U2Xn=0 if needed
+* TODO linux avrdude script
 
 2.0.4 Release (20.03.2015)
 * HoodLoader2.0.4

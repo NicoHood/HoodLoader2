@@ -902,18 +902,18 @@ static void CDC_Device_LineEncodingChanged(void)
 		}
 
 		/* Set the new baud rate before configuring the USART */
-		uint8_t sreg = (1 << U2X1);
+		uint8_t clockSpeed = (1 << U2X1);
 		uint16_t brr = SERIAL_2X_UBBRVAL(BaudRateBPS);
 		// No need U2X or cant have U2X.
 		if ((brr & 1) || (brr > 4095)) {
 			brr >= 1;
-			sreg = 0;
+			clockSpeed = 0;
 		}
 		UBRR1 = brr;
 
 		/* Reconfigure the USART */
 		UCSR1C = ConfigMask;
-		UCSR1A = sreg;
+		UCSR1A = clockSpeed;
 		UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1));
 	}
 
