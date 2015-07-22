@@ -101,7 +101,7 @@ static bool RunBootloader = true;
 // to the linker as the start of the section. Otherwise, the linker thinks you want to put the .noinit section
 // into the .text section instead of .data/.bss and will complain."
 //volatile uint8_t MagicBootKey __attribute__((section(".blkey")));
-volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)0x0280;
+volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)RAMEND;
 
 /** Magic bootloader key to unlock forced application start mode. */
 // Arduino uses a 16bit value but we use a 8 bit value to keep the size low, see above
