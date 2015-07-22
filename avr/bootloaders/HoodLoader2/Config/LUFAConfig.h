@@ -86,8 +86,8 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#define NO_SOF_EVENTS
 
 		/* USB Device Mode Driver Related Tokens: */
-		#define USE_RAM_DESCRIPTORS
-//		#define USE_FLASH_DESCRIPTORS
+//		#define USE_RAM_DESCRIPTORS
+		#define USE_FLASH_DESCRIPTORS
 //		#define USE_EEPROM_DESCRIPTORS
 		#define NO_INTERNAL_SERIAL
 		#define FIXED_CONTROL_ENDPOINT_SIZE      8

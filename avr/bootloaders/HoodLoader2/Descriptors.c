@@ -259,17 +259,17 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 			if (DescriptorNumber == STRING_ID_Language)
 			{
 				Address = &LanguageString;
-				Size    = LanguageString.Header.Size;
+				Size    = pgm_read_byte(&LanguageString.Header.Size);
 			}
 			else if (DescriptorNumber == STRING_ID_Manufacturer)
 			{
 				Address = &ManufacturerString;
-				Size    = ManufacturerString.Header.Size;
+				Size    = pgm_read_byte(&ManufacturerString.Header.Size);
 			}
 			else if (DescriptorNumber == STRING_ID_Product)
 			{
 				Address = &ProductString;
-				Size    = ProductString.Header.Size;
+				Size    = pgm_read_byte(&ProductString.Header.Size);
 			}
 
 			break;

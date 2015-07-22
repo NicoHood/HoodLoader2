@@ -65,6 +65,6 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 //	#define NO_BLOCK_SUPPORT
 	#define NO_EEPROM_BYTE_SUPPORT
 	#define NO_FLASH_BYTE_SUPPORT
-//	#define NO_LOCK_BYTE_WRITE_SUPPORT
+	#define NO_LOCK_BYTE_WRITE_SUPPORT
 
 #endif
