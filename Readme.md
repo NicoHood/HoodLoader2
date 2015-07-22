@@ -63,6 +63,7 @@ Version History
 2.0.5 Release (xx.xx.2015)
 * Improved USART reconfiguration
 * Changed Magic Key to RAMEND
+* Saved a lot ram by moving descriptors to PROGMEM
 * Switch to U2Xn=0 if needed
 * TODO linux avrdude script
 
