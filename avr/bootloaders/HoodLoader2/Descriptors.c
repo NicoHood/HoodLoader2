@@ -71,7 +71,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 #define STRING_PROGMEM(x) (x)
 #else // PROGMEM descriptors
 #define DESCRIPTOR_PROGMEM PROGMEM
-#define STRING_PROGMEM(x) pgm_read_byte(x)
+#define STRING_PROGMEM(x) pgm_read_byte(&x)
 #endif
 
 /** Device descriptor structure. This descriptor, located in SRAM memory, describes the overall
@@ -268,17 +268,17 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 			if (DescriptorNumber == STRING_ID_Language)
 			{
 				Address = &LanguageString;
-				Size    = STRING_PROGMEM(&LanguageString.Header.Size);
+				Size    = STRING_PROGMEM(LanguageString.Header.Size);
 			}
 			else if (DescriptorNumber == STRING_ID_Manufacturer)
 			{
 				Address = &ManufacturerString;
-				Size    = STRING_PROGMEM(&ManufacturerString.Header.Size);
+				Size    = STRING_PROGMEM(ManufacturerString.Header.Size);
 			}
 			else if (DescriptorNumber == STRING_ID_Product)
 			{
 				Address = &ProductString;
-				Size    = STRING_PROGMEM(&ProductString.Header.Size);
+				Size    = STRING_PROGMEM(ProductString.Header.Size);
 			}
 
 			break;
