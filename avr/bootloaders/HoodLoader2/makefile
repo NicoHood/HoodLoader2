@@ -40,10 +40,10 @@ HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID
 # device's fuses.
 FLASH_SIZE_KB         = 16
 BOOT_SECTION_SIZE_KB  = 4
-# u2 Series:
+
+# Add an offset of 256 + 128 bytes to RAMSTART for the ringbuffers
+# u2 and u4 Series (RAMSTART = 0x100):
 RAM_OFFSET            = 0x800280
-# u4 Series:
-# TODO
 
 # Bootloader address calculation formulas
 # Do not modify these macros, but rather modify the dependent values above.

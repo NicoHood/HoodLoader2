@@ -596,9 +596,9 @@ static void Bootloader_Task(const uint8_t Command){
 	}
 	else if (Command == AVR109_COMMAND_ReadSignature)
 	{
-		WriteNextResponseByte(AVR_SIGNATURE_3);
-		WriteNextResponseByte(AVR_SIGNATURE_2);
-		WriteNextResponseByte(AVR_SIGNATURE_1);
+		WriteNextResponseByte(SIGNATURE_2);
+		WriteNextResponseByte(SIGNATURE_1);
+		WriteNextResponseByte(SIGNATURE_0);
 	}
 	else if (Command == AVR109_COMMAND_EraseFLASH)
 	{
