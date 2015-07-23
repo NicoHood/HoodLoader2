@@ -63,6 +63,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#include <avr/eeprom.h>
 		#include <avr/power.h>
 		#include <avr/interrupt.h>
+		#include <util/atomic.h>
 		#include <stdbool.h>
 
 		#include "Descriptors.h"
