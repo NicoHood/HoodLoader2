@@ -66,6 +66,7 @@ Version History
 * Saved a lot ram by moving descriptors to PROGMEM (8/16u2)
 * Added 32u4 support
 * Switch to U2Xn=0 if needed
+* Added old Atmega328 bootloader compatibility
 * TODO linux avrdude script
 
 2.0.4 Release (20.03.2015)

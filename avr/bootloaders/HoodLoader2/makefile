@@ -33,16 +33,14 @@ LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAG
 
 HOODLOADER2_OPTS  = -DVENDORID=ARDUINO_VID
 HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID
-HOODLOADER2_OPTS += -DTEMP_REG0=$(REG0)
-HOODLOADER2_OPTS += -DTEMP_REG1=$(REG1)
-HOODLOADER2_OPTS += -DTEMP_REG2=$(REG2)
-HOODLOADER2_OPTS += -DTEMP_REG3=$(REG3)
+
 
 # Flash size and bootloader section sizes of the target, in KB. These must
 # match the target's total FLASH size and the bootloader size set in the
 # device's fuses.
 FLASH_SIZE_KB         = 16
 BOOT_SECTION_SIZE_KB  = 4
+
 
 # Add an offset of 256 + 128 bytes to RAMSTART for the ringbuffers
 # u2 and u4 Series (RAMSTART = 0x100):
@@ -52,8 +50,14 @@ RAM_OFFSET            = 0x800280
 REG0  = r2
 REG1  = r3
 REG2  = r4
-REG3  = r5
+REG3  = r5 # needs to be REG2+1!
 REGS  = -ffixed-$(REG0) -ffixed-$(REG1) -ffixed-$(REG2) -ffixed-$(REG3)
+
+HOODLOADER2_OPTS += -DTEMP_REG0=$(REG0)
+HOODLOADER2_OPTS += -DTEMP_REG1=$(REG1)
+HOODLOADER2_OPTS += -DTEMP_REG2=$(REG2)
+HOODLOADER2_OPTS += -DTEMP_REG3=$(REG3)
+
 
 # Bootloader address calculation formulas
 # Do not modify these macros, but rather modify the dependent values above.

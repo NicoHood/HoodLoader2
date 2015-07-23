@@ -210,8 +210,7 @@ int main(void)
 	/* Enable the watchdog and force a timeout to reset the AVR */
 	// this is the simplest solution since it will clear all the hardware setups
 	wdt_enable(WDTO_250MS);
-
-	for (;;);
+	while(true);
 }
 
 /** Configures all hardware required for the bootloader. */
