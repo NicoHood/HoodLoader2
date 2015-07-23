@@ -49,11 +49,11 @@ BOOT_SECTION_SIZE_KB  = 4
 RAM_OFFSET            = 0x800280
 
 # Reserved registers for faster USB-Serial convertion
-REG0  = 2
-REG1  = 3
-REG2  = 4
-REG3  = 5
-REGS  = -ffixed-r$(REG0) -ffixed-r$(REG1) -ffixed-r$(REG2) -ffixed-r$(REG3)
+REG0  = r2
+REG1  = r3
+REG2  = r4
+REG3  = r5
+REGS  = -ffixed-$(REG0) -ffixed-$(REG1) -ffixed-$(REG2) -ffixed-$(REG3)
 
 # Bootloader address calculation formulas
 # Do not modify these macros, but rather modify the dependent values above.
