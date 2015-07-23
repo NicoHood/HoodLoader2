@@ -99,7 +99,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 //		#define USE_EEPROM_DESCRIPTORS
 		#define NO_INTERNAL_SERIAL
 		#define FIXED_CONTROL_ENDPOINT_SIZE      8
-		#define DEVICE_STATE_AS_GPIOR            0
+		#define DEVICE_STATE_AS_GPIOR            2 // GPIOR0 is used for the RX ISR with cbi()
 		#define FIXED_NUM_CONFIGURATIONS         1
 //		#define CONTROL_ONLY_DEVICE
 //		#define INTERRUPT_CONTROL_ENDPOINT

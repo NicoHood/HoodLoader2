@@ -83,8 +83,9 @@ static uint8_t BufferEnd = 0; // position of the last buffer byte (Serial in)
 // USB-Serial buffer pointers are saved in GPIORn
 // for better access (e.g. cbi) in ISRs
 // This has nothing to do with r0 and r1!
-// GPIORn – General Purpose I/O Register are located in RAM
-#define USBtoUSART_ReadPtr GPIOR0
+// GPIORn – General Purpose I/O Register are located in RAM.
+// Make sure to set DEVICE_STATE_AS_GPIOR to 2 in the Lufa config.
+#define USBtoUSART_ReadPtr GPIOR0 // to use cbi()
 #define USARTtoUSB_WritePtr GPIOR1
 
 /* USBtoUSART_WritePtr needs to be visible to ISR so sadly needs to be here. */
