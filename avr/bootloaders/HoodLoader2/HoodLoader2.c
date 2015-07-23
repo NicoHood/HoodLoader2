@@ -905,7 +905,8 @@ static void CDC_Device_LineEncodingChanged(void)
 		uint8_t clockSpeed = (1 << U2X1);
 		uint16_t brr = SERIAL_2X_UBBRVAL(BaudRateBPS);
 		// No need U2X or cant have U2X.
-		if ((brr & 1) || (brr > 4095)) {
+		// Or special case 57600 baud for compatibility with the ATmega328 bootloader.
+		if ((brr & 1) || (brr > 4095) || (brr == SERIAL_2X_UBBRVAL(57600))) {
 			brr >>= 1;
 			clockSpeed = 0;
 		}

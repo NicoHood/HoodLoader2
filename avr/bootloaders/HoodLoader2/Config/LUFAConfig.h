@@ -65,7 +65,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 	#if (ARCH == ARCH_AVR8)
 
 // Pull in RAMEND definitions
-#include "avr/io.h"
+#include <avr/io.h>
 
 		/* Non-USB Related Configuration Tokens: */
 //		#define DISABLE_TERMINAL_CODES
