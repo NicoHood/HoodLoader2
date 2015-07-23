@@ -71,6 +71,25 @@ static volatile uint8_t BufferCount = 0; // Number of bytes currently stored in 
 static uint8_t BufferIndex = 0; // position of the first buffer byte (Buffer out)
 static uint8_t BufferEnd = 0; // position of the last buffer byte (Serial in)
 
+/* NOTE: Using Linker Magic,
+* - Reserved 256 bytes from start of RAM at 0x100 for UART RX Buffer
+* so we can use 256-byte aligned addresssing.
+* - Also 128 bytes from 0x200 for UART TX buffer, same addressing.
+* normal RAM data starts at 0x280, see offset in makefile*/
+
+#define USART2USB_BUFLEN 256 // 0xFF - 8bit
+#define USB2USART_BUFLEN 128 // 0x7F - 7bit
+
+// USB-Serial buffer pointers are saved in GPIORn
+// for better access (e.g. cbi) in ISRs
+// This has nothing to do with r0 and r1!
+// GPIORn – General Purpose I/O Register are located in RAM
+#define USBtoUSART_ReadPtr GPIOR0
+#define USARTtoUSB_WritePtr GPIOR1
+
+/* USBtoUSART_WritePtr needs to be visible to ISR so sadly needs to be here. */
+static volatile uint8_t USBtoUSART_WritePtr = 0;
+
 // Led Pulse count TODO inline them as local vaiable?
 #define TX_RX_LED_PULSE_MS 3
 static uint8_t TxLEDPulse = 0;
@@ -363,6 +382,58 @@ ISR(USART1_RX_vect, ISR_BLOCK)
 		BufferCount++;
 	}
 }
+/*
+// TODO get TEMP_REG0 definitions working in asm code
+ISR(USART1_RX_vect, ISR_NAKED)
+{
+	// This ISR doesnt change SREG. Whoa.
+	asm volatile (
+	"lds r3, %[UDR1_Reg]\n\t" 		// (1) Load new Serial byte (UDR1) into r3
+	"movw r4, r30\n\t" 				// (1) Backup Z pointer (r30 -> r4, r31 -> r5)
+	"in r30, %[writePointer]\n\t" 	// (1) Load USARTtoUSB write buffer 8 bit pointer to lower Z pointer
+	"ldi r31, 0x01\n\t" 			// (1) Set higher Z pointer to 0x01
+	"st Z+, r3\n\t" 				// (2) Save UDR1 in Z pointer (USARTtoUSB write buffer) and increment
+	"out %[writePointer], r30\n\t" 	// (1) Save back new USARTtoUSB buffer pointer location
+	"movw r30, r4\n\t" 				// (1) Restore backuped Z pointer
+	"reti\n\t"						// (4) Exit ISR
+
+	// Inputs:
+	:: [UDR1_Reg] "m" (UDR1), 		// Memory location of UDR1
+	[writePointer] "I" (_SFR_IO_ADDR(USARTtoUSB_WritePtr)) // 8 bit pointer to USARTtoUSB write buffer
+	);
+}
+/*
+ISR(USART1_UDRE_vect, ISR_NAKED)
+{
+  // Another SREG-less ISR.
+  asm volatile (
+    "movw r4, r30\n\t" 					// (1) Backup Z pointer (r30 -> r4, r31 -> r5)
+    "in r30, %[readPointer]\n\t"		// (1) Load USBtoUSART read buffer 8 bit pointer to lower Z pointer
+    "ldi r31, 0x02\n\t" 				// (1) Set higher Z pointer to 0x02
+    "ld r3, Z+\n\t" 					// (2) Load next byte from USBtoUSART buffer into r3
+    "sts %[UDR1_Reg], r3\n\t"			// (2) Save r3 (next byte) in UDR1
+    "out %[readPointer], r30\n\t" 		// (1) Save back new USBtoUSART read buffer pointer location
+    "cbi %[readPointer], 7\n\t" 		// (2) Wrap around for 128 bytes
+										//     smart after-the-fact andi 0x7F without using SREG
+    "movw r30, r4\n\t"					// (1) Restore backuped Z pointer
+    "in r2, %[readPointer]\n\t"			// (1) Load USBtoUSART read buffer 8 bit pointer to r2
+    "lds r3, %[writePointer]\n\t" 		// (1) Load USBtoUSART write buffer to r3
+    "cpse r2, r3\n\t"					// (1/2) Check if USBtoUSART read buffer == USBtoUSART write buffer
+    "reti\n\t"							// (4) They are not equal, more bytes coming soon!
+    "ldi r30, ((1<<RXCIE1) |			// (1) Set r30 temporary to new UCSR1B setting
+	(1 << RXEN1) | (1 << TXEN1))\n\t"	//     ldi needs an upper register, restore Z once more afterwards
+    "sts %[UCSR1B_Reg], r30\n\t"		// (2) Turn off this interrupt (UDRIE1), all bytes sent
+    "movw r30, r4\n\t"					// (1) Restore backuped Z pointer again (was overwritten again above)
+    "reti\n\t"							// (4) Exit ISR
+
+	// Inputs:
+    :: [UDR1_Reg] "m" (UDR1),
+	[readPointer] "I" (_SFR_IO_ADDR(USBtoUSART_ReadPtr)), 	// 7 bit pointer to USBtoUSART read buffer
+	[writePointer] "m" (USBtoUSART_WritePtr), 				// 7 bit pointer to USBtoUSART write buffer
+	[UCSR1B_Reg] "m" (UCSR1B)			// Memory location of UDR1
+  );
+}
+*/
 
 /** Retrieves the next byte from the host in the CDC data OUT endpoint, and clears the endpoint bank if needed
  *  to allow reception of the next data packet from the host.
