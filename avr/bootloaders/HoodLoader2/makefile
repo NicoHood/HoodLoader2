@@ -20,9 +20,8 @@ OPTIMIZATION = s
 TARGET       = HoodLoader2
 SRC          = $(TARGET).c Descriptors.c BootloaderAPI.c BootloaderAPITable.S $(LUFA_SRC_USB)
 LUFA_PATH    = ../../../tools/lufa-LUFA-140928/LUFA
-REGS  = -ffixed-r2 -ffixed-r3 -ffixed-r4 -ffixed-r5
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_START_ADDR=$(BOOT_START_OFFSET) $(REGS) -flto -fuse-linker-plugin
-LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=$(RAM_OFFSET) -flto -fuse-linker-plugin
+LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=$(RAM_OFFSET) $(REGS) -flto -fuse-linker-plugin
 
 #define LUFA_VID					0x03EB
 #define LUFA_PID					0x204A
@@ -34,6 +33,10 @@ LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAG
 
 HOODLOADER2_OPTS  = -DVENDORID=ARDUINO_VID
 HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID
+HOODLOADER2_OPTS += -DTEMP_REG0=$(REG0)
+HOODLOADER2_OPTS += -DTEMP_REG1=$(REG1)
+HOODLOADER2_OPTS += -DTEMP_REG2=$(REG2)
+HOODLOADER2_OPTS += -DTEMP_REG3=$(REG3)
 
 # Flash size and bootloader section sizes of the target, in KB. These must
 # match the target's total FLASH size and the bootloader size set in the
@@ -44,6 +47,13 @@ BOOT_SECTION_SIZE_KB  = 4
 # Add an offset of 256 + 128 bytes to RAMSTART for the ringbuffers
 # u2 and u4 Series (RAMSTART = 0x100):
 RAM_OFFSET            = 0x800280
+
+# Reserved registers for faster USB-Serial convertion
+REG0  = 2
+REG1  = 3
+REG2  = 4
+REG3  = 5
+REGS  = -ffixed-r$(REG0) -ffixed-r$(REG1) -ffixed-r$(REG2) -ffixed-r$(REG3)
 
 # Bootloader address calculation formulas
 # Do not modify these macros, but rather modify the dependent values above.
