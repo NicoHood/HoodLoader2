@@ -208,7 +208,8 @@ int main(void)
 		// check Leds (this methode takes less flash than an ISR)
 		if (TIFR0 & (1 << TOV0)){
 			// reset the timer
-			TIFR0 |= (1 << TOV0);
+			// http://www.nongnu.org/avr-libc/user-manual/FAQ.html#faq_intbits
+			TIFR0 = (1 << TOV0);
 
 			// Turn off TX LED(s) once the TX pulse period has elapsed
 			if (TxLEDPulse && !(--TxLEDPulse))
@@ -219,6 +220,8 @@ int main(void)
 				LEDs_TurnOffLEDs(LEDMASK_RX);
 		}
 	} while (RunBootloader);
+
+	//TODO move this timeout to the bootloader function
 
 	/* Wait a short time to end all USB transactions and then disconnect */
 	_delay_us(1000);
@@ -420,8 +423,8 @@ ISR(USART1_UDRE_vect, ISR_NAKED)
     "lds r3, %[writePointer]\n\t" 		// (1) Load USBtoUSART write buffer to r3
     "cpse r2, r3\n\t"					// (1/2) Check if USBtoUSART read buffer == USBtoUSART write buffer
     "reti\n\t"							// (4) They are not equal, more bytes coming soon!
-    "ldi r30, ((1<<RXCIE1) |			// (1) Set r30 temporary to new UCSR1B setting
-	(1 << RXEN1) | (1 << TXEN1))\n\t"	//     ldi needs an upper register, restore Z once more afterwards
+    "ldi r30, 0x98\n\t"					// (1) Set r30 temporary to new UCSR1B setting ((1<<RXCIE1) | (1 << RXEN1) | (1 << TXEN1))
+										//     ldi needs an upper register, restore Z once more afterwards
     "sts %[UCSR1B_Reg], r30\n\t"		// (2) Turn off this interrupt (UDRIE1), all bytes sent
     "movw r30, r4\n\t"					// (1) Restore backuped Z pointer again (was overwritten again above)
     "reti\n\t"							// (4) Exit ISR
