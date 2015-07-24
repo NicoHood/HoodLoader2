@@ -260,8 +260,8 @@ int main(void)
 		} while (USB_DeviceState != DEVICE_STATE_Configured);
 
 		// reset USB flush timer
-		TIFR0 = _BV(TOV0); //TODO needed?
-		TIFR1 = _BV(OCF1A);
+		//TIFR0 = _BV(TOV0); //TODO needed?
+		//TIFR1 = _BV(OCF1A);
 
 		// Pulse generation counters to keep track of the number of milliseconds remaining for each pulse type
 		//TODO generate ram here, not globally
@@ -271,31 +271,10 @@ int main(void)
 
 		// USB-Serial main loop
 		do {
-			// LED timer overflow.
-			// Check Leds (this methode takes less flash than an ISR)
-			if (TIFR0 & (1 << TOV0)){
-				// Reset the timer
-				// http://www.nongnu.org/avr-libc/user-manual/FAQ.html#faq_intbits
-				TIFR0 = (1 << TOV0);
-
-				// Turn off TX LED once the TX pulse period has elapsed
-				if (TxLEDPulse && !(--TxLEDPulse))
-				LEDs_TurnOffLEDs(LEDMASK_TX);
-
-				// Turn off RX LED once the RX pulse period has elapsed
-				if (RxLEDPulse && !(--RxLEDPulse))
-				LEDs_TurnOffLEDs(LEDMASK_RX);
-			}
-
-			// USB Task
-			Endpoint_SelectEndpoint(ENDPOINT_CONTROLEP);
-			if (Endpoint_IsSETUPReceived())
-			USB_Device_ProcessControlRequest();
-
 			// Abort if CDC Serial is not configured/disabled
-			if(LineEncoding.BaudRateBPS == 0)
-			continue;
-
+			if(LineEncoding.BaudRateBPS != 0)
+			//continue;
+			{
 			//================================================================================
 			// USBtoUSART
 			//================================================================================
@@ -364,14 +343,14 @@ int main(void)
 			//================================================================================
 			// This requires the USART RX buffer to be 256 bytes.
 			uint8_t count = USARTtoUSB_WritePtr - USARTtoUSB_ReadPtr;
-			bool flush_overflow = TIFR1 & _BV(OCF1A);
+			//bool flush_overflow = TIFR1 & _BV(OCF1A);
 
 			// Clear timer flag by writing a logical one.
-			if (flush_overflow)
-			TIFR1 = _BV(OCF1A);
+			//if (flush_overflow)
+			//TIFR1 = _BV(OCF1A);
 
 			// Check if the UART receive buffer flush timer has expired or the buffer is nearly full
-			if ((count >= (CDC_TX_EPSIZE - 1)) || (flush_overflow && count))
+			if ((count >= (CDC_TX_EPSIZE - 1)) || ((TIFR0 & (1 << TOV0)) && count))
 			{
 				// Send data to the USB host
 				Endpoint_SelectEndpoint(CDC_TX_EPADDR);
@@ -434,10 +413,33 @@ int main(void)
 			else if (last_count != count) {
 				last_count = count;
 				txled:
-				TCNT1 = 0; //TODO what does this do?
+				//TCNT1 = 0; //TODO what does this do?
 				LEDs_TurnOnLEDs(LEDMASK_TX);
 				TxLEDPulse = TX_RX_LED_PULSE_MS;
 			}
+		}
+
+			// LED timer overflow.
+			// Check Leds (this methode takes less flash than an ISR)
+			if (TIFR0 & (1 << TOV0)){
+				// Reset the timer
+				// http://www.nongnu.org/avr-libc/user-manual/FAQ.html#faq_intbits
+				TIFR0 = (1 << TOV0);
+
+				// Turn off TX LED once the TX pulse period has elapsed
+				if (TxLEDPulse && !(--TxLEDPulse))
+				LEDs_TurnOffLEDs(LEDMASK_TX);
+
+				// Turn off RX LED once the RX pulse period has elapsed
+				if (RxLEDPulse && !(--RxLEDPulse))
+				LEDs_TurnOffLEDs(LEDMASK_RX);
+			}
+
+			// USB Task
+			Endpoint_SelectEndpoint(ENDPOINT_CONTROLEP);
+			if (Endpoint_IsSETUPReceived())
+			USB_Device_ProcessControlRequest();
+
 		} while (USB_DeviceState == DEVICE_STATE_Configured);
 
 		// Dont forget LEDs on if suddenly unconfigured.
@@ -499,9 +501,9 @@ static void SetupHardware(void)
 	TCCR0B = (1 << CS02); // clk I/O / 256 (From prescaler)
 
 	/* Timer1 is the USB flush timeout timer. */
-	OCR1A = 8000; // 0.5ms at 16Mhz
-	TCCR1A = 0;
-	TCCR1B = _BV(WGM12) | _BV(CS10);
+	//OCR1A = 8000; // 0.5ms at 16Mhz
+	//TCCR1A = 0;
+	//TCCR1B = _BV(WGM12) | _BV(CS10);
 
 	// compacter setup for Leds, RX, TX, Reset Line
 	ARDUINO_DDR |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
