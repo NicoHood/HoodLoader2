@@ -190,6 +190,37 @@ static void StartSketch(void)
 	((void(*)(void))0x0000)();
 }
 
+//TODO
+static void stop(int delay){
+if(delay==500)
+while(true){
+_delay_ms(500);
+LEDs_TurnOnLEDs(LEDMASK_RX);
+LEDs_TurnOffLEDs(LEDMASK_TX);
+_delay_ms(500);
+LEDs_TurnOnLEDs(LEDMASK_TX);
+LEDs_TurnOffLEDs(LEDMASK_RX);
+}
+else if(delay==50)
+while(true){
+_delay_ms(50);
+LEDs_TurnOnLEDs(LEDMASK_RX);
+LEDs_TurnOffLEDs(LEDMASK_TX);
+_delay_ms(50);
+LEDs_TurnOnLEDs(LEDMASK_TX);
+LEDs_TurnOffLEDs(LEDMASK_RX);
+}
+else
+while(true){
+_delay_ms(1000);
+LEDs_TurnOnLEDs(LEDMASK_RX);
+LEDs_TurnOffLEDs(LEDMASK_TX);
+_delay_ms(1000);
+LEDs_TurnOnLEDs(LEDMASK_TX);
+LEDs_TurnOffLEDs(LEDMASK_RX);
+}
+}
+
 /** Main program entry point. This routine configures the hardware required by the bootloader, then continuously
  *  runs the bootloader processing routine until instructed to soft-exit, or hard-reset via the watchdog to start
  *  the loaded application code.
@@ -198,6 +229,9 @@ int main(void)
 {
 	/* Setup hardware required for the bootloader */
 	SetupHardware();
+
+	/* Clear the GPIOR-based TX register. */
+	USBtoUSART_ReadPtr = 0;
 
 	/* Enable global interrupts so that the USB stack can function */
 	GlobalInterruptEnable();
@@ -240,25 +274,17 @@ int main(void)
 bool baud = true;//LineEncoding.BaudRateBPS != 0;
 		if(LineEncoding.BaudRateBPS != 0){
 	// USBtoUSART
-      // TODO (USBtoUSART_ReadPtr - USBtoUSART_WritePtr) & (USB2USART_BUFLEN-1)
-	// TODO move free variable into if to save speed
-      uint8_t USBtoUSART_free = (USB2USART_BUFLEN-1) - ( (USBtoUSART_WritePtr - USBtoUSART_ReadPtr) & (USB2USART_BUFLEN-1) );
-
 	Endpoint_SelectEndpoint(CDC_RX_EPADDR);
 
 	uint8_t rxd = 0;
-	if (baud && Endpoint_IsOUTReceived())
+	if (Endpoint_IsOUTReceived())
 	{
-		if (!(Endpoint_BytesInEndpoint()))
-			Endpoint_ClearOUT();
-			// TODO if this ever happens
-		else
 			rxd = Endpoint_BytesInEndpoint();
-	}
-
-      //uint8_t rxd = CDC_Device_BytesReceived(&VirtualSerial_CDC_Interface); //TODO remove
+ 
       // check if we received any new bytes and if we still have space in the buffer
-      if ( rxd  && (rxd <= USBtoUSART_free) ) {
+      if ( rxd){
+     uint8_t USBtoUSART_free = (USB2USART_BUFLEN-1) - ( (USBtoUSART_WritePtr - USBtoUSART_ReadPtr) & (USB2USART_BUFLEN-1) );
+ 		if(rxd <= USBtoUSART_free ) {
 
         // tmp = 0x200 | USBtoUSART_wrp;
         uint16_t tmp;
@@ -288,11 +314,17 @@ bool baud = true;//LineEncoding.BaudRateBPS != 0;
 
         // Enable USART again to flush the buffer
         UCSR1B = (_BV(RXCIE1) | _BV(TXEN1) | _BV(RXEN1) | _BV(UDRIE1));
-
+}
         //TODO
         goto rxled;
       }
-      else if (USBtoUSART_WritePtr != USBtoUSART_ReadPtr) {
+else{
+			Endpoint_ClearOUT();
+			// TODO if this ever happens
+			stop(500);
+		}
+	}
+       if (USBtoUSART_WritePtr != USBtoUSART_ReadPtr) {
         // light led if we still have data in the USB to USART buffer
         rxled:
         LEDs_TurnOnLEDs(LEDMASK_RX);
@@ -309,26 +341,36 @@ bool baud = true;//LineEncoding.BaudRateBPS != 0;
       TIFR1 = _BV(OCF1A);
 
       // Check if the UART receive buffer flush timer has expired or the buffer is nearly full 
-      if ( (count >= CDC_TX_EPSIZE) || (flush_overflow && count)){
+      if ( (count >= (CDC_TX_EPSIZE - 1)) || (flush_overflow && count)){
       // CDC device is ready for receiving bytes
 	Endpoint_SelectEndpoint(CDC_TX_EPADDR);
 
 	// If USB Bank is still not empty, send data now
 	// TODO this should not be needed since we always flush??
+    // If endpoint bank is full
 	uint8_t ready = ENDPOINT_READYWAIT_NoError;
+// IsINReady is better and should be enough
+// ReadAllowed will block if a) enpoint is full (which should not happen
+// or b) IsINReady() would be false
+	if(Endpoint_IsINReady())
 	if (baud && !(Endpoint_IsReadWriteAllowed()))
 	{
-		Endpoint_ClearIN();
-		ready = ENDPOINT_READYWAIT_Timeout;
+		stop(50);
+		//Endpoint_ClearIN();
+		//ready = ENDPOINT_READYWAIT_Timeout;
 	}
 
-      if (baud&& ready == 0) {
+      if (baud && Endpoint_IsINReady()) {
         // Endpoint will always be empty since we're the only writer
 		// and we flush after every write. 
 		// Meaning Endpoint_IsINReady() is not needed because we use Endpoint_ClearIN()
 
-        // Send a maximum of up to one bank
-        uint8_t txcount = CDC_TX_EPSIZE; //TODO improve? TODO add -1
+        // Send a maximum of up to one bank minus one.
+		// If we fill the whole bank we'd have to send an empty Zero Length Packet (ZLP)
+		// afterwards to determine the end of the transfer.
+		// Since this is more complicated we only send single packets
+		// with one byte less than the maximum.
+        uint8_t txcount = CDC_TX_EPSIZE -1;
         if (txcount > count)
         txcount = count;
 
@@ -375,7 +417,7 @@ bool baud = true;//LineEncoding.BaudRateBPS != 0;
       else if (last_count != count) {
         last_count = count;
         txled:
-        TCNT1 = 0;
+        TCNT1 = 0; //TODO what does this do?
         LEDs_TurnOnLEDs(LEDMASK_TX);
         TxLEDPulse = TX_RX_LED_PULSE_MS;
       }
