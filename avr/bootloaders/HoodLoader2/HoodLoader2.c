@@ -160,7 +160,7 @@ void Application_Jump_Check(void)
 		//  another external reset occurs, on the next pass through this decision tree, execution will fall
 		//  through to the bootloader.
 		if ((mcusr_state & (1 << EXTRF))) {
-			if ((bootKeyPtrVal != MAGIC_BOOT_KEY)){
+			if ((bootKeyPtrVal != MAGIC_BOOT_KEY) && (oldBootKeyPtrVal != MAGIC_BOOT_KEY)){
 				// set the Bootkey and give the user a few ms chance to enter Bootloader mode
 				*MagicBootKeyPtr = MAGIC_BOOT_KEY;
 #ifdef OLD_BOOTKEY
