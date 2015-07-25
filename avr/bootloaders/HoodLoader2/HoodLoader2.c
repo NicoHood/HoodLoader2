@@ -200,7 +200,11 @@ void Application_Jump_Check(void)
 
 		// On a watchdog reset, if the bootKey isn't set, and there's a sketch, we should just
 		//  go straight to the sketch.
-		else if ((mcusr_state & (1 << WDRF)) && (bootKeyPtrVal != MAGIC_BOOT_KEY))
+		else if ((mcusr_state & (1 << WDRF)) && (bootKeyPtrVal != MAGIC_BOOT_KEY)
+#ifdef SECOND_BOOTKEY
+&& (secondBootKeyPtrVal != MAGIC_BOOT_KEY)
+#endif
+)
 		// If it looks like an "accidental" watchdog reset then start the sketch.
 		StartSketch();
 	}
