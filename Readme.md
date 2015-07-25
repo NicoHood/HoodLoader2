@@ -64,14 +64,16 @@ Version History
 * Added up to 2M baud support (thx to https://github.com/urjaman/fast-usbserial)
 * Improved USART reconfiguration
 * Changed Magic Key to RAMEND
-  (requires new HID-Project IDE patch, but is stillbackwards compatible)
-* Saved a lot ram by moving descriptors to PROGMEM (8/16u2)
+  (requires new HID-Project IDE patch, but is still backwards compatible)
+* Saved a lot of ram by moving descriptors to PROGMEM (8/16u2)
 * Added 32u4 support
 * Added EEPROM program support for 32u2
 * Switch to U2Xn=0 if needed
 * Added old Atmega328 bootloader compatibility
 * Added USB reconnect support
-* TODO linux avrdude script
+* General improvements to reduce flash size
+* Added small linux avrdude firmware upload script
+* Updated Installation sketch
 * Note: Can only be (re)compiled with AVR-GCC 5.1 and LTO (see wiki)
 
 2.0.4 Release (20.03.2015)
