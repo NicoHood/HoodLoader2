@@ -172,6 +172,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		static void SetupHardware(void);
 		static void FlushCDC(void);
 		static void StartSketch(void);
+		static void ResetMCU(void);
 
 		void Application_Jump_Check(void) ATTR_INIT_SECTION(3);
 

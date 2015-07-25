@@ -89,9 +89,6 @@ static CDC_LineEncoding_t LineEncoding = { .BaudRateBPS = 0,
 static volatile uint8_t USBtoUSART_WritePtr = 0;
 static volatile uint8_t USARTtoUSB_ReadPtr = 0;
 
-// variable to determine if CDC baudrate is for the bootloader mode or not
-static volatile bool bootloaderMode = false;
-
 /** Current address counter. This stores the current address of the FLASH or EEPROM as set by the host,
 *  and is used when reading or writing to the AVRs memory (either FLASH or EEPROM depending on the issued
 *  command.)
@@ -183,6 +180,19 @@ static void StartSketch(void)
 	((void(*)(void))0x0000)();
 }
 
+static void ResetMCU(void){
+	/* Wait a short time to end all USB transactions and then disconnect */
+	_delay_us(1000);
+
+	/* Disconnect from the host - USB interface will be reset later along with the AVR */
+	USB_Detach();
+
+	/* Enable the watchdog and force a timeout to reset the AVR */
+	// this is the simplest solution since it will clear all the hardware setups
+	wdt_enable(WDTO_250MS);
+	while(true);
+}
+
 //TODO
 static void stop(int delay){
 	if(delay==500)
@@ -241,8 +251,12 @@ int main(void)
 
 		// USB-Serial main loop
 		do {
+			
+			if(LineEncoding.BaudRateBPS == BAUDRATE_CDC_BOOTLOADER)
+				CDC_Task();
+
 			// Skip USB-Serial translation if CDC Serial is not configured/disabled
-			if(LineEncoding.BaudRateBPS != 0)
+			else if(LineEncoding.BaudRateBPS != 0)
 			{
 				//================================================================================
 				// USBtoUSART
@@ -304,6 +318,7 @@ int main(void)
 					// Force Leds to turn on
 					USBtoUSART_free=0;
 				}
+
 				// Light RX led if we still have data in the USBtoUSART buffer
 				if (USBtoUSART_free != (USB2USART_BUFLEN-1)) {
 					LEDs_TurnOnLEDs(LEDMASK_RX);
@@ -399,6 +414,10 @@ int main(void)
 			if (Endpoint_IsSETUPReceived())
 			USB_Device_ProcessControlRequest();
 
+			// Finished self reprogramming?
+			if(!RunBootloader)
+				ResetMCU();
+
 		} while (USB_DeviceState == DEVICE_STATE_Configured);
 
 		// Dont forget LEDs on if suddenly unconfigured.
@@ -409,39 +428,6 @@ int main(void)
 		LineEncoding.BaudRateBPS = 0;
 		CDC_Device_LineEncodingChanged();
 	}
-/*
-	do {
-		CDC_Task();
-		USB_USBTask();
-
-		// check Leds (this methode takes less flash than an ISR)
-		if (TIFR0 & (1 << TOV0)){
-			// reset the timer
-			// http://www.nongnu.org/avr-libc/user-manual/FAQ.html#faq_intbits
-			TIFR0 = (1 << TOV0);
-
-			// Turn off TX LED(s) once the TX pulse period has elapsed
-			if (TxLEDPulse && !(--TxLEDPulse))
-			LEDs_TurnOffLEDs(LEDMASK_TX);
-
-			// Turn off RX LED(s) once the RX pulse period has elapsed
-			if (RxLEDPulse && !(--RxLEDPulse))
-			LEDs_TurnOffLEDs(LEDMASK_RX);
-		}
-	} while (RunBootloader);
-*/
-	//TODO move this timeout to the bootloader function
-
-	/* Wait a short time to end all USB transactions and then disconnect */
-	_delay_us(1000);
-
-	/* Disconnect from the host - USB interface will be reset later along with the AVR */
-	USB_Detach();
-
-	/* Enable the watchdog and force a timeout to reset the AVR */
-	// this is the simplest solution since it will clear all the hardware setups
-	wdt_enable(WDTO_250MS);
-	while(true);
 }
 
 /** Configures all hardware required for the bootloader. */
@@ -566,7 +552,7 @@ void EVENT_USB_Device_ControlRequest(void)
 			// You could add the OUTPUT declaration here but it wont help since the pc always tries to open the serial port once.
 			// At least if the usb is connected this always results in a main MCU reset if the bootloader is executed.
 			// From my testings there is no way to avoid this. Its needed as far as I tested, no way.
-			if (!bootloaderMode && USB_ControlRequest.wValue & CDC_CONTROL_LINE_OUT_DTR)
+			if (USB_ControlRequest.wValue & CDC_CONTROL_LINE_OUT_DTR)
 			AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
 			else
 			AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
@@ -578,26 +564,6 @@ void EVENT_USB_Device_ControlRequest(void)
 /** ISR to manage the reception of data from the serial port, placing received bytes into a circular buffer
 *  for later transmission to the host.
 */
-/*
-ISR(USART1_RX_vect, ISR_BLOCK)
-{
-// read the newest byte from the UART, important to clear interrupt flag!
-uint8_t ReceivedByte = UDR1;
-
-// only save the new byte if USB device is ready and buffer is not full
-if (!bootloaderMode && (USB_DeviceState == DEVICE_STATE_Configured) && (BufferCount < BUFFER_SIZE)){
-// save new byte
-USARTtoUSB_Buffer_Data[BufferEnd++] = ReceivedByte;
-
-// increase the buffer position and wrap around if needed
-BufferEnd %= BUFFER_SIZE;
-
-// increase buffer count
-BufferCount++;
-}
-}
-*/
-
 // TODO get TEMP_REG0 definitions working in asm code
 ISR(USART1_RX_vect, ISR_NAKED)
 {
@@ -705,7 +671,6 @@ static void WriteNextResponseByte(const uint8_t Response)
 /** Task to read in AVR109 commands from the CDC data OUT endpoint, process them, perform the required actions
 *  and send the appropriate response back to the host.
 */
-/*
 static void CDC_Task(void)
 {
 	// Select the OUT endpoint
@@ -718,80 +683,22 @@ static void CDC_Task(void)
 		uint8_t Command = FetchNextCommandByte();
 
 		// USB-Serial Mode
-		if (!bootloaderMode){
-			// Store received byte into the USART transmit buffer
-			Serial_SendByte(Command);
-
-			// if endpoint is completely empty/read acknowledge that to the host
-			if (!(Endpoint_BytesInEndpoint()))
-			Endpoint_ClearOUT();
-
-			// Turn on RX LED
-			LEDs_TurnOnLEDs(LEDMASK_RX);
-			RxLEDPulse = TX_RX_LED_PULSE_MS;
-		}
-
-		// Bootloader Mode
-		else
 		Bootloader_Task(Command);
 	}
 	// nothing received in Bootloader mode
-	else if (bootloaderMode)
+	else
 	return;
-
-	// get the number of bytes in the USB-Serial Buffer
-	uint8_t BytesToSend;
-
-	uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
-	GlobalInterruptDisable();
-
-	// Buffercount is 0 in Bootloader mode!
-	BytesToSend = BufferCount;
-
-	SetGlobalInterruptMask(CurrentGlobalInt);
-
-	// dont try to flush data in USB-Serial mode if there is no data. This will block the USB
-	if (!bootloaderMode){
-		if (!BytesToSend)
-		return;
-		else{
-			// Turn on TX LED
-			LEDs_TurnOnLEDs(LEDMASK_TX);
-			TxLEDPulse = TX_RX_LED_PULSE_MS;
-		}
-	}
-
-	// Read bytes from the USART receive buffer into the USB IN endpoint, max 1 bank size
-	while (BytesToSend--){
-		// Write the Data to the Endpoint
-		WriteNextResponseByte(USARTtoUSB_Buffer_Data[BufferIndex++]);
-
-		// increase the buffer position and wrap around if needed
-		BufferIndex %= BUFFER_SIZE;
-
-		// turn off interrupts to save the value properly
-		uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
-		GlobalInterruptDisable();
-
-		// decrease buffer count
-		BufferCount--;
-
-		SetGlobalInterruptMask(CurrentGlobalInt);
-	}
 
 	FlushCDC();
 
 	// in Bootloader mode clear the Out endpoint
-	if (bootloaderMode){
-
 		// Select the OUT endpoint
 		Endpoint_SelectEndpoint(CDC_RX_EPADDR);
 
 		// Acknowledge the command from the host
 		Endpoint_ClearOUT();
-	}
 }
-*/
+
 static void FlushCDC(void){
 	// Select the Serial Tx Endpoint
 	Endpoint_SelectEndpoint(CDC_TX_EPADDR);
@@ -1148,18 +1055,11 @@ static void CDC_Device_LineEncodingChanged(void)
 	USARTtoUSB_ReadPtr = 0;
 	USARTtoUSB_WritePtr = 0;
 
-	// only reconfigure USART if we are not in self reprogramming mode
+	// Only reconfigure USART if we are not in self reprogramming mode
+	// and if the CDC Serial is not disabled
 	uint32_t BaudRateBPS = LineEncoding.BaudRateBPS;
-	if (BaudRateBPS == BAUDRATE_CDC_BOOTLOADER)
-	bootloaderMode = true;
-	else if(BaudRateBPS == 0)
+	if(BaudRateBPS != 0 && BaudRateBPS != BAUDRATE_CDC_BOOTLOADER)
 	{
-		// Just turn off USART
-	}
-	else
-	{
-		bootloaderMode = false;
-
 		uint8_t ConfigMask = 0;
 
 		switch (LineEncoding.ParityType)
