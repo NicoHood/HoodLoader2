@@ -462,9 +462,10 @@ static void SetupHardware(void)
 	ARDUINO_DDR |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
 	ARDUINO_PORT |= LEDS_ALL_LEDS | (1 << PD2) | AVR_RESET_LINE_MASK;
 #else
-	// TODO = instead of |= to save flash?
-	DDRD |= LEDMASK_TX | (1 << PD3) | AVR_RESET_LINE_MASKD;
-	PORTD |= LEDMASK_TX | (1 << PD2) | AVR_RESET_LINE_MASKD;
+	// We use = here since the pins should be input/low anyways.
+	// This saves us some more bytes fo flash
+	DDRD = LEDMASK_TX | (1 << PD3) | AVR_RESET_LINE_MASKD;
+	PORTD = LEDMASK_TX | (1 << PD2) | AVR_RESET_LINE_MASKD;
 	DDRB  |=  LEDMASK_RX | AVR_RESET_LINE_MASKB;
 	PORTB |=  LEDMASK_RX | AVR_RESET_LINE_MASKB;
 #endif

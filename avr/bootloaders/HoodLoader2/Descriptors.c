@@ -239,7 +239,7 @@ const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESC
 #elif (PRODUCTID == ARDUINO_LEONARDO_PID)
 const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Leo");
 #elif (PRODUCTID == ARDUINO_MICRO_PID)
-const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Mic"); // TODO limited due to flash size
+const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Micro");
 #else
 const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Lufa");
 #endif
