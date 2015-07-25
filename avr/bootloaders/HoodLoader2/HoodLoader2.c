@@ -101,6 +101,11 @@ static uint32_t CurrAddress;
 */
 static bool RunBootloader = true;
 
+// Variable to determine if CDC baudrate is for the bootloader mode, USB-Serial or if CDC is turned off
+#define MODE_OFF 0
+#define MODE_BOOTLOADER 1
+#define MODE_USBSERIAL 2
+static uint8_t mode = MODE_OFF;
 
 // MAH 8/15/12- let's make this an 8-bit value instead of 16- that saves on memory because 16-bit addition and
 //  comparison compiles to bulkier code. Note that this does *not* require a change to the Arduino core- we're
@@ -247,11 +252,11 @@ int main(void)
 		// USB-Serial main loop
 		do {
 
-			if(LineEncoding.BaudRateBPS == BAUDRATE_CDC_BOOTLOADER)
+			if(mode == MODE_BOOTLOADER)
 			Bootloader_Task();
 
 			// Skip USB-Serial translation if CDC Serial is not configured/disabled
-			else if(LineEncoding.BaudRateBPS != 0)
+			else if(mode == MODE_USBSERIAL)
 			{
 				//================================================================================
 				// USBtoUSART
@@ -1038,8 +1043,13 @@ static void CDC_Device_LineEncodingChanged(void)
 	// Only reconfigure USART if we are not in self reprogramming mode
 	// and if the CDC Serial is not disabled
 	uint32_t BaudRateBPS = LineEncoding.BaudRateBPS;
-	if(BaudRateBPS != 0 && BaudRateBPS != BAUDRATE_CDC_BOOTLOADER)
+	if(BaudRateBPS == 0)
+		mode = MODE_OFF;
+	else if(BaudRateBPS == BAUDRATE_CDC_BOOTLOADER)
+		mode = MODE_BOOTLOADER;
+	else
 	{
+		mode = MODE_USBSERIAL;
 		uint8_t ConfigMask = 0;
 
 		switch (LineEncoding.ParityType)
