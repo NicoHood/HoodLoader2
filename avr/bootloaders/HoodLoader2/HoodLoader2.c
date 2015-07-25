@@ -113,6 +113,17 @@ static bool RunBootloader = true;
 //volatile uint8_t MagicBootKey __attribute__((section(".blkey")));
 volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)RAMEND;
 
+// Backwardscompatibility with old Bootkey
+// Comment out to save flash
+#if defined(__AVR_ATmega32U4__)
+//#define OLD_BOOTKEY //TODO
+#else
+#define OLD_BOOTKEY 0x280
+#endif
+#ifdef OLD_BOOTKEY
+volatile uint8_t *const OldMagicBootKeyPtr = (volatile uint8_t *)OLD_BOOTKEY;
+#endif
+
 /** Magic bootloader key to unlock forced application start mode. */
 // Arduino uses a 16bit value but we use a 8 bit value to keep the size low, see above
 #define MAGIC_BOOT_KEY               (uint8_t)0x7777
@@ -129,6 +140,10 @@ void Application_Jump_Check(void)
 	// Save the value of the boot key memory before it is overwritten
 	uint8_t bootKeyPtrVal = *MagicBootKeyPtr;
 	*MagicBootKeyPtr = 0;
+#ifdef OLD_BOOTKEY
+	uint8_t oldBootKeyPtrVal = *OldMagicBootKeyPtr;
+	*OldMagicBootKeyPtr = 0;
+#endif
 
 	// Check the reason for the reset so we can act accordingly
 	uint8_t  mcusr_state = MCUSR;		// store the initial state of the Status register
@@ -148,12 +163,18 @@ void Application_Jump_Check(void)
 			if ((bootKeyPtrVal != MAGIC_BOOT_KEY)){
 				// set the Bootkey and give the user a few ms chance to enter Bootloader mode
 				*MagicBootKeyPtr = MAGIC_BOOT_KEY;
+#ifdef OLD_BOOTKEY
+				*OldMagicBootKeyPtr = MAGIC_BOOT_KEY;
+#endif
 
 				// wait for a possible double tab (this methode takes less flash than an ISR)
 				_delay_ms(EXT_RESET_TIMEOUT_PERIOD);
 
 				// user was too slow/normal reset, start sketch now
 				*MagicBootKeyPtr = 0;
+#ifdef OLD_BOOTKEY
+				*OldMagicBootKeyPtr = 0;
+#endif
 				StartSketch();
 			}
 		}
@@ -193,36 +214,6 @@ static void ResetMCU(void){
 	while(true);
 }
 
-//TODO
-static void stop(int delay){
-	if(delay==500)
-	while(true){
-		_delay_ms(500);
-		LEDs_TurnOnLEDs(LEDMASK_RX);
-		LEDs_TurnOffLEDs(LEDMASK_TX);
-		_delay_ms(500);
-		LEDs_TurnOnLEDs(LEDMASK_TX);
-		LEDs_TurnOffLEDs(LEDMASK_RX);
-	}
-	else if(delay==50)
-	while(true){
-		_delay_ms(50);
-		LEDs_TurnOnLEDs(LEDMASK_RX);
-		LEDs_TurnOffLEDs(LEDMASK_TX);
-		_delay_ms(50);
-		LEDs_TurnOnLEDs(LEDMASK_TX);
-		LEDs_TurnOffLEDs(LEDMASK_RX);
-	}
-	else
-	while(true){
-		_delay_ms(1000);
-		LEDs_TurnOnLEDs(LEDMASK_RX);
-		LEDs_TurnOffLEDs(LEDMASK_TX);
-		_delay_ms(1000);
-		LEDs_TurnOnLEDs(LEDMASK_TX);
-		LEDs_TurnOffLEDs(LEDMASK_RX);
-	}
-}
 
 /** Main program entry point. This routine configures the hardware required by the bootloader, then continuously
 *  runs the bootloader processing routine until instructed to soft-exit, or hard-reset via the watchdog to start
@@ -251,9 +242,9 @@ int main(void)
 
 		// USB-Serial main loop
 		do {
-			
+
 			if(LineEncoding.BaudRateBPS == BAUDRATE_CDC_BOOTLOADER)
-				CDC_Task();
+			Bootloader_Task();
 
 			// Skip USB-Serial translation if CDC Serial is not configured/disabled
 			else if(LineEncoding.BaudRateBPS != 0)
@@ -416,7 +407,7 @@ int main(void)
 
 			// Finished self reprogramming?
 			if(!RunBootloader)
-				ResetMCU();
+			ResetMCU();
 
 		} while (USB_DeviceState == DEVICE_STATE_Configured);
 
@@ -556,7 +547,6 @@ void EVENT_USB_Device_ControlRequest(void)
 			AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
 			else
 			AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
-
 		}
 	}
 }
@@ -564,7 +554,6 @@ void EVENT_USB_Device_ControlRequest(void)
 /** ISR to manage the reception of data from the serial port, placing received bytes into a circular buffer
 *  for later transmission to the host.
 */
-// TODO get TEMP_REG0 definitions working in asm code
 ISR(USART1_RX_vect, ISR_NAKED)
 {
 	// This ISR doesnt change SREG. Whoa.
@@ -671,66 +660,17 @@ static void WriteNextResponseByte(const uint8_t Response)
 /** Task to read in AVR109 commands from the CDC data OUT endpoint, process them, perform the required actions
 *  and send the appropriate response back to the host.
 */
-static void CDC_Task(void)
-{
-	// Select the OUT endpoint
+static void Bootloader_Task(){
+	/* Select the OUT endpoint */
 	Endpoint_SelectEndpoint(CDC_RX_EPADDR);
 
-	// Check if endpoint has a command in it sent from the host
-	if (Endpoint_IsOUTReceived()){
-
-		// Read in the bootloader command (first byte sent from host)
-		uint8_t Command = FetchNextCommandByte();
-
-		// USB-Serial Mode
-		Bootloader_Task(Command);
-	}
-	// nothing received in Bootloader mode
-	else
+	/* Check if endpoint has a command in it sent from the host */
+	if (!(Endpoint_IsOUTReceived()))
 	return;
 
-	FlushCDC();
+	/* Read in the bootloader command (first byte sent from host) */
+	uint8_t Command = FetchNextCommandByte();
 
-	// in Bootloader mode clear the Out endpoint
-		// Select the OUT endpoint
-		Endpoint_SelectEndpoint(CDC_RX_EPADDR);
-
-		// Acknowledge the command from the host
-		Endpoint_ClearOUT();
-}
-
-static void FlushCDC(void){
-	// Select the Serial Tx Endpoint
-	Endpoint_SelectEndpoint(CDC_TX_EPADDR);
-
-	// Remember if the endpoint is completely full before clearing it
-	bool IsEndpointFull = !(Endpoint_IsReadWriteAllowed());
-
-	// Send the endpoint data to the host */
-	Endpoint_ClearIN();
-
-	// If a full endpoint's worth of data was sent, we need to send an empty packet afterwards to signal end of transfer
-	if (IsEndpointFull)
-	{
-		// wait for the sending to flush
-		while (!(Endpoint_IsINReady()))
-		{
-			if (USB_DeviceState == DEVICE_STATE_Unattached)
-			return;
-		}
-		// send a zero length package
-		Endpoint_ClearIN();
-	}
-
-	// Wait until the data has been sent to the host
-	while (!(Endpoint_IsINReady()))
-	{
-		if (USB_DeviceState == DEVICE_STATE_Unattached)
-		return;
-	}
-}
-
-static void Bootloader_Task(const uint8_t Command){
 	if (Command == AVR109_COMMAND_ExitBootloader)
 	{
 		RunBootloader = false;
@@ -917,6 +857,42 @@ static void Bootloader_Task(const uint8_t Command){
 		/* Unknown (non-sync) command, return fail code */
 		WriteNextResponseByte('?');
 	}
+
+	// Select the Serial Tx Endpoint
+	Endpoint_SelectEndpoint(CDC_TX_EPADDR);
+
+	// Remember if the endpoint is completely full before clearing it
+	bool IsEndpointFull = !(Endpoint_IsReadWriteAllowed());
+
+	// Send the endpoint data to the host */
+	Endpoint_ClearIN();
+
+	// If a full endpoint's worth of data was sent, we need to send an empty packet afterwards to signal end of transfer
+	if (IsEndpointFull)
+	{
+		// wait for the sending to flush
+		while (!(Endpoint_IsINReady()))
+		{
+			if (USB_DeviceState == DEVICE_STATE_Unattached)
+			return;
+		}
+		// send a zero length package
+		Endpoint_ClearIN();
+	}
+
+	// Wait until the data has been sent to the host
+	while (!(Endpoint_IsINReady()))
+	{
+		if (USB_DeviceState == DEVICE_STATE_Unattached)
+		return;
+	}
+
+	// in Bootloader mode clear the Out endpoint
+	// Select the OUT endpoint
+	Endpoint_SelectEndpoint(CDC_RX_EPADDR);
+
+	// Acknowledge the command from the host
+	Endpoint_ClearOUT();
 }
 
 #if !defined(NO_BLOCK_SUPPORT)

@@ -61,8 +61,9 @@ Version History
 ===============
 ```
 2.0.5 Release (xx.xx.2015)
+* Added up to 2M baud support (thx to https://github.com/urjaman/fast-usbserial)
 * Improved USART reconfiguration
-* Changed Magic Key to RAMEND
+* Changed Magic Key to RAMEND (requires new HID-Project IDE patch)
 * Saved a lot ram by moving descriptors to PROGMEM (8/16u2)
 * Added 32u4 support
 * Switch to U2Xn=0 if needed

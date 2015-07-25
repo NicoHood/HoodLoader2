@@ -44,20 +44,14 @@ BOOT_SECTION_SIZE_KB  = 4
 
 
 # Add an offset of 256 + 128 bytes to RAMSTART for the ringbuffers
+# +1 byte offset for old MagicBootKey support (0x280)
+# +1 for better data aligning or in case a 2byte key is written
 # u2 and u4 Series (RAMSTART = 0x100):
-RAM_OFFSET            = 0x800280
+RAM_OFFSET            = 0x800282
 
 # Reserved registers for faster USB-Serial convertion
-REG0  = r2
-REG1  = r3
-REG2  = r4
-REG3  = r5 # needs to be REG2+1!
-REGS  = -ffixed-$(REG0) -ffixed-$(REG1) -ffixed-$(REG2) -ffixed-$(REG3)
-
-HOODLOADER2_OPTS += -DTEMP_REG0=$(REG0)
-HOODLOADER2_OPTS += -DTEMP_REG1=$(REG1)
-HOODLOADER2_OPTS += -DTEMP_REG2=$(REG2)
-HOODLOADER2_OPTS += -DTEMP_REG3=$(REG3)
+# The lower, the better (except 0 and 1)
+REGS  = -ffixed-r2 -ffixed-r3 -ffixed-r4 -ffixed-r5
 
 
 # Bootloader address calculation formulas
