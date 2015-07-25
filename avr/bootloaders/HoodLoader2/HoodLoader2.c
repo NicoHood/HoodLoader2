@@ -65,11 +65,6 @@ static CDC_LineEncoding_t LineEncoding = { .BaudRateBPS = 0,
 	.DataBits = 8
 };
 
-/** Underlying data buffer for \ref USARTtoUSB_Buffer, where the stored bytes are located. */
-#define BUFFER_SIZE 256 // 2^x is for better performence (32,64,128,256)
-volatile uint8_t *const USARTtoUSB_Buffer_Data = (volatile uint8_t *)RAMSTART;
-static volatile uint8_t BufferCount = 0; // Number of bytes currently stored in the buffer
-static uint8_t BufferIndex = 0; // position of the first buffer byte (Buffer out)
 
 /* NOTE: Using Linker Magic,
 * - Reserved 256 bytes from start of RAM at 0x100 for UART RX Buffer
@@ -85,16 +80,14 @@ static uint8_t BufferIndex = 0; // position of the first buffer byte (Buffer out
 // This has nothing to do with r0 and r1!
 // GPIORn – General Purpose I/O Register are located in RAM.
 // Make sure to set DEVICE_STATE_AS_GPIOR to 2 in the Lufa config.
+// They are initialied in the CDC LineEncoding Event
 #define USBtoUSART_ReadPtr GPIOR0 // to use cbi()
 #define USARTtoUSB_WritePtr GPIOR1
 
-/* USBtoUSART_WritePtr needs to be visible to ISR so sadly needs to be here. */
+/* USBtoUSART_WritePtr needs to be visible to ISR. */
+/* USARTtoUSB_ReadPtr needs to be visible to CDC LineEncoding Event. */
 static volatile uint8_t USBtoUSART_WritePtr = 0;
-
-// Led Pulse count TODO inline them as local vaiable?
-#define TX_RX_LED_PULSE_MS 3
-static uint8_t TxLEDPulse = 0;
-static uint8_t RxLEDPulse = 0;
+static volatile uint8_t USARTtoUSB_ReadPtr = 0;
 
 // variable to determine if CDC baudrate is for the bootloader mode or not
 static volatile bool bootloaderMode = false;
@@ -230,27 +223,14 @@ int main(void)
 	/* Setup hardware required for the bootloader */
 	SetupHardware();
 
-	/* Clear the GPIOR-based TX register. */
-	USBtoUSART_ReadPtr = 0;
-
 	/* Enable global interrupts so that the USB stack can function */
 	GlobalInterruptEnable();
 
 	while(true) {
-
-		// We let the TX continue (flush buffer) if it was enabled before we got unconfigured.
-		// But disable RX since there is no longer a PC listening.
-		ATOMIC_BLOCK(ATOMIC_FORCEON) {
-			UCSR1B &= ~_BV(RXCIE1); //TODO also disable RXEN1?
-		}
-
-		// USARTtoUSB pointer is interrupt save
-		// Add this to the RAM now to let gcc optimize the ram/register location better
-		// A single in is smaller than out and ldi (to clear)
-		// This needs to be above the USB reinitialization since
-		// it could trigger the CDC event and enable RX.
-		// We dont want to miss those bytes. TODO really that critical?
-		uint8_t USARTtoUSB_ReadPtr = USARTtoUSB_WritePtr;
+		// Pulse generation counters to keep track of the number of milliseconds remaining for each pulse type
+		#define TX_RX_LED_PULSE_MS 3
+		uint8_t TxLEDPulse = 0;
+		uint8_t RxLEDPulse = 0;
 
 		// Wait for the USB Device to (re)connect.
 		Endpoint_SelectEndpoint(ENDPOINT_CONTROLEP);
@@ -258,16 +238,6 @@ int main(void)
 			if (Endpoint_IsSETUPReceived())
 			USB_Device_ProcessControlRequest();
 		} while (USB_DeviceState != DEVICE_STATE_Configured);
-
-		// reset USB flush timer
-		//TIFR0 = _BV(TOV0); //TODO needed?
-		//TIFR1 = _BV(OCF1A);
-
-		// Pulse generation counters to keep track of the number of milliseconds remaining for each pulse type
-		//TODO generate ram here, not globally
-		TxLEDPulse = 0;
-		RxLEDPulse = 0;
-		uint8_t last_count = 0;
 
 		// USB-Serial main loop
 		do {
@@ -290,8 +260,8 @@ int main(void)
 
 					// Acknowledge zero length package TODO needed?
 					if (!countRX)
-						Endpoint_ClearOUT();
-					
+					Endpoint_ClearOUT();
+
 					// Read new data from the USB host if we still have space in the buffer
 					else if(countRX && countRX <= USBtoUSART_free )
 					{
@@ -343,79 +313,66 @@ int main(void)
 				//================================================================================
 				// USARTtoUSB
 				//================================================================================
+
 				// This requires the USART RX buffer to be 256 bytes.
 				uint8_t count = USARTtoUSB_WritePtr - USARTtoUSB_ReadPtr;
-				//bool flush_overflow = TIFR1 & _BV(OCF1A);
 
-				// Clear timer flag by writing a logical one.
-				//if (flush_overflow)
-				//TIFR1 = _BV(OCF1A);
+				// Check if we have something worth to send
+				if (count) {
 
-				// Check if the UART receive buffer flush timer has expired or the buffer is nearly full
-				if ((count >= (CDC_TX_EPSIZE - 1)) || ((TIFR0 & (1 << TOV0)) && count))
-				{
-					// Send data to the USB host
-					Endpoint_SelectEndpoint(CDC_TX_EPADDR);
-
-					// CDC device is ready for receiving bytes
-					if (Endpoint_IsINReady())
+					// Check if the UART receive buffer flush timer has expired or the buffer is nearly full
+					if ((TIFR0 & (1 << TOV0)) || (count >= (CDC_TX_EPSIZE - 1)) )
 					{
-						// Send a maximum of up to one bank minus one.
-						// If we fill the whole bank we'd have to send an empty Zero Length Packet (ZLP)
-						// afterwards to determine the end of the transfer.
-						// Since this is more complicated we only send single packets
-						// with one byte less than the maximum.
-						uint8_t txcount = CDC_TX_EPSIZE - 1;
-						if (txcount > count)
-						txcount = count;
+						// Send data to the USB host
+						Endpoint_SelectEndpoint(CDC_TX_EPADDR);
 
-						//TODO
-						last_count -= txcount;
+						// CDC device is ready for receiving bytes
+						if (Endpoint_IsINReady())
+						{
+							// Send a maximum of up to one bank minus one.
+							// If we fill the whole bank we'd have to send an empty Zero Length Packet (ZLP)
+							// afterwards to determine the end of the transfer.
+							// Since this is more complicated we only send single packets
+							// with one byte less than the maximum.
+							uint8_t txcount = CDC_TX_EPSIZE - 1;
+							if (txcount > count)
+							txcount = count;
 
-						// Prepare temporary pointer
-						uint16_t tmp; // = 0x100 | USARTtoUSBReadPtr
-						asm (
-							// Do not initialize high byte, it will be done in first loop below.
-							"mov %A[tmp], %[readPtr]\n\t"	// (1) Copy read pointer into lower byte
-							// Outputs
-							: [tmp] "=&e" (tmp)	// Pointer register, output only
-							// Inputs
-							: [readPtr] "r" (USARTtoUSB_ReadPtr) // Any normal register
-						);
-
-						// Write all bytes from USART to the USB endpoint
-						do {
-							register uint8_t data;
+							// Prepare temporary pointer
+							uint16_t tmp; // = 0x100 | USARTtoUSBReadPtr
 							asm (
-								"ldi %B[tmp] , 0x01\n\t" 		// (1) Force high byte to 0x01
-								"ld %[data] , %a[tmp] +\n\t" 	// (2) Load next data byte, wraps around 255
+								// Do not initialize high byte, it will be done in first loop below.
+								"lds %A[tmp], %[readPtr]\n\t"	// (1) Copy read pointer into lower byte
 								// Outputs
-								: [data] "=&r" (data),	// Output only
-								[tmp] "=e" (tmp) 		// Input and output
+								: [tmp] "=&e" (tmp)	// Pointer register, output only
 								// Inputs
-								: "1" (tmp)
+								: [readPtr] "m" (USARTtoUSB_ReadPtr) // Memory location
 							);
-							Endpoint_Write_8(data);
-						} while (--txcount);
 
-						// Send data to USB Host now
-						Endpoint_ClearIN();
+							// Write all bytes from USART to the USB endpoint
+							do {
+								register uint8_t data;
+								asm (
+									"ldi %B[tmp] , 0x01\n\t" 		// (1) Force high byte to 0x01
+									"ld %[data] , %a[tmp] +\n\t" 	// (2) Load next data byte, wraps around 255
+									// Outputs
+									: [data] "=&r" (data),	// Output only
+									[tmp] "=e" (tmp) 		// Input and output
+									// Inputs
+									: "1" (tmp)
+								);
+								Endpoint_Write_8(data);
+							} while (--txcount);
 
-						// save new pointer position
-						USARTtoUSB_ReadPtr = tmp & 0xFF;
-						goto txled; //TODO
+							// Send data to USB Host now
+							Endpoint_ClearIN();
+
+							// Save new pointer position
+							USARTtoUSB_ReadPtr = tmp & 0xFF;
+						}
 					}
-					else if (last_count != count) {
-						last_count = count;
-						goto txled; //TODO
-					}
-				}
 
-				//TODO
-				else if (last_count != count) {
-					last_count = count;
-					txled:
-					//TCNT1 = 0; //TODO what does this do?
+					// Light TX led if there is data to be send
 					LEDs_TurnOnLEDs(LEDMASK_TX);
 					TxLEDPulse = TX_RX_LED_PULSE_MS;
 				}
@@ -448,10 +405,11 @@ int main(void)
 		LEDs_TurnOffLEDs(LEDMASK_TX);
 		LEDs_TurnOffLEDs(LEDMASK_RX);
 
-		// Reset CDC Serial setting
+		// Reset CDC Serial settings and disable USART properly
 		LineEncoding.BaudRateBPS = 0;
+		CDC_Device_LineEncodingChanged();
 	}
-
+/*
 	do {
 		CDC_Task();
 		USB_USBTask();
@@ -471,7 +429,7 @@ int main(void)
 			LEDs_TurnOffLEDs(LEDMASK_RX);
 		}
 	} while (RunBootloader);
-
+*/
 	//TODO move this timeout to the bootloader function
 
 	/* Wait a short time to end all USB transactions and then disconnect */
@@ -501,11 +459,6 @@ static void SetupHardware(void)
 
 	/* Start the flush timer for Leds */
 	TCCR0B = (1 << CS02); // clk I/O / 256 (From prescaler)
-
-	/* Timer1 is the USB flush timeout timer. */
-	//OCR1A = 8000; // 0.5ms at 16Mhz
-	//TCCR1A = 0;
-	//TCCR1B = _BV(WGM12) | _BV(CS10);
 
 	// compacter setup for Leds, RX, TX, Reset Line
 	ARDUINO_DDR |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
@@ -752,20 +705,21 @@ static void WriteNextResponseByte(const uint8_t Response)
 /** Task to read in AVR109 commands from the CDC data OUT endpoint, process them, perform the required actions
 *  and send the appropriate response back to the host.
 */
+/*
 static void CDC_Task(void)
 {
-	/* Select the OUT endpoint */
+	// Select the OUT endpoint
 	Endpoint_SelectEndpoint(CDC_RX_EPADDR);
 
-	/* Check if endpoint has a command in it sent from the host */
+	// Check if endpoint has a command in it sent from the host
 	if (Endpoint_IsOUTReceived()){
 
-		/* Read in the bootloader command (first byte sent from host) */
+		// Read in the bootloader command (first byte sent from host)
 		uint8_t Command = FetchNextCommandByte();
 
 		// USB-Serial Mode
 		if (!bootloaderMode){
-			/* Store received byte into the USART transmit buffer */
+			// Store received byte into the USART transmit buffer
 			Serial_SendByte(Command);
 
 			// if endpoint is completely empty/read acknowledge that to the host
@@ -809,7 +763,7 @@ static void CDC_Task(void)
 
 	// Read bytes from the USART receive buffer into the USB IN endpoint, max 1 bank size
 	while (BytesToSend--){
-		// Write the Data to the Endpoint */
+		// Write the Data to the Endpoint
 		WriteNextResponseByte(USARTtoUSB_Buffer_Data[BufferIndex++]);
 
 		// increase the buffer position and wrap around if needed
@@ -830,14 +784,14 @@ static void CDC_Task(void)
 	// in Bootloader mode clear the Out endpoint
 	if (bootloaderMode){
 
-		/* Select the OUT endpoint */
+		// Select the OUT endpoint
 		Endpoint_SelectEndpoint(CDC_RX_EPADDR);
 
-		/* Acknowledge the command from the host */
+		// Acknowledge the command from the host
 		Endpoint_ClearOUT();
 	}
 }
-
+*/
 static void FlushCDC(void){
 	// Select the Serial Tx Endpoint
 	Endpoint_SelectEndpoint(CDC_TX_EPADDR);
@@ -1191,6 +1145,8 @@ static void CDC_Device_LineEncodingChanged(void)
 	/* Flush data that was about to be sent. */
 	USBtoUSART_ReadPtr = 0;
 	USBtoUSART_WritePtr = 0; //TODO combine those?
+	USARTtoUSB_ReadPtr = 0;
+	USARTtoUSB_WritePtr = 0;
 
 	// only reconfigure USART if we are not in self reprogramming mode
 	uint32_t BaudRateBPS = LineEncoding.BaudRateBPS;
