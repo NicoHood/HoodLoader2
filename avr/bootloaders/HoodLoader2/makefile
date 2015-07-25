@@ -51,7 +51,9 @@ RAM_OFFSET            = 0x800282
 
 # Reserved registers for faster USB-Serial convertion
 # The lower, the better (except 0 and 1)
-REGS  = -ffixed-r2 -ffixed-r3 -ffixed-r4 -ffixed-r5
+# r2-5 used for faster USART ISRs
+# r6 used for 32u4 optimization
+REGS  = -ffixed-r2 -ffixed-r3 -ffixed-r4 -ffixed-r5 -ffixed-r6
 
 
 # Bootloader address calculation formulas

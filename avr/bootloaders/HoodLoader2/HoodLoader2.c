@@ -90,7 +90,8 @@ static volatile uint8_t USBtoUSART_WritePtr = 0;
 static volatile uint8_t USARTtoUSB_ReadPtr = 0;
 
 // Variable to save how many bytes are laying in the USB TX bank if in bootloader mode
-static uint8_t bankTX = 0;
+register uint8_t bankTX  asm("r6");
+//static uint8_t bankTX = 0;
 
 /** Current address counter. This stores the current address of the FLASH or EEPROM as set by the host,
 *  and is used when reading or writing to the AVRs memory (either FLASH or EEPROM depending on the issued
@@ -114,11 +115,9 @@ static uint8_t mode = MODE_OFF;
 //  comparison compiles to bulkier code. Note that this does *not* require a change to the Arduino core- we're
 //  just sort of ignoring the extra byte that the Arduino core puts at the next location.
 // ensure the address isnt used anywhere else by adding a compiler flag in the makefile ld flag
-// -Wl,--section-start=.blkey=0x800280
-// "Because of the Harvard architecture of the AVR devices, you must manually add 0x800000 to the address you pass
-// to the linker as the start of the section. Otherwise, the linker thinks you want to put the .noinit section
-// into the .text section instead of .data/.bss and will complain."
-//volatile uint8_t MagicBootKey __attribute__((section(".blkey")));
+// 0x280 is reserved by the makefile (right after out buffers) and 0x8000 should not be used anyways
+// To avoid problems inside the sketch a newer methode with RAMEND was introduced with HL2.0.5
+// for the u2 series only (to save flash with the 32u4)
 #if defined(__AVR_ATmega32U4__)
 volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)0x0800;
 #else
@@ -240,6 +239,9 @@ static void ResetMCU(void){
 */
 int main(void)
 {
+	// Initialize register variables
+	bankTX = 0;
+
 	/* Setup hardware required for the bootloader */
 	SetupHardware();
 
