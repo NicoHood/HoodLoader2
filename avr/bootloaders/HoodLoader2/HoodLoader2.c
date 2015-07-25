@@ -257,6 +257,9 @@ int main(void)
 
 		// USB-Serial main loop
 		do {
+			// Finished self reprogramming?
+			if(!RunBootloader)
+			ResetMCU();
 
 			if(mode == MODE_BOOTLOADER)
 			Bootloader_Task();
@@ -419,11 +422,6 @@ int main(void)
 			Endpoint_SelectEndpoint(ENDPOINT_CONTROLEP);
 			if (Endpoint_IsSETUPReceived())
 			USB_Device_ProcessControlRequest();
-
-			// Finished self reprogramming?
-			if(!RunBootloader)
-			ResetMCU();
-
 		} while (USB_DeviceState == DEVICE_STATE_Configured);
 
 		// Dont forget LEDs on if suddenly unconfigured.
