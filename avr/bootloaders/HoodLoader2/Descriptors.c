@@ -64,6 +64,8 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 #define ARDUINO_UNO_PID				0x0043 // R3 (0001 R1)
 #define ARDUINO_MEGA_PID			0x0042 // R3 (0010 R1)
 #define ARDUINO_MEGA_ADK_PID		0x0044 // R3 (003F R1)
+#define ARDUINO_LEONARDO_PID		0x0036 // Bootloader, not program!
+#define ARDUINO_MICRO_PID   		0x0037 // Bootloader, not program!
 
 // Only use RAM Descriptors if we have enough ram
 #ifdef USE_RAM_DESCRIPTORS
@@ -234,6 +236,10 @@ const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESC
 const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Mega");
 #elif (PRODUCTID == ARDUINO_ADK_PID)
 const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 ADK");
+#elif (PRODUCTID == ARDUINO_LEONARDO_PID)
+const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Leo");
+#elif (PRODUCTID == ARDUINO_MICRO_PID)
+const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Mic"); // TODO limited due to flash size
 #else
 const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Lufa");
 #endif
