@@ -211,8 +211,9 @@ void Application_Jump_Check(void)
 
 static void StartSketch(void)
 {
-	// turn off leds on every startup
-	LEDs_TurnOffLEDs(LEDS_ALL_LEDS);
+	// Turn off leds on every startup
+	LEDs_TurnOffTXLED;
+	LEDs_TurnOffRXLED;
 
 	// jump to beginning of application space
 	// cppcheck-suppress constStatement
@@ -336,7 +337,7 @@ int main(void)
 
 				// Light RX led if we still have data in the USBtoUSART buffer
 				if (USBtoUSART_free != (USB2USART_BUFLEN-1)) {
-					LEDs_TurnOnLEDs(LEDMASK_RX);
+					LEDs_TurnOnRXLED;
 					RxLEDPulse = TX_RX_LED_PULSE_MS;
 				}
 
@@ -403,7 +404,7 @@ int main(void)
 					}
 
 					// Light TX led if there is data to be send
-					LEDs_TurnOnLEDs(LEDMASK_TX);
+					LEDs_TurnOnTXLED;
 					TxLEDPulse = TX_RX_LED_PULSE_MS;
 				}
 			}
@@ -417,11 +418,11 @@ int main(void)
 
 				// Turn off TX LED once the TX pulse period has elapsed
 				if (TxLEDPulse && !(--TxLEDPulse))
-				LEDs_TurnOffLEDs(LEDMASK_TX);
+				LEDs_TurnOffTXLED;
 
 				// Turn off RX LED once the RX pulse period has elapsed
 				if (RxLEDPulse && !(--RxLEDPulse))
-				LEDs_TurnOffLEDs(LEDMASK_RX);
+				LEDs_TurnOffRXLED;
 			}
 
 			// USB Task
@@ -431,8 +432,8 @@ int main(void)
 		} while (USB_DeviceState == DEVICE_STATE_Configured);
 
 		// Dont forget LEDs on if suddenly unconfigured.
-		LEDs_TurnOffLEDs(LEDMASK_TX);
-		LEDs_TurnOffLEDs(LEDMASK_RX);
+		LEDs_TurnOffTXLED;
+		LEDs_TurnOffRXLED;
 
 		// Reset CDC Serial settings and disable USART properly
 		LineEncoding.BaudRateBPS = 0;
@@ -457,8 +458,16 @@ static void SetupHardware(void)
 	TCCR0B = (1 << CS02); // clk I/O / 256 (From prescaler)
 
 	// compacter setup for Leds, RX, TX, Reset Line
+#if !defined(__AVR_ATmega32U4__)
 	ARDUINO_DDR |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
 	ARDUINO_PORT |= LEDS_ALL_LEDS | (1 << PD2) | AVR_RESET_LINE_MASK;
+#else
+	// TODO = instead of |= to save flash?
+	DDRD |= LEDMASK_TX | (1 << PD3) | AVR_RESET_LINE_MASKD;
+	PORTD |= LEDMASK_TX | (1 << PD2) | AVR_RESET_LINE_MASKD;
+	DDRB  |=  LEDMASK_RX | AVR_RESET_LINE_MASKB;
+	PORTB |=  LEDMASK_RX | AVR_RESET_LINE_MASKB;
+#endif
 }
 
 /** Event handler for the USB_ConfigurationChanged event. This configures the device's endpoints ready

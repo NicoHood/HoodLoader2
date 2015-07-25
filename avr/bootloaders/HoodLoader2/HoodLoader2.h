@@ -112,10 +112,24 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifdef __AVR_ATmega32U4__
 		/** Pin that can reset the main MCU. */
+		// PORTB would also be possible (D8-11 + SPI)
+		// I will not use it since PB contains the only PCINT
+		// And the pins on PD are not better or worse
 		#define AVR_RESET_LINE_PORT PORTD
 		#define AVR_RESET_LINE_DDR DDRD
 		#define AVR_RESET_LINE_PIN PIND
-		#define AVR_RESET_LINE_MASK (1 << PD7)
+		#define AVR_RESET_LINE_MASK (1 << PD4) // PD4 = D4, PD6 = D12, PD7 = D7
+		#define AVR_RESET_LINE_MASKD (1 << PD4)
+		#define AVR_RESET_LINE_MASKB 0 // Leave it empty if you use PD
+		#define LEDs_TurnOnTXLED (PORTD &= ~LEDMASK_TX)
+		#define LEDs_TurnOnRXLED (PORTD &= ~LEDMASK_RX)
+		#define LEDs_TurnOffTXLED (PORTD |= LEDMASK_TX)
+		#define LEDs_TurnOffRXLED (PORTD |= LEDMASK_RX)
+#else
+		#define LEDs_TurnOnTXLED (PORTD &= ~LEDMASK_TX)
+		#define LEDs_TurnOnRXLED (PORTB &= ~LEDMASK_RX)
+		#define LEDs_TurnOffTXLED (PORTD |= LEDMASK_TX)
+		#define LEDs_TurnOffRXLED (PORTB |= LEDMASK_RX)
 #endif
 
 	/* Enums: */
