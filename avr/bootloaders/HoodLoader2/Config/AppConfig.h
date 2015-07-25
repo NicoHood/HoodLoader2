@@ -67,6 +67,8 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 	#define NO_EEPROM_BYTE_SUPPORT
 #endif
 	#define NO_FLASH_BYTE_SUPPORT
-//	#define NO_LOCK_BYTE_WRITE_SUPPORT
+#if !defined(__AVR_ATmega32U4__)
+	#define NO_LOCK_BYTE_WRITE_SUPPORT
+#endif
 
 #endif

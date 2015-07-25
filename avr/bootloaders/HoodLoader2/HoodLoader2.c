@@ -119,17 +119,20 @@ static uint8_t mode = MODE_OFF;
 // to the linker as the start of the section. Otherwise, the linker thinks you want to put the .noinit section
 // into the .text section instead of .data/.bss and will complain."
 //volatile uint8_t MagicBootKey __attribute__((section(".blkey")));
-volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)RAMEND;
+#if defined(__AVR_ATmega32U4__)
+volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)0x0800;
+#else
+volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)0x280;
+#endif
 
 // Backwardscompatibility with old Bootkey (adds 20 bytes of flash)
 // Comment out to save flash
-#if defined(__AVR_ATmega32U4__)
-//#define OLD_BOOTKEY 0x0800 // left out so save ram
-#else
-#define OLD_BOOTKEY 0x280
+#if !defined(__AVR_ATmega32U4__)
+// new, saver position
+#define SECOND_BOOTKEY RAMEND
 #endif
-#ifdef OLD_BOOTKEY
-volatile uint8_t *const OldMagicBootKeyPtr = (volatile uint8_t *)OLD_BOOTKEY;
+#ifdef SECOND_BOOTKEY
+volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)SECOND_BOOTKEY;
 #endif
 
 /** Magic bootloader key to unlock forced application start mode. */
@@ -148,9 +151,9 @@ void Application_Jump_Check(void)
 	// Save the value of the boot key memory before it is overwritten
 	uint8_t bootKeyPtrVal = *MagicBootKeyPtr;
 	*MagicBootKeyPtr = 0;
-#ifdef OLD_BOOTKEY
-	uint8_t oldBootKeyPtrVal = *OldMagicBootKeyPtr;
-	*OldMagicBootKeyPtr = 0;
+#ifdef SECOND_BOOTKEY
+	uint8_t secondBootKeyPtrVal = *SecondMagicBootKeyPtr;
+	*SecondMagicBootKeyPtr = 0;
 #endif
 
 	// Check the reason for the reset so we can act accordingly
@@ -169,14 +172,14 @@ void Application_Jump_Check(void)
 		//  through to the bootloader.
 		if ((mcusr_state & (1 << EXTRF))) {
 			if ((bootKeyPtrVal != MAGIC_BOOT_KEY) 
-#ifdef OLD_BOOTKEY
-&& (oldBootKeyPtrVal != MAGIC_BOOT_KEY)
+#ifdef SECOND_BOOTKEY
+&& (secondBootKeyPtrVal != MAGIC_BOOT_KEY)
 #endif
 ){
 				// set the Bootkey and give the user a few ms chance to enter Bootloader mode
 				*MagicBootKeyPtr = MAGIC_BOOT_KEY;
-#ifdef OLD_BOOTKEY
-				*OldMagicBootKeyPtr = MAGIC_BOOT_KEY;
+#ifdef SECOND_BOOTKEY
+				*SecondMagicBootKeyPtr = MAGIC_BOOT_KEY;
 #endif
 
 				// wait for a possible double tab (this methode takes less flash than an ISR)
@@ -184,8 +187,8 @@ void Application_Jump_Check(void)
 
 				// user was too slow/normal reset, start sketch now
 				*MagicBootKeyPtr = 0;
-#ifdef OLD_BOOTKEY
-				*OldMagicBootKeyPtr = 0;
+#ifdef SECOND_BOOTKEY
+				*SecondMagicBootKeyPtr = 0;
 #endif
 				StartSketch();
 			}
