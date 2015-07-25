@@ -52,7 +52,7 @@ An offline snapshot is available in [releases](https://github.com/NicoHood/HoodL
 Contact
 =======
 
-You can contact me on my wordpress blog in the contact section.
+Contact information can be found here:
 
 www.nicohood.de
 
@@ -72,6 +72,7 @@ Version History
 * Added old Atmega328 bootloader compatibility
 * Added USB reconnect support
 * TODO linux avrdude script
+* Note: Can only be (re)compiled with AVR-GCC 5.1 and LTO (see wiki)
 
 2.0.4 Release (20.03.2015)
 * HoodLoader2.0.4

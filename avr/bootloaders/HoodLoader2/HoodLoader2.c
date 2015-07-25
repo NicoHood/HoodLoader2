@@ -89,6 +89,9 @@ static CDC_LineEncoding_t LineEncoding = { .BaudRateBPS = 0,
 static volatile uint8_t USBtoUSART_WritePtr = 0;
 static volatile uint8_t USARTtoUSB_ReadPtr = 0;
 
+// Variable to save how many bytes are laying in the USB TX bank if in bootloader mode
+static uint8_t bankTX = 0;
+
 /** Current address counter. This stores the current address of the FLASH or EEPROM as set by the host,
 *  and is used when reading or writing to the AVRs memory (either FLASH or EEPROM depending on the issued
 *  command.)
@@ -552,6 +555,7 @@ void EVENT_USB_Device_ControlRequest(void)
 			// You could add the OUTPUT declaration here but it wont help since the pc always tries to open the serial port once.
 			// At least if the usb is connected this always results in a main MCU reset if the bootloader is executed.
 			// From my testings there is no way to avoid this. Its needed as far as I tested, no way.
+			// TODO do not reset main MCU (not possible?)
 			if (USB_ControlRequest.wValue & CDC_CONTROL_LINE_OUT_DTR)
 			AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
 			else
@@ -650,20 +654,26 @@ static void WriteNextResponseByte(const uint8_t Response)
 	/* Select the IN endpoint so that the next data byte can be written */
 	Endpoint_SelectEndpoint(CDC_TX_EPADDR);
 
-	/* If IN endpoint full, clear it and wait until ready for the next packet to the host */
-	if (!(Endpoint_IsReadWriteAllowed()))
+	// Wait untill endpoint is ready to write
+	while (!(Endpoint_IsINReady()))
 	{
-		Endpoint_ClearIN();
-
-		while (!(Endpoint_IsINReady()))
-		{
-			if (USB_DeviceState == DEVICE_STATE_Unattached)
-			return;
-		}
+		if (USB_DeviceState == DEVICE_STATE_Unattached)
+		return;
 	}
 
 	/* Write the next byte to the IN endpoint */
 	Endpoint_Write_8(Response);
+	bankTX ++;
+
+	// Send a maximum of up to one bank minus one.
+	// If we fill the whole bank we'd have to send an empty Zero Length Packet (ZLP)
+	// afterwards to determine the end of the transfer.
+	// Since this is more complicated we only send single packets
+	// with one byte less than the maximum.
+	if(bankTX >= (CDC_TX_EPSIZE - 1)){
+		bankTX = 0;
+		Endpoint_ClearIN();
+	}
 }
 
 /** Task to read in AVR109 commands from the CDC data OUT endpoint, process them, perform the required actions
@@ -867,40 +877,38 @@ static void Bootloader_Task(){
 		WriteNextResponseByte('?');
 	}
 
-	// Select the Serial Tx Endpoint
-	Endpoint_SelectEndpoint(CDC_TX_EPADDR);
-
-	// Remember if the endpoint is completely full before clearing it
-	bool IsEndpointFull = !(Endpoint_IsReadWriteAllowed());
-
-	// Send the endpoint data to the host */
-	Endpoint_ClearIN();
-
-	// If a full endpoint's worth of data was sent, we need to send an empty packet afterwards to signal end of transfer
-	if (IsEndpointFull)
+	// Check if there is still data in the USB bank that needs to be send
+	if(bankTX)
 	{
-		// wait for the sending to flush
+		/* Select the IN endpoint so that the next data byte can be written */
+		Endpoint_SelectEndpoint(CDC_TX_EPADDR);
+
+		// Wait untill endpoint is ready to write
 		while (!(Endpoint_IsINReady()))
 		{
 			if (USB_DeviceState == DEVICE_STATE_Unattached)
 			return;
 		}
-		// send a zero length package
+
+		// Send the endpoint data to the host */
 		Endpoint_ClearIN();
+		bankTX = 0;
+
+		// Wait until the data has been sent to the host
+		// TODO not needed normally
+		//while (!(Endpoint_IsINReady()))
+		//{
+		//	if (USB_DeviceState == DEVICE_STATE_Unattached)
+		//	return;
+		//}
 	}
 
-	// Wait until the data has been sent to the host
-	while (!(Endpoint_IsINReady()))
-	{
-		if (USB_DeviceState == DEVICE_STATE_Unattached)
-		return;
-	}
-
-	// in Bootloader mode clear the Out endpoint
+	// In Bootloader mode clear the Out endpoint
 	// Select the OUT endpoint
 	Endpoint_SelectEndpoint(CDC_RX_EPADDR);
 
 	// Acknowledge the command from the host
+	// All data is read, if not it is discarded here
 	Endpoint_ClearOUT();
 }
 
