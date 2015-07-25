@@ -122,14 +122,14 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#define AVR_RESET_LINE_MASKD (1 << PD4)
 		#define AVR_RESET_LINE_MASKB 0 // Leave it empty if you use PD
 		#define LEDs_TurnOnTXLED (PORTD &= ~LEDMASK_TX)
-		#define LEDs_TurnOnRXLED (PORTD &= ~LEDMASK_RX)
-		#define LEDs_TurnOffTXLED (PORTD |= LEDMASK_TX)
-		#define LEDs_TurnOffRXLED (PORTD |= LEDMASK_RX)
-#else
-		#define LEDs_TurnOnTXLED (PORTD &= ~LEDMASK_TX)
 		#define LEDs_TurnOnRXLED (PORTB &= ~LEDMASK_RX)
 		#define LEDs_TurnOffTXLED (PORTD |= LEDMASK_TX)
 		#define LEDs_TurnOffRXLED (PORTB |= LEDMASK_RX)
+#else
+		#define LEDs_TurnOnTXLED (PORTD &= ~LEDMASK_TX)
+		#define LEDs_TurnOnRXLED (PORTD &= ~LEDMASK_RX)
+		#define LEDs_TurnOffTXLED (PORTD |= LEDMASK_TX)
+		#define LEDs_TurnOffRXLED (PORTD |= LEDMASK_RX)
 #endif
 
 	/* Enums: */
