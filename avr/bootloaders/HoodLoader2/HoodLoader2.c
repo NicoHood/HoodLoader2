@@ -113,10 +113,10 @@ static bool RunBootloader = true;
 //volatile uint8_t MagicBootKey __attribute__((section(".blkey")));
 volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)RAMEND;
 
-// Backwardscompatibility with old Bootkey
+// Backwardscompatibility with old Bootkey (adds 20 bytes of flash)
 // Comment out to save flash
 #if defined(__AVR_ATmega32U4__)
-//#define OLD_BOOTKEY //TODO
+//#define OLD_BOOTKEY 0x0800 // left out so save ram
 #else
 #define OLD_BOOTKEY 0x280
 #endif
@@ -160,7 +160,11 @@ void Application_Jump_Check(void)
 		//  another external reset occurs, on the next pass through this decision tree, execution will fall
 		//  through to the bootloader.
 		if ((mcusr_state & (1 << EXTRF))) {
-			if ((bootKeyPtrVal != MAGIC_BOOT_KEY) && (oldBootKeyPtrVal != MAGIC_BOOT_KEY)){
+			if ((bootKeyPtrVal != MAGIC_BOOT_KEY) 
+#ifdef OLD_BOOTKEY
+&& (oldBootKeyPtrVal != MAGIC_BOOT_KEY)
+#endif
+){
 				// set the Bootkey and give the user a few ms chance to enter Bootloader mode
 				*MagicBootKeyPtr = MAGIC_BOOT_KEY;
 #ifdef OLD_BOOTKEY
@@ -1027,7 +1031,7 @@ static void CDC_Device_LineEncodingChanged(void)
 
 	/* Flush data that was about to be sent. */
 	USBtoUSART_ReadPtr = 0;
-	USBtoUSART_WritePtr = 0; //TODO combine those?
+	USBtoUSART_WritePtr = 0;
 	USARTtoUSB_ReadPtr = 0;
 	USARTtoUSB_WritePtr = 0;
 
