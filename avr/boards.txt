@@ -270,6 +270,7 @@ HoodLoader2atmega32u4.upload.maximum_data_size=2560
 HoodLoader2atmega32u4.build.mcu=atmega32u4
 
 #general settings for all boards:
+HoodLoader2atmega32u4.build.variant=arduino:leonardo
 HoodLoader2atmega32u4.build.board=HOODLOADER2
 HoodLoader2atmega32u4.build.f_cpu=16000000L
 
@@ -298,11 +299,12 @@ HoodLoader2atmega32u4.build.extra_flags={build.usb_flags}
 #Board/Bootloader selection
 HoodLoader2atmega32u4.menu.board.leo=HoodLoader2 Leonardo
 HoodLoader2atmega32u4.menu.board.leo.bootloader.file=HoodLoader2/HoodLoader2_0_5_Leo_atmega32u4.hex
-HoodLoader2atmega32u4.menu.board.leo.build.variant=arduino:leonardo
 HoodLoader2atmega32u4.menu.board.micro=HoodLoader2 Micro
 HoodLoader2atmega32u4.menu.board.micro.bootloader.file=HoodLoader2/HoodLoader2_0_5_Micro_atmega32u4.hex
 HoodLoader2atmega32u4.menu.board.micro.build.variant=arduino:micro
 HoodLoader2atmega32u4.menu.board.micro.build.pid=0x8037
+HoodLoader2atmega32u4.menu.board.dev=HoodLoader2 Dev
+HoodLoader2atmega32u4.menu.board.dev.bootloader.file=HoodLoader2/HoodLoader2.hex
 
 # DFU fuse settings are not suitable for HoodLoader2
 HoodLoader2atmega32u4.menu.board.dfuleo=DFU only / Leonardo No USB functions
