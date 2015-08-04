@@ -116,13 +116,20 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#define AVR_RESET_LINE_DDR DDRD
 		#define AVR_RESET_LINE_PIN PIND
 		#define AVR_RESET_LINE_MASK (1 << PD4) // PD4 = D4, PD6 = D12, PD7 = D7
-		#define AVR_RESET_LINE_MASKD (1 << PD4)
-		#define AVR_RESET_LINE_MASKB 0 // Leave it empty if you use PD
-		// Leds PORT needs to be switched for Micro TODO
+
+		// Leds PORT needs to be switched for Micro
+#if (PRODUCTID == ARDUINO_MICRO_PID)
 		#define LEDs_TurnOnTXLED (PORTD &= ~LEDMASK_TX)
 		#define LEDs_TurnOnRXLED (PORTB &= ~LEDMASK_RX)
 		#define LEDs_TurnOffTXLED (PORTD |= LEDMASK_TX)
 		#define LEDs_TurnOffRXLED (PORTB |= LEDMASK_RX)
+#else
+		#define LEDs_TurnOffTXLED (PORTD &= ~LEDMASK_TX)
+		#define LEDs_TurnOffRXLED (PORTB &= ~LEDMASK_RX)
+		#define LEDs_TurnOnTXLED (PORTD |= LEDMASK_TX)
+		#define LEDs_TurnOnRXLED (PORTB |= LEDMASK_RX)
+#endif
+
 #else
 		#define LEDs_TurnOnTXLED (PORTD &= ~LEDMASK_TX)
 		#define LEDs_TurnOnRXLED (PORTD &= ~LEDMASK_RX)
@@ -181,7 +188,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		static void Bootloader_Task(void);
 		static void CDC_Device_LineEncodingChanged(void);
 		static void SetupHardware(void);
-		static void StartSketch(void);
+		static void StartSketch(void) __attribute__ ((noinline));
 		static void ResetMCU(void);
 
 		void Application_Jump_Check(void) ATTR_INIT_SECTION(3);

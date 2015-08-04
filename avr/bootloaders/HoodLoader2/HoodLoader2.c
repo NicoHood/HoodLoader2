@@ -159,6 +159,10 @@ void Application_Jump_Check(void)
 	/* Disable watchdog if enabled by bootloader/fuses */
 	wdt_disable();
 
+	// Turn off leds on every startup
+	LEDs_TurnOffTXLED;
+	LEDs_TurnOffRXLED;
+
 	// check if a sketch is presented and what to do then
 	if (pgm_read_word(0) != 0xFFFF){
 
@@ -208,10 +212,6 @@ void Application_Jump_Check(void)
 
 static void StartSketch(void)
 {
-	// Turn off leds on every startup
-	LEDs_TurnOffTXLED;
-	LEDs_TurnOffRXLED;
-
 	// jump to beginning of application space
 	// cppcheck-suppress constStatement
 	((void(*)(void))0x0000)();
@@ -455,17 +455,19 @@ static void SetupHardware(void)
 	TCCR0B = (1 << CS02); // clk I/O / 256 (From prescaler)
 
 	// compacter setup for Leds, RX, TX, Reset Line
+	// No need to turn off Leds, this is done in the bootkey check function
 #if !defined(__AVR_ATmega32U4__)
 	ARDUINO_DDR |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
-	ARDUINO_PORT |= LEDS_ALL_LEDS | (1 << PD2) | AVR_RESET_LINE_MASK;
+	//ARDUINO_PORT |= (1 << PD2) | AVR_RESET_LINE_MASK;
 #else
 	// We use = here since the pins should be input/low anyways.
 	// This saves us some more bytes fo flash
-	DDRD = LEDMASK_TX | (1 << PD3) | AVR_RESET_LINE_MASKD;
-	PORTD = LEDMASK_TX | (1 << PD2) | AVR_RESET_LINE_MASKD;
-	DDRB  |=  LEDMASK_RX | AVR_RESET_LINE_MASKB;
-	PORTB |=  LEDMASK_RX | AVR_RESET_LINE_MASKB;
+	DDRD = LEDMASK_TX | (1 << PD3) | AVR_RESET_LINE_MASK;
+ 	// results in sbi instructions
+	DDRB  |= LEDMASK_RX;
 #endif
+	PORTD |= AVR_RESET_LINE_MASK;
+	PORTD |= (1 << PD2);
 }
 
 /** Event handler for the USB_ConfigurationChanged event. This configures the device's endpoints ready
