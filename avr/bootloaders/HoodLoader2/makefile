@@ -37,6 +37,12 @@ LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAG
 HOODLOADER2_OPTS  = -DVENDORID=ARDUINO_VID
 HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID
 
+# 1200 is the baud to load the Bootloader from an Arduino sketch,
+# 57600 turns out to be the actual baud rate for uploading for default arduino bootloaders
+# with 2.0.5 we change this baud, to also be able to upload older 328 bootloaders and avoid other problems for baud 57600
+# make also sure to change your boards.txt uploading speed!
+HOODLOADER2_OPTS += -DBAUDRATE_CDC_BOOTLOADER=300
+
 
 # Flash size and bootloader section sizes of the target, in KB. These must
 # match the target's total FLASH size and the bootloader size set in the

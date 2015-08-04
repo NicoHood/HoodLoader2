@@ -98,9 +98,6 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		/** Eight character bootloader firmware identifier reported to the host when requested. */
 		#define SOFTWARE_IDENTIFIER          "HL2.0.5"
 
-		/** 1200 is the baud to load the Bootloader from an Arduino sketch, 57600 turns out to be the actual baud rate for uploading. */
-		#define BAUDRATE_CDC_BOOTLOADER 57600
-
 		/** Port of the onboard leds, serial and reset line */
 		#define ARDUINO_PORT PORTD
 		#define ARDUINO_DDR DDRD

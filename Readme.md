@@ -65,6 +65,7 @@ Version History
 * Improved USART reconfiguration
 * Changed Magic Key to RAMEND
   (requires new HID-Project IDE patch, but is still backwards compatible)
+* Changed programming baud rate (from 57600 to 300)
 * Saved a lot of ram by moving descriptors to PROGMEM (8/16u2)
 * Added 32u4 support
 * Added EEPROM program support for 32u2
