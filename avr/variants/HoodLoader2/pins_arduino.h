@@ -58,6 +58,10 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // there is only a general EPSIZE handle (USBCore.cpp)
 #define USB_EP_SIZE 16
 
+// Bootkey position (8bit)
+#define MAGIC_KEY 0x77
+#define MAGIC_KEY_POS (uint8_t *)(RAMEND)
+#define NO_MAGIC_KEY_BACKUP
 
 /** LED mask for the first LED on the board. */
 #define LEDS_LED1        (1 << 5)
