@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <../../variants/leonardo/pins_arduino.h>
+#include <../../variants/micro/pins_arduino.h>
 
 // temporary USB deactivation workaround
 // you can still use this to get rid of all USB functions

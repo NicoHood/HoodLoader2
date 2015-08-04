@@ -305,14 +305,22 @@ HoodLoader2atmega32u4.menu.board.micro.build.variant=arduino:micro
 HoodLoader2atmega32u4.menu.board.micro.build.pid=0x8037
 
 # DFU fuse settings are not suitable for HoodLoader2
-HoodLoader2atmega32u4.menu.board.dfu=DFU only / No USB functions
-HoodLoader2atmega32u4.menu.board.dfu.bootloader.file=DFU/BootloaderDFU_at90usb162.hex
-HoodLoader2atmega32u4.menu.board.dfu.build.variant=leonardo_NoUSB
-HoodLoader2atmega32u4.menu.board.dfu.bootloader.low_fuses=0xFF
-HoodLoader2atmega32u4.menu.board.dfu.bootloader.high_fuses=0xD9
-HoodLoader2atmega32u4.menu.board.dfu.bootloader.extended_fuses=0xF4
-HoodLoader2atmega32u4.menu.board.dfu.bootloader.unlock_bits=0x3F
-HoodLoader2atmega32u4.menu.board.dfu.bootloader.lock_bits=0x0F
+HoodLoader2atmega32u4.menu.board.dfuleo=DFU only / Leonardo No USB functions
+HoodLoader2atmega32u4.menu.board.dfuleo.bootloader.file=DFU/BootloaderDFU_atmega32u4_leo.hex
+HoodLoader2atmega32u4.menu.board.dfuleo.build.variant=leonardo_NoUSB
+HoodLoader2atmega32u4.menu.board.dfuleo.bootloader.low_fuses=0xFF
+HoodLoader2atmega32u4.menu.board.dfuleo.bootloader.high_fuses=0xD9
+HoodLoader2atmega32u4.menu.board.dfuleo.bootloader.extended_fuses=0xF4
+HoodLoader2atmega32u4.menu.board.dfuleo.bootloader.unlock_bits=0x3F
+HoodLoader2atmega32u4.menu.board.dfuleo.bootloader.lock_bits=0x0F
+HoodLoader2atmega32u4.menu.board.dfumicro=DFU only / Micro No USB functions
+HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.file=DFU/BootloaderDFU_atmega32u4_micro.hex
+HoodLoader2atmega32u4.menu.board.dfumicro.build.variant=micro_NoUSB
+HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.low_fuses=0xFF
+HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.high_fuses=0xD9
+HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.extended_fuses=0xF4
+HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.unlock_bits=0x3F
+HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.lock_bits=0x0F
 
 
 ##############################################################
