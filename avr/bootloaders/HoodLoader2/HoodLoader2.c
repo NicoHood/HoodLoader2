@@ -118,19 +118,16 @@ static uint8_t mode = MODE_OFF;
 // 0x280 is reserved by the makefile (right after out buffers) and 0x8000 should not be used anyways
 // To avoid problems inside the sketch a newer methode with RAMEND was introduced with HL2.0.5
 // for the u2 series only (to save flash with the 32u4)
-#if defined(__AVR_ATmega32U4__)
-volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)0x0800;
-#else
-volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)0x280;
-#endif
+volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)BOOTKEY;
 
 // Backwardscompatibility with old Bootkey (adds 20 bytes of flash)
-// Comment out to save flash
-#if !defined(__AVR_ATmega32U4__)
-// new, saver position
-#define SECOND_BOOTKEY RAMEND
-#endif
-#ifdef SECOND_BOOTKEY
+// Undef to save flash for 32u4 devices
+// 2nd Bootkey backwards compatibility is normally not needed, wanted and useful
+// If you also change the programming speed.
+// You may only want to use this if you want to stick to the old HID Project 2.2 software with baud 57600.
+#if defined(__AVR_ATmega32U4__) || (BAUDRATE_CDC_BOOTLOADER != 57600)
+#undef SECOND_BOOTKEY
+#else
 volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)SECOND_BOOTKEY;
 #endif
 
@@ -1108,7 +1105,7 @@ static void CDC_Device_LineEncodingChanged(void)
 		uint16_t brr = SERIAL_2X_UBBRVAL(BaudRateBPS);
 		// No need U2X or cant have U2X.
 		// Or special case 57600 baud for compatibility with the ATmega328 bootloader.
-		if ((brr & 1) || (brr > 4095) || (brr == SERIAL_2X_UBBRVAL(57600))) {
+		if ((brr & 1) || (brr > 4095) || ((brr == SERIAL_2X_UBBRVAL(57600)) && (BAUDRATE_CDC_BOOTLOADER != 57600))) {
 			brr >>= 1;
 			clockSpeed = 0;
 		}
