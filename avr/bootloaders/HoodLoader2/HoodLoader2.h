@@ -118,6 +118,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#define AVR_RESET_LINE_MASK (1 << PD4) // PD4 = D4, PD6 = D12, PD7 = D7
 		#define AVR_RESET_LINE_MASKD (1 << PD4)
 		#define AVR_RESET_LINE_MASKB 0 // Leave it empty if you use PD
+		// Leds PORT needs to be switched for Micro TODO
 		#define LEDs_TurnOnTXLED (PORTD &= ~LEDMASK_TX)
 		#define LEDs_TurnOnRXLED (PORTB &= ~LEDMASK_RX)
 		#define LEDs_TurnOffTXLED (PORTD |= LEDMASK_TX)
