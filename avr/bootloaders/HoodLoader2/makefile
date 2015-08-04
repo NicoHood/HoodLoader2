@@ -41,7 +41,8 @@ HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID
 # 57600 turns out to be the actual baud rate for uploading for default arduino bootloaders
 # with 2.0.5 we change this baud, to also be able to upload older 328 bootloaders and avoid other problems for baud 57600
 # make also sure to change your boards.txt uploading speed!
-HOODLOADER2_OPTS += -DBAUDRATE_CDC_BOOTLOADER=300
+# make sure to use a standard baud rate (supported by avrdude or it will (sometimes randomly) not work
+HOODLOADER2_OPTS += -DBAUDRATE_CDC_BOOTLOADER=1200
 
 
 # Flash size and bootloader section sizes of the target, in KB. These must
