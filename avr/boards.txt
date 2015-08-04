@@ -345,17 +345,7 @@ unoHIDBridge.build.mcu=atmega328p
 unoHIDBridge.build.f_cpu=16000000L
 unoHIDBridge.build.board=AVR_UNO
 unoHIDBridge.build.core=arduino:arduino
-
-#USB core selection
-#HID Project needs to be installed https://github.com/NicoHood/HID
-unoHIDBridge.menu.usbcore.hid=Serial + Extended HID
-unoHIDBridge.menu.usbcore.hid.build.variant=standard_hid
-unoHIDBridge.menu.usbcore.gamepad=Serial + Gamepad HID
-unoHIDBridge.menu.usbcore.gamepad.build.variant=standard_gamepad
-unoHIDBridge.menu.usbcore.custom=Serial + Custom HID
-unoHIDBridge.menu.usbcore.custom.build.variant=standard_custom
-unoHIDBridge.menu.usbcore.NO_USB=Default Core
-unoHIDBridge.menu.usbcore.NO_USB.build.variant=standard
+unoHIDBridge.build.variant=arduino:standard
 
 
 ##############################################################
@@ -388,14 +378,5 @@ megaHIDBridge.build.f_cpu=16000000L
 megaHIDBridge.build.core=arduino:arduino
 megaHIDBridge.build.mcu=atmega2560
 megaHIDBridge.build.board=AVR_MEGA2560
+megaHIDBridge.build.variant=arduino:mega
 
-#USB core selection
-#HID Project needs to be installed https://github.com/NicoHood/HID
-megaHIDBridge.menu.usbcore.hid=Serial + Extended HID
-megaHIDBridge.menu.usbcore.hid.build.variant=mega_hid
-megaHIDBridge.menu.usbcore.gamepad=Serial + Gamepad HID
-megaHIDBridge.menu.usbcore.gamepad.build.variant=mega_gamepad
-megaHIDBridge.menu.usbcore.custom=Serial + Custom HID
-megaHIDBridge.menu.usbcore.custom.build.variant=mega_custom
-megaHIDBridge.menu.usbcore.NO_USB=Default Core
-megaHIDBridge.menu.usbcore.NO_USB.build.variant=mega
