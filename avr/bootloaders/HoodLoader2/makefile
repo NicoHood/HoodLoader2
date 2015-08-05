@@ -24,6 +24,12 @@ CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_STA
 LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=$(RAM_OFFSET) $(REGS) -flto -fuse-linker-plugin
 
 
+# Flash size and bootloader section sizes of the target, in KB. These must
+# match the target's total FLASH size and the bootloader size set in the
+# device's fuses.
+FLASH_SIZE_KB         = 16
+BOOT_SECTION_SIZE_KB  = 4
+
 #define LUFA_VID					0x03EB
 #define LUFA_PID					0x204A
 
@@ -52,13 +58,6 @@ HOODLOADER2_OPTS += -DBAUDRATE_CDC_BOOTLOADER=1200
 # 0x280 was the default bootkey for HL2.0.4 and older
 HOODLOADER2_OPTS += -DBOOTKEY=RAMEND
 HOODLOADER2_OPTS += -DSECOND_BOOTKEY=0x280
-
-
-# Flash size and bootloader section sizes of the target, in KB. These must
-# match the target's total FLASH size and the bootloader size set in the
-# device's fuses.
-FLASH_SIZE_KB         = 16
-BOOT_SECTION_SIZE_KB  = 4
 
 
 # Add an offset of 256 + 128 bytes to RAMSTART for the ringbuffers
