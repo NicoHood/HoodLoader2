@@ -185,7 +185,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		typedef void (*AppPtr_t)(void) ATTR_NO_RETURN;
 
 	/* Function Prototypes: */
-		static void Bootloader_Task(void);
+		static void Bootloader_Task(void) __attribute__ ((noinline));
 		static void CDC_Device_LineEncodingChanged(void);
 		static void SetupHardware(void);
 		static void StartSketch(void) __attribute__ ((noinline));
