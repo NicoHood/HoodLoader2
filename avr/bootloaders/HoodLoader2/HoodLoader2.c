@@ -1094,18 +1094,25 @@ static void CDC_Device_LineEncodingChanged(void)
 			break;
 		}
 
-		/* Set the new baud rate before configuring the USART */
+		// Set the new baud rate before configuring the USART
 		uint8_t clockSpeed = (1 << U2X1);
 		uint16_t brr = SERIAL_2X_UBBRVAL(BaudRateBPS);
+
 		// No need U2X or cant have U2X.
-		// Or special case 57600 baud for compatibility with the ATmega328 bootloader.
-		if ((brr & 1) || (brr > 4095) || ((brr == SERIAL_2X_UBBRVAL(57600)) && (BAUDRATE_CDC_BOOTLOADER != 57600))) {
+		if ((brr & 1) || (brr > 4095)) {
 			brr >>= 1;
 			clockSpeed = 0;
 		}
+
+		// Or special case 57600 baud for compatibility with the ATmega328 bootloader.
+		else if(((brr == SERIAL_2X_UBBRVAL(57600)) && (BAUDRATE_CDC_BOOTLOADER != 57600))){
+			brr = SERIAL_UBBRVAL(57600);
+			clockSpeed = 0;
+		}
+
 		UBRR1 = brr;
 
-		/* Reconfigure the USART */
+		// Reconfigure the USART
 		UCSR1C = ConfigMask;
 		UCSR1A = clockSpeed;
 		UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1));
