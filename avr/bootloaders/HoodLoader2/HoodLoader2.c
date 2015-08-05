@@ -237,9 +237,6 @@ static void ResetMCU(void){
 */
 int main(void)
 {
-	// Initialize register variables
-	bankTX = 0;
-
 	/* Setup hardware required for the bootloader */
 	SetupHardware();
 
@@ -703,6 +700,9 @@ static void Bootloader_Task(){
 	if (!(Endpoint_IsOUTReceived()))
 	return;
 
+	// Initialize/reset register variables
+	bankTX = 0;
+
 	/* Read in the bootloader command (first byte sent from host) */
 	uint8_t Command = FetchNextCommandByte();
 
@@ -908,15 +908,7 @@ static void Bootloader_Task(){
 
 		// Send the endpoint data to the host */
 		Endpoint_ClearIN();
-		bankTX = 0;
-
-		// Wait until the data has been sent to the host
-		// TODO not needed normally
-		//while (!(Endpoint_IsINReady()))
-		//{
-		//	if (USB_DeviceState == DEVICE_STATE_Unattached)
-		//	return;
-		//}
+		// bankTX will be reset in the next loop, no need to do it here
 	}
 
 	// In Bootloader mode clear the Out endpoint
