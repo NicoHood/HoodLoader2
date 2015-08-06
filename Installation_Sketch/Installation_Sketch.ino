@@ -1,149 +1,188 @@
-/*
-Copyright(c) 2014-2015 NicoHood
-See the readme for credit to other people.
-
-This file is part of Hoodloader2.
-
-Hoodloader2 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Hoodloader2 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-// Atmega chip programmer
-// Author: Nick Gammon
-// Date: 22nd May 2012
-
-// For more information including wiring, see: http://www.gammon.com.au/forum/?id=11635
-
-// Version 1.1: Reset foundSig to -1 each time around the loop.
-// Version 1.2: Put hex bootloader data into separate files
-// Version 1.3: Added verify, and MD5 sums
-// Version 1.4: Added signatures for ATmeag8U2/16U2/32U2 (7 May 2012)
-// Version 1.5: Added signature for ATmega1284P (8 May 2012)
-// Version 1.6: Allow sketches to read bootloader area (lockbyte: 0x2F)
-// Version 1.7: Added choice of bootloaders for the Atmega328P (8 MHz or 16 MHz)
-// Version 1.8: Output an 8 MHz clock on pin 9
-// Version 1.9: Added support for Atmega1284P, and fixed some bugs
-// Version 1.10: Corrected flash size for Atmega1284P.
-// Version 1.11: Added support for Atmega1280. Removed MD5SUM stuff to make room.
-// Version 1.12: Added signatures for ATtiny2313A, ATtiny4313, ATtiny13
-// Version 1.13: Added signature for Atmega8A
-// Version 1.14: Added bootloader for Atmega8
-// Version 1.15: Removed extraneous 0xFF from some files
-// Version 1.16: Added signature for Atmega328
-// Version 1.17: Allowed for running on the Leonardo, Micro, etc.
-// Version 1.18: Added timed writing for Atmega8
-// Version 1.19: Changed Atmega1280 to use the Optiboot loader.
-// Version 1.20: Changed bootloader for Atmega2560 to fix problems with watchdog timer.
-// Version 1.21: Automatically clear "divide by 8" fuse bit
-// Version 1.22: Fixed compiling problems under IDE 1.5.8
-// Version 1.23: Added support for Leonardo bootloader
-// Version 1.24: Added bootloader for Uno Atmega16U2 chip (the USB interface)
-// Version 1.25: Fixed bug re verifying uploaded sketch for the Lilypad
-// Version 1.26: Turn off programming mode when done (so chip can run)
-// Version 1.27: Made bootloaders conditional, so you can omit some to save space
-// Version 1.28: Changed _BV () macro to bit () macro.
-// Version 1.29: Display message if cannot enter programming mode.
-// Version 1.30: Various tidy-ups
-// Version 1.31: Fixed bug in doing second lot of programming under IDE 1.6.0
-// Version 1.32: Bug fixes, added support for At90USB82, At90USB162 signatures
-
-// Changes by NicoHood:
-// Version 1.23: Added support for Leonardo bootloader
-// Version 1.23-A: Removed unnecessary Bootloaders, added Hoodloader
-// Version 1.23-B: Fixed resetting bug when connected directly
-// Version 1.24: Added bootloader for Uno Atmega16U2 chip (the USB interface)
-// Version 1.25: Fixed bug re verifying uploaded sketch for the Lilypad
-// Version 1.25-A: Fixed uploading problems with a standalone Arduino
-// Version 1.26-A: Turn off programming mode when done (so chip can run)
-// Version 1.26-B: Updated to HoodLoader 2.0.1
-// Version 1.26-C: Updated to HoodLoader 2.0.2
-// Version 1.26-D: Corrected Fuses to original Arduino values
-// Version 1.26-E: DFU lock bytes fix
-// Version 1.27: Added HoodLoader2.0.3, also for 32u2 (IDE 1.5.8 or higher)
-// Version 1.27-B: Fixed Mega uploading, added timeout, added Leonardo compatibity again (flash size problem)
-// Version 1.27-C: Outcommented 32u2 due to a 4kb 328 bootloader problem if no optiboot is installed
-// Version 1.29-HL203-A: Updated to 1.29, reworked the whole sketch
-// Version 1.30-HL204-A: Updated HL to version 2.0.4
-// Version 1.31-HL204-A: Added 8u2, 16u2, 32u2 Support
-// Version 1.32-HL204-A: Bug fixes, added support for At90USB82, At90USB162 signatures
-// Version 1.32-HL204-B: Signature fixes
-
-#define VERSION "1.32-HL204-B"
+#define VERSION "1.32-HL205-A"
 
 //================================================================================
 // HoodLoader2 Settings
 //================================================================================
 
-// make some of these false to reduce compile size (the ones you don't want)
-#define USE_ATMEGA8U2 false
-#define USE_ATMEGA16U2 true
-#define USE_ATMEGA32U2 false
-#define USE_AT90USB162 false // todo, not supported
+//TODO
+#define BUTTON_HOODLOADER2 7
+#define LED_PIN LED_BUILTIN
 
-// also use Mega 16u2 bootloader files?
-#define USE_MEGA_BOOTLOADER true
+// Select one of the files below (default 3: HL2.0.5, 16u2, Uno)
+#define HEXFILE 3
 
-// force Mega bootloader for blind pin selection/DFU hex file
-#define FORCE_MEGA_BOOTLOADER false
+// Newest HoodLoader2.0.5 hex files
+#define HEXFILE_HoodLoader2_0_5_Leonardo_atmega32u4_hex 1
+#define HEXFILE_HoodLoader2_0_5_Micro_atmega32u4_hex 2
+#define HEXFILE_HoodLoader2_0_5_Uno_atmega16u2_hex 3
+#define HEXFILE_HoodLoader2_0_5_Mega_atmega16u2_hex 4
+#define HEXFILE_HoodLoader2_0_5_Uno_atmega32u2_hex 5
+#define HEXFILE_HoodLoader2_0_5_Mega_atmega32u2_hex 6
+#define HEXFILE_HoodLoader2_0_5_Uno_at90usb162_hex 7
+#define HEXFILE_HoodLoader2_0_5_Mega_at90usb162_hex 8
+#define HEXFILE_HoodLoader2_0_5_Uno_atmega8u2_hex 9
+#define HEXFILE_HoodLoader2_0_5_Mega_atmega8u2_hex 10
 
-// DFU options (16u2 only)
-#ifdef USE_ATMEGA16U2
-#define USE_ATMEGA16U2_DFU true
-// use the full 16kb DFU Bootloader with USB-Serial
-// you have to deactuivate the mega bootloader then
-// but you can stull burn a mega DFU file in the followed setting
-#define USE_ATMEGA16U2_DFU_FULL false
+// Legacy versions
+#define HEXFILE_HoodLoader2_0_4_Uno_16u2_hex 11
+#define HEXFILE_HoodLoader2_0_4_Mega_16u2_hex 12
+#define HEXFILE_HoodLoader2_0_4_Uno_32u2_hex 13
+#define HEXFILE_HoodLoader2_0_4_Mega_32u2_hex 14
+
+// Original DFU Bootloader with/without USB-Serial Firmware
+#define HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full 15
+#define HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex_Full 16
+#define HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex 17
+
+// Recomplied Lufa DFU bootloaders (compatible with Arduino Leds)
+#define HEXFILE_BootloaderDFU_atmega32u4_leo_hex 18
+#define HEXFILE_BootloaderDFU_atmega16u2_hex 19
+#define HEXFILE_BootloaderDFU_atmega32u2_hex 20
+#define HEXFILE_BootloaderDFU_at90usb162_hex 21
+#define HEXFILE_BootloaderDFU_atmega8u2_hex 22
+
+//================================================================================
+// HoodLoader2 Predefinitions
+//================================================================================
+
+// Map number back to array name
+#if(HEXFILE == HEXFILE_HoodLoader2_0_5_Leonardo_atmega32u4_hex)
+#define HEXARR HoodLoader2_0_5_Leonardo_atmega32u4_hex
+#elif(HEXFILE == HEXFILE_HoodLoader2_0_5_Micro_atmega32u4_hex)
+#define HEXARR HoodLoader2_0_5_Micro_atmega32u4_hex
+#elif(HEXFILE == HEXFILE_HoodLoader2_0_5_Uno_atmega16u2_hex)
+#define HEXARR HoodLoader2_0_5_Uno_atmega16u2_hex
+#elif(HEXFILE == HEXFILE_HoodLoader2_0_5_Mega_atmega16u2_hex)
+#define HEXARR HoodLoader2_0_5_Mega_atmega16u2_hex
+#elif(HEXFILE == HEXFILE_HoodLoader2_0_5_Uno_atmega32u2_hex)
+#define HEXARR HoodLoader2_0_5_Uno_atmega32u2_hex
+#elif(HEXFILE == HEXFILE_HoodLoader2_0_5_Mega_atmega32u2_hex)
+#define HEXARR HoodLoader2_0_5_Mega_atmega32u2_hex
+#elif(HEXFILE == HoodLoader2_0_5_Uno_at90usb162_hex)
+#define HEXARR HoodLoader2_0_5_Uno_at90usb162_hex
+#elif(HEXFILE == HEXFILE_HoodLoader2_0_5_Mega_at90usb162_hex)
+#define HEXARR HoodLoader2_0_5_Mega_at90usb162_hex
+#elif(HEXFILE == HEXFILE_HoodLoader2_0_5_Uno_atmega8u2_hex)
+#define HEXARR HoodLoader2_0_5_Uno_atmega8u2_hex
+#elif(HEXFILE == HEXFILE_HoodLoader2_0_5_Mega_atmega8u2_hex)
+#define HEXARR HoodLoader2_0_5_Mega_atmega8u2_hex
+#elif(HEXFILE == HEXFILE_HoodLoader2_0_4_Uno_16u2_hex)
+#define HEXARR HoodLoader2_0_4_Uno_16u2_hex
+#elif(HEXFILE == HEXFILE_HoodLoader2_0_4_Mega_16u2_hex)
+#define HEXARR HoodLoader2_0_4_Mega_16u2_hex
+#elif(HEXFILE == HEXFILE_HoodLoader2_0_4_Uno_32u2_hex)
+#define HEXARR HoodLoader2_0_4_Uno_32u2_hex
+#elif(HEXFILE == HEXFILE_HoodLoader2_0_4_Mega_32u2_hex)
+#define HEXARR HoodLoader2_0_4_Mega_32u2_hex
+#elif(HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full)
+#define HEXARR Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full
+#elif(HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex_Full)
+#define HEXARR Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex_Full
+#elif(HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex)
+#define HEXARR Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex
+#elif(HEXFILE == HEXFILE_BootloaderDFU_atmega32u4_leo_hex)
+#define HEXARR BootloaderDFU_atmega32u4_leo_hex
+#elif(HEXFILE == HEXFILE_BootloaderDFU_atmega16u2_hex)
+#define HEXARR BootloaderDFU_atmega16u2_hex
+#elif(HEXFILE == HEXFILE_BootloaderDFU_atmega32u2_hex)
+#define HEXARR BootloaderDFU_atmega32u2_hex
+#elif(HEXFILE == HEXFILE_BootloaderDFU_at90usb162)
+#define HEXARR BootloaderDFU_at90usb162
+#elif(HEXFILE == HEXFILE_BootloaderDFU_atmega8u2_hex)
+#define HEXARR BootloaderDFU_atmega8u2_hex
 #endif
 
-#define BUTTON_DFU 8
-#define BUTTON_HOODLOADER2 7
+#ifndef HEXFILE
+#error Please select a (single!) hexfile in the list above
+#endif
 
-enum {
-  HL2_UNO,
-  HL2_MEGA,
-  DFU
-} board;
+// Default 16u2 settings
+#if (HEXFILE == HEXFILE_HoodLoader2_0_5_Uno_atmega16u2_hex) || (HEXFILE == HEXFILE_HoodLoader2_0_5_Mega_atmega16u2_hex) \
+|| (HEXFILE == HEXFILE_HoodLoader2_0_4_Uno_16u2_hex) || (HEXFILE == HEXFILE_HoodLoader2_0_4_Mega_16u2_hex) \
+|| (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full) \
+|| (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega_Rev3_hex_Full) \
+|| (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex) \
+|| (HEXFILE == HEXFILE_BootloaderDFU_atmega16u2_hex)
 
-/*
+#define USE_ATMEGA16U2 true
+#define START_ADDRESS 0x3000
+#define LOW_FUSE 0xEF // fuse low byte: external clock, m
+#define HIGH_FUSE 0xD8 // fuse high byte: SPI enable, boot into bootloader, 4096 byte bootloader
+#define EXT_FUSE 0xFC // fuse extended byte: brown-out detection at 2.6V
+#define LOCK_BITS 0xCF // lock bits
 
- Copyright 2012 Nick Gammon.
-
-
- PERMISSION TO DISTRIBUTE
-
- Permission is hereby granted, free of charge, to any person obtaining a copy of this software
- and associated documentation files (the "Software"), to deal in the Software without restriction,
- including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
- and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
- subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
+#endif // 16u2 settings
 
 
- LIMITATION OF LIABILITY
+// Default 32u2 settings
+#if (HEXFILE == HEXFILE_HoodLoader2_0_5_Uno_atmega32u2_hex) || (HEXFILE == HEXFILE_HoodLoader2_0_5_Mega_atmega32u2_hex) \
+|| (HEXFILE == HEXFILE_HoodLoader2_0_4_Uno_32u2_hex) || (HEXFILE == HEXFILE_HoodLoader2_0_4_Mega_32u2_hex) \
+|| (HEXFILE == HEXFILE_BootloaderDFU_atmega32u2_hex)
 
- The software is provided "as is", without warranty of any kind, express or implied,
- including but not limited to the warranties of merchantability, fitness for a particular
- purpose and noninfringement. In no event shall the authors or copyright holders be liable
- for any claim, damages or other liability, whether in an action of contract,
- tort or otherwise, arising from, out of or in connection with the software
- or the use or other dealings in the software.
+#define USE_ATMEGA32U2 true
+#define START_ADDRESS 0x7000
+#define LOW_FUSE 0xEF // fuse low byte: external clock, m
+#define HIGH_FUSE 0xD8 // fuse high byte: SPI enable, boot into bootloader, 4096 byte bootloader
+#define EXT_FUSE 0xFC // fuse extended byte: brown-out detection at 2.6V
+#define LOCK_BITS 0xCF // lock bits
+#error
+#endif // 32u2 settings
 
-*/
+// Default 8u2 settings
+#if (HEXFILE == HEXFILE_HoodLoader2_0_5_Uno_atmega8u2_hex) || (HEXFILE == HEXFILE_HoodLoader2_0_5_Mega_atmega8u2_hex) \
+|| (HEXFILE == HEXFILE_BootloaderDFU_atmega8u2_hex)
+
+#define USE_ATMEGA8U2 true
+#define START_ADDRESS 0x1000
+#define LOW_FUSE 0xEF // fuse low byte: external clock, m
+#define HIGH_FUSE 0xD8 // fuse high byte: SPI enable, boot into bootloader, 4096 byte bootloader
+#define EXT_FUSE 0xFC // fuse extended byte: brown-out detection at 2.6V
+#define LOCK_BITS 0xCF // lock bits
+
+#endif // 8u2 settings
+
+
+// Default at90usb162 settings
+#if (HEXFILE == HEXFILE_HoodLoader2_0_5_Uno_at90usb162_hex) || (HEXFILE == HEXFILE_HoodLoader2_0_5_Mega_at90usb162_hex) \
+|| (HEXFILE == HEXFILE_BootloaderDFU_at90usb162_hex)
+
+#define USE_AT90USB162 true
+#define START_ADDRESS 0x3000
+#define LOW_FUSE 0xEF // fuse low byte: external clock, m
+#define HIGH_FUSE 0xD8 // fuse high byte: SPI enable, boot into bootloader, 4096 byte bootloader
+#define EXT_FUSE 0xFC // fuse extended byte: brown-out detection at 2.6V
+#define LOCK_BITS 0xCF // lock bits
+
+#endif // at90usb162 settings
+
+
+// u2 Series DFU settings
+#if (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full) \
+|| (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega_Rev3_hex_Full)
+
+#define START_ADDRESS 0x0000 // Bootloader + Firmware
+#define HIGH_FUSE 0xD9 // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
+#define EXT_FUSE 0xF4 // fuse extended byte: brown-out detection at 2.6V
+
+#elif (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex) \
+|| (HEXFILE == HEXFILE_BootloaderDFU_atmega16u2_hex) \
+|| (HEXFILE == HEXFILE_BootloaderDFU_atmega16u2_hex) \
+|| (HEXFILE == HEXFILE_BootloaderDFU_atmega32u2_hex) \
+|| (HEXFILE == HEXFILE_BootloaderDFU_at90usb162_hex) \
+|| (HEXFILE == HEXFILE_BootloaderDFU_atmega8u2_hex)
+
+#define HIGH_FUSE 0xD9 // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
+#define EXT_FUSE 0xF4 // fuse extended byte: brown-out detection at 2.6V
+
+#endif // DFU u2 series settings
+
+//================================================================================
+// HoodLoader2 Installation program
+//================================================================================
+
 
 // indicates if programming + verification was successfull
-bool success;
+bool success = false;
 
 const int ENTER_PROGRAMMING_ATTEMPTS = 50;
 
@@ -212,18 +251,7 @@ typedef struct {
 const unsigned long kb = 1024;
 
 // hex bootloader data
-#if USE_ATMEGA8U2
-#include "bootloader_atmega8u2.h"
-#endif
-#if USE_ATMEGA16U2
-#include "bootloader_atmega16u2.h"
-#endif
-#if USE_ATMEGA32U2
-#include "bootloader_atmega32u2.h"
-#endif
-#if USE_AT90USB162
-#include "bootloader_at90usb162.h"
-#endif
+#include "bootloaders.h"
 
 // see Atmega328 datasheet page 298
 signatureType signatures [] =
@@ -261,49 +289,62 @@ signatureType signatures [] =
 
   // AT90USB family
   { { 0x1E, 0x93, 0x82 }, "At90USB82", 8 * kb, 512 },
+#ifdef USE_AT90USB162
+  { { 0x1E, 0x94, 0x82 }, "At90USB162", 16 * kb, 512,
+    HEXARR,// loader image
+    START_ADDRESS,
+    sizeof HEXARR,
+    128, // page size in bytes (for committing)
+    LOW_FUSE,
+    HIGH_FUSE,
+    EXT_FUSE,
+    LOCK_BITS
+  },
+#else
   { { 0x1E, 0x94, 0x82 }, "At90USB162", 16 * kb, 512 },
+#endif
 
   // Atmega32U2 family
-#if USE_ATMEGA8U2
+#ifdef USE_ATMEGA8U2
   { { 0x1E, 0x93, 0x89 }, "ATmega8U2",    8 * kb,   512,
-    HoodLoader2_0_4_Uno_8u2_hex,// loader image
-    0x1000, // start address
-    sizeof HoodLoader2_0_4_Uno_8u2_hex,
+    HEXARR,// loader image
+    START_ADDRESS,
+    sizeof HEXARR,
     128, // page size in bytes (for committing)
-    0xEF, // fuse low byte: external clock, m
-    0xD8, // fuse high byte: SPI enable, boot into bootloader, 4096 byte bootloader
-    0xFC, // fuse extended byte: brown-out detection at 2.6V
-    0xCF // lock bits
+    LOW_FUSE,
+    HIGH_FUSE,
+    EXT_FUSE,
+    LOCK_BITS
   },
 #else
   { { 0x1E, 0x93, 0x89 }, "ATmega8U2",    8 * kb,   512 },
 #endif
 
-#if USE_ATMEGA16U2
+#ifdef USE_ATMEGA16U2
   { { 0x1E, 0x94, 0x89 }, "ATmega16U2", 16 * kb, 512,
-    HoodLoader2_0_4_Uno_16u2_hex,// loader image
-    0x3000, // start address
-    sizeof HoodLoader2_0_4_Uno_16u2_hex,
+    HEXARR,// loader image
+    START_ADDRESS,
+    sizeof HEXARR,
     128, // page size in bytes (for committing)
-    0xEF, // fuse low byte: external clock, m
-    0xD8, // fuse high byte: SPI enable, boot into bootloader, 4096 byte bootloader
-    0xFC, // fuse extended byte: brown-out detection at 2.6V
-    0xCF // lock bits
+    LOW_FUSE,
+    HIGH_FUSE,
+    EXT_FUSE,
+    LOCK_BITS
   },
 #else
   { { 0x1E, 0x94, 0x89 }, "ATmega16U2", 16 * kb, 512 },
 #endif
 
-#if USE_ATMEGA32U2
+#ifdef USE_ATMEGA32U2
   { { 0x1E, 0x95, 0x8A }, "ATmega32U2", 32 * kb, 512,
-    HoodLoader2_0_4_Uno_32u2_hex,// loader image
-    0x7000, // start address
-    sizeof HoodLoader2_0_4_Uno_32u2_hex,
+    HEXARR,// loader image
+    START_ADDRESS,
+    sizeof HEXARR,
     128, // page size in bytes (for committing)
-    0xEF, // fuse low byte: external clock, m
-    0xD8, // fuse high byte: SPI enable, boot into bootloader, 4096 byte bootloader
-    0xFC, // fuse extended byte: brown-out detection at 2.6V
-    0xCF // lock bits
+    LOW_FUSE,
+    HIGH_FUSE,
+    EXT_FUSE,
+    LOCK_BITS
   },
 #else
   { { 0x1E, 0x95, 0x8A }, "ATmega32U2", 32 * kb, 512 },
@@ -311,7 +352,20 @@ signatureType signatures [] =
 
   // Atmega32U4 family
   { { 0x1E, 0x94, 0x88 }, "ATmega16U4",  16 * kb,   512 },
+#ifdef USE_ATMEGA32U4
+  { { 0x1E, 0x95, 0x87 }, "ATmega32U4",  32 * kb,   4 * kb,
+    HEXARR,// loader image
+    START_ADDRESS,
+    sizeof HEXARR,
+    128, // page size in bytes (for committing)
+    LOW_FUSE,
+    HIGH_FUSE,
+    EXT_FUSE,
+    LOCK_BITS
+  },
+#else
   { { 0x1E, 0x95, 0x87 }, "ATmega32U4",  32 * kb,   4 * kb },
+#endif
 
   // ATmega1284P family
   { { 0x1E, 0x97, 0x05 }, "ATmega1284P", 128 * kb,   1 * kb },
@@ -477,74 +531,6 @@ void writeBootloader ()
   const byte * bootloader = signatures [foundSig].bootloader;
 
 
-  // Atmega u2 Series with HoodLoader2
-  if (board == DFU)
-  {
-#if USE_ATMEGA16U2
-#if USE_ATMEGA16U2_DFU
-    // Atmega16u2
-    if (signatures [foundSig].sig [0] == 0x1E &&
-        signatures [foundSig].sig [1] == 0x94 &&
-        signatures [foundSig].sig [2] == 0x89) {
-
-#if USE_ATMEGA16U2_DFU_FULL
-#if defined(ARDUINO_AVR_MEGA2560) || FORCE_MEGA_BOOTLOADER
-      bootloader = Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full; // loader image
-      len = sizeof(Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full);
-#else
-      bootloader = Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex_Full; // loader image
-      len = sizeof(Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex_Full);
-#endif
-      addr = 0x0000; // start address
-#else
-      // DFU bootloader only is the same for Uno/Mega
-      bootloader = Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex; // loader image
-      len = sizeof(Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex);
-      addr = 0x3000; // start address
-#endif
-
-      newhFuse = 0xD9;  // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
-      newextFuse = 0xF4; // fuse extended byte: brown-out detection at 2.6V
-    }
-#endif
-#endif
-  } // end DFU
-
-#if USE_MEGA_BOOTLOADER
-  if (board == HL2_MEGA) {
-#if USE_ATMEGA8U2
-    // Atmega8u2
-    if (signatures [foundSig].sig [0] == 0x1E &&
-        signatures [foundSig].sig [1] == 0x93 &&
-        signatures [foundSig].sig [2] == 0x89) {
-      bootloader = HoodLoader2_0_4_Mega_8u2_hex, // loader image
-      len = sizeof(HoodLoader2_0_4_Mega_8u2_hex);
-    }
-#endif
-
-#if USE_ATMEGA16U2
-    // Atmega16u2
-    if (signatures [foundSig].sig [0] == 0x1E &&
-        signatures [foundSig].sig [1] == 0x94 &&
-        signatures [foundSig].sig [2] == 0x89) {
-      bootloader = HoodLoader2_0_4_Mega_16u2_hex, // loader image
-      len = sizeof(HoodLoader2_0_4_Mega_16u2_hex);
-    }
-#endif
-
-#if USE_ATMEGA32U2
-    // Atmega32u2
-    if (signatures [foundSig].sig [0] == 0x1E &&
-        signatures [foundSig].sig [1] == 0x95 &&
-        signatures [foundSig].sig [2] == 0x89) {
-      bootloader = HoodLoader2_0_4_Mega_32u2_hex, // loader image
-      len = sizeof(HoodLoader2_0_4_Mega_32u2_hex);
-    }
-#endif
-  } // end Mega
-#endif
-
-
   Serial.print (F("Bootloader address = 0x"));
   Serial.println (addr, HEX);
   Serial.print (F("Bootloader length = "));
@@ -680,6 +666,7 @@ bool startProgramming ()
       {
         Serial.println ();
         Serial.println (F("Failed to enter programming mode. Double-check wiring!"));
+        Serial.println (F("Next attempt in 10 seconds."));
         stopProgramming();
         return false;
       }  // end of too many attempts
@@ -754,7 +741,6 @@ void setup ()
   Serial.println (F("Compiled on " __DATE__ " at " __TIME__ " with Arduino IDE " xstr(ARDUINO) "."));
 
   // setup backup buttons
-  pinMode(BUTTON_DFU, INPUT_PULLUP);
   pinMode(BUTTON_HOODLOADER2, INPUT_PULLUP);
 
   digitalWrite (RESET, HIGH);  // ensure SS stays high for now
@@ -765,55 +751,18 @@ void setup ()
   TCCR1B = bit (WGM12) | bit (CS10);   // CTC, no prescaling
   OCR1A =  0;       // output every cycle
 
-}  // end of setup
-
-void loop ()
-{
   Serial.println();
   Serial.println(F("Welcome to the HoodLoader2 installation sketch!"));
-  Serial.println(F("This version will install HoodLoader2 on your Arduino Uno or Mega"));
+  Serial.println(F("This version will install HoodLoader2 on your Arduino"));
+  Serial.println();
+  Serial.print(F("You selected number "));
+  Serial.print(HEXFILE);
+  Serial.println(F(" as bootloader."));
+  Serial.println(F("If this is not correct upload the program again with different settings"));
   Serial.println();
   Serial.println(F("Make sure all wires are connected as written in the documentation."));
   Serial.println(F("Please now insert the 100nF capacitor between Reset and Ground on a standalone Arduino."));
   Serial.println(F("In some cases the Arduino will reset then and display these messages again."));
-  Serial.println();
-  Serial.println(F("Select the Arduino board you are using."));
-#if USE_ATMEGA16U2_DFU
-  Serial.println(F("Type 'U' for Uno or 'M' for Mega and press enter. (Advanced: 'D' for DFU)"));
-#else
-  Serial.println(F("Type 'U' for Uno or 'M' for Mega and press enter."));
-#endif
-  Serial.println();
-
-  // wait for user input
-  while (true)
-  {
-    char c = toupper (Serial.read ());
-    if (c == 'U' ) {
-      board = HL2_UNO;
-      break;
-    }
-    if (c == 'M' ) {
-      board = HL2_MEGA;
-      break;
-    }
-    if (c == 'A' || !digitalRead(BUTTON_HOODLOADER2)) {
-      // depending on the uploading board decide what hex file we should use (for the blind pin selection mode)
-      // by default use the file for Arduino Uno. Its no problem to upload an Uno file to a Mega though.
-#if defined(ARDUINO_AVR_MEGA2560) || FORCE_MEGA_BOOTLOADER
-      board = HL2_MEGA;
-#else
-      board = HL2_UNO;
-#endif
-      break;
-    }
-    if (c == 'D' || !digitalRead(BUTTON_DFU)) {
-      board = DFU;
-      break;
-    }
-  }
-
-  Serial.println(F("Starting programming, please be patient and wait some time."));
   Serial.println();
   Serial.println(F("On a standalone Arduino you will no longer see any messages here."));
   Serial.println(F("If you uploaded this sketch to a 2nd Aruino you will see some debug output."));
@@ -821,7 +770,39 @@ void loop ()
   Serial.println(F("If the installation was successfull the on board Led will start blinking fast (every 100ms)."));
   Serial.println(F("If the installation failed the on board Led will start blinking slow (every second)."));
   Serial.println();
+  Serial.println(F("Starting programming in 10 seconds, please be patient and wait some time."));
+  Serial.println();
   Serial.flush();
+}  // end of setup
+
+void loop ()
+{
+  int speed;
+  if (success)
+    speed = 100;
+  else
+    speed = 1000;
+
+  // wait 10 sec and retry if not successful
+  uint8_t countLed = 11;
+  pinMode(LED_PIN, OUTPUT);
+  while (countLed != 0 || success == true)
+  {
+    // blink led
+    static unsigned long previousMillis = 0;
+    unsigned long currentMillis = millis();
+    if (currentMillis - previousMillis >= speed) {
+      previousMillis = currentMillis;
+      digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+      countLed--;
+      if (success == false)
+        Serial.println(countLed);
+    }
+  }
+  pinMode(LED_PIN, INPUT);
+  digitalWrite(LED_PIN, LOW);
+
+  Serial.println();
 
   success = false;
   if (startProgramming ())
@@ -835,27 +816,6 @@ void loop ()
     stopProgramming ();
   }   // end of if entered programming mode OK
 
-  Serial.println (F("Type 'C' when ready to continue with another chip ..."));
-
-  int speed;
-  if (success)
-    speed = 100;
-  else
-    speed = 1000;
-
-  pinMode(LED_BUILTIN, OUTPUT);
-  while (toupper (Serial.read ()) != 'C')
-  {
-    // blink led
-    static unsigned long previousMillis = 0;
-    unsigned long currentMillis = millis();
-    if (currentMillis - previousMillis >= speed) {
-      previousMillis = currentMillis;
-      digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-    }
-  }
-  pinMode(LED_BUILTIN, INPUT);
-  digitalWrite(LED_BUILTIN, LOW);
-
+  Serial.println();
 }  // end of loop
 

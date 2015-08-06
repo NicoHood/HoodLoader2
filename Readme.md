@@ -70,7 +70,7 @@ Version History
 * Added 32u4 support
 * Added EEPROM program support for 32u2
 * Switch to U2Xn=0 if needed
-* Added old Atmega328 bootloader compatibility
+* Added old Atmega328 bootloader compatibility (baud 57600)
 * Added USB reconnect support
 * General improvements to reduce flash size
 * Added small linux avrdude firmware upload script
