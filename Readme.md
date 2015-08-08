@@ -3,6 +3,9 @@ HoodLoader2.0.4
 
 ![header](header.jpg)
 
+#HL2.0.5 ready for testing. Click [here](https://github.com/NicoHood/HoodLoader2/tree/fast-usbserial)
+*Wiki is also updated to 2.0.5, use the Release .zip file for older docs.*
+
 **HoodLoader2 is a CDC BootLoader with self reprogramming and USB-Serial function.**
 
 An Arduino Uno/Mega board has two Microcontroller of which one(16u2) is normally used for USB-Serial translation.
