@@ -40,6 +40,9 @@
 #define HEXFILE_BootloaderDFU_at90usb162_hex 21
 #define HEXFILE_BootloaderDFU_atmega8u2_hex 22
 
+// For testing purposes
+#define HEXFILE_DEV 100
+
 //================================================================================
 // HoodLoader2 Predefinitions
 //================================================================================
@@ -89,6 +92,17 @@
 #define HEXARR BootloaderDFU_at90usb162
 #elif(HEXFILE == HEXFILE_BootloaderDFU_atmega8u2_hex)
 #define HEXARR BootloaderDFU_atmega8u2_hex
+
+// Dev settings
+#elif(HEXFILE == HEXFILE_DEV)
+#define HEXARR HoodLoader2_hex
+#define USE_AT90USB82 true
+#define START_ADDRESS 0x1000
+#define LOW_FUSE 0xEF
+#define HIGH_FUSE 0xD8
+#define EXT_FUSE 0xFC
+#define LOCK_BITS 0xCF
+
 #endif
 
 #ifndef HEXFILE
@@ -287,7 +301,20 @@ signatureType signatures [] =
   { { 0x1E, 0x98, 0x02 }, "ATmega2561",  256 * kb,   1 * kb },
 
   // AT90USB family
+  #ifdef USE_AT90USB82
+  { { 0x1E, 0x93, 0x82 }, "At90USB82", 8 * kb, 512,
+    HEXARR,// loader image
+    START_ADDRESS,
+    sizeof HEXARR,
+    128, // page size in bytes (for committing)
+    LOW_FUSE,
+    HIGH_FUSE,
+    EXT_FUSE,
+    LOCK_BITS
+  },
+#else
   { { 0x1E, 0x93, 0x82 }, "At90USB82", 8 * kb, 512 },
+#endif
 #ifdef USE_AT90USB162
   { { 0x1E, 0x94, 0x82 }, "At90USB162", 16 * kb, 512,
     HEXARR,// loader image
