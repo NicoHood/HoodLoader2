@@ -316,7 +316,8 @@ HoodLoader2atmega32u4.menu.board.dfuleo.bootloader.extended_fuses=0xC4
 HoodLoader2atmega32u4.menu.board.dfuleo.bootloader.unlock_bits=0x3F
 HoodLoader2atmega32u4.menu.board.dfuleo.bootloader.lock_bits=0x0F
 HoodLoader2atmega32u4.menu.board.dfumicro=DFU only / Micro No USB functions
-HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.file=BootloaderDFU_atmega32u4_micro.hex
+# Leds are inverted for micro DFU. Its not intended to be used anyways so I wont make it complicated here.
+HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.file=BootloaderDFU_atmega32u4_leo.hex
 HoodLoader2atmega32u4.menu.board.dfumicro.build.variant=micro_NoUSB
 HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.low_fuses=0xFF
 HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.high_fuses=0xD9
