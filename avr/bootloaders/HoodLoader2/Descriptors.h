@@ -63,6 +63,53 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
         #include "Config/LUFAConfig.h"
 
 	/* Macros: */
+		#if defined(__AVR_AT90USB1287__)
+			#define AVR_SIGNATURE_1               0x1E
+			#define AVR_SIGNATURE_2               0x97
+			#define AVR_SIGNATURE_3               0x82
+		#elif defined(__AVR_AT90USB647__)
+			#define AVR_SIGNATURE_1               0x1E
+			#define AVR_SIGNATURE_2               0x96
+			#define AVR_SIGNATURE_3               0x82
+		#elif defined(__AVR_AT90USB1286__)
+			#define AVR_SIGNATURE_1               0x1E
+			#define AVR_SIGNATURE_2               0x97
+			#define AVR_SIGNATURE_3               0x82
+		#elif defined(__AVR_AT90USB646__)
+			#define AVR_SIGNATURE_1               0x1E
+			#define AVR_SIGNATURE_2               0x96
+			#define AVR_SIGNATURE_3               0x82
+		#elif defined(__AVR_ATmega32U4__)
+			#define AVR_SIGNATURE_1               0x1E
+			#define AVR_SIGNATURE_2               0x95
+			#define AVR_SIGNATURE_3               0x87
+		#elif defined(__AVR_ATmega16U4__)
+			#define AVR_SIGNATURE_1               0x1E
+			#define AVR_SIGNATURE_2               0x94
+			#define AVR_SIGNATURE_3               0x88
+		#elif defined(__AVR_ATmega32U2__)
+			#define AVR_SIGNATURE_1               0x1E
+			#define AVR_SIGNATURE_2               0x95
+			#define AVR_SIGNATURE_3               0x8A
+		#elif defined(__AVR_ATmega16U2__)
+			#define AVR_SIGNATURE_1               0x1E
+			#define AVR_SIGNATURE_2               0x94
+			#define AVR_SIGNATURE_3               0x89
+		#elif defined(__AVR_AT90USB162__)
+			#define AVR_SIGNATURE_1               0x1E
+			#define AVR_SIGNATURE_2               0x94
+			#define AVR_SIGNATURE_3               0x82
+		#elif defined(__AVR_ATmega8U2__)
+			#define AVR_SIGNATURE_1               0x1E
+			#define AVR_SIGNATURE_2               0x93
+			#define AVR_SIGNATURE_3               0x89
+		#elif defined(__AVR_AT90USB82__)
+			#define AVR_SIGNATURE_1               0x1E
+			#define AVR_SIGNATURE_2               0x94
+			#define AVR_SIGNATURE_3               0x82
+		#else
+			#error The selected AVR part is not currently supported by this bootloader.
+		#endif
 
 		/** Endpoint address for the CDC control interface event notification endpoint. */
 		#define CDC_NOTIFICATION_EPADDR        (ENDPOINT_DIR_IN | 2)
