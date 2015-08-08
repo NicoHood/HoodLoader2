@@ -4,8 +4,7 @@
 // HoodLoader2 Settings
 //================================================================================
 
-//TODO
-#define BUTTON_HOODLOADER2 7
+// Led pin to signalize programming was successfull
 #define LED_PIN LED_BUILTIN
 
 // Select one of the files below (default 3: HL2.0.5, 16u2, Uno)
@@ -739,9 +738,6 @@ void setup ()
   Serial.println (F("Written by Nick Gammon, modified by NicoHood."));
   Serial.println (F("Version " VERSION));
   Serial.println (F("Compiled on " __DATE__ " at " __TIME__ " with Arduino IDE " xstr(ARDUINO) "."));
-
-  // setup backup buttons
-  pinMode(BUTTON_HOODLOADER2, INPUT_PULLUP);
 
   digitalWrite (RESET, HIGH);  // ensure SS stays high for now
   pinMode (CLOCKOUT, OUTPUT);
