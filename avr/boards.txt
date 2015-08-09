@@ -270,7 +270,7 @@ HoodLoader2atmega32u4.upload.maximum_data_size=2560
 HoodLoader2atmega32u4.build.mcu=atmega32u4
 
 #general settings for all boards:
-HoodLoader2atmega32u4.build.variant=arduino:leonardo
+HoodLoader2atmega32u4.build.variant=leonardo_HL2
 HoodLoader2atmega32u4.build.board=HOODLOADER2
 HoodLoader2atmega32u4.build.f_cpu=16000000L
 
@@ -298,10 +298,10 @@ HoodLoader2atmega32u4.build.extra_flags={build.usb_flags}
 
 #Board/Bootloader selection
 HoodLoader2atmega32u4.menu.board.leo=HoodLoader2 Leonardo
-HoodLoader2atmega32u4.menu.board.leo.bootloader.file=HoodLoader2_0_5_Leo_atmega32u4.hex
+HoodLoader2atmega32u4.menu.board.leo.bootloader.file=HoodLoader2_0_5_Leonardo_atmega32u4.hex
 HoodLoader2atmega32u4.menu.board.micro=HoodLoader2 Micro
 HoodLoader2atmega32u4.menu.board.micro.bootloader.file=HoodLoader2_0_5_Micro_atmega32u4.hex
-HoodLoader2atmega32u4.menu.board.micro.build.variant=arduino:micro
+HoodLoader2atmega32u4.menu.board.micro.build.variant=micro_HL2
 HoodLoader2atmega32u4.menu.board.micro.build.pid=0x8037
 HoodLoader2atmega32u4.menu.board.dev=HoodLoader2 Dev
 HoodLoader2atmega32u4.menu.board.dev.bootloader.file=HoodLoader2/HoodLoader2.hex
@@ -345,7 +345,8 @@ unoHIDBridge.bootloader.high_fuses=0xDE
 unoHIDBridge.bootloader.extended_fuses=0x05
 unoHIDBridge.bootloader.unlock_bits=0x3F
 unoHIDBridge.bootloader.lock_bits=0x0F
-unoHIDBridge.bootloader.file=arduino:optiboot/optiboot_atmega328.hex
+# TODO hex files path broken/not used
+unoHIDBridge.bootloader.file=optiboot/optiboot_atmega328_2M.hex
 
 unoHIDBridge.build.mcu=atmega328p
 unoHIDBridge.build.f_cpu=16000000L
