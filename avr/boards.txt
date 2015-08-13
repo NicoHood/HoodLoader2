@@ -41,7 +41,7 @@ HoodLoader2atmega16u2.build.vid=0x2341
 HoodLoader2atmega16u2.build.pid=0x484C
 HoodLoader2atmega16u2.build.usb_product="HoodLoader2 16u2"
 HoodLoader2atmega16u2.build.usb_manufacturer="Nico Hood"
-HoodLoader2atmega16u2.build.extra_flags={build.usb_flags}
+HoodLoader2atmega16u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1)
 
 
 #Board selection (only important for burning bootloaders)
@@ -118,7 +118,7 @@ HoodLoader2atmega32u2.build.vid=0x2341
 HoodLoader2atmega32u2.build.pid=0x484D
 HoodLoader2atmega32u2.build.usb_product="HoodLoader2 32u2"
 HoodLoader2atmega32u2.build.usb_manufacturer="Nico Hood"
-HoodLoader2atmega32u2.build.extra_flags={build.usb_flags}
+HoodLoader2atmega32u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1)
 
 
 #Board selection (only important for burning bootloaders)
@@ -178,7 +178,7 @@ HoodLoader2atmega8u2.build.vid=0x2341
 HoodLoader2atmega8u2.build.pid=0x484E
 HoodLoader2atmega8u2.build.usb_product="HoodLoader2 8u2"
 HoodLoader2atmega8u2.build.usb_manufacturer="Nico Hood"
-HoodLoader2atmega8u2.build.extra_flags={build.usb_flags}
+HoodLoader2atmega8u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1)
 
 
 #Board selection (only important for burning bootloaders)
@@ -236,7 +236,7 @@ HoodLoader2at90usb162.build.vid=0x2341
 HoodLoader2at90usb162.build.pid=0x484F
 HoodLoader2at90usb162.build.usb_product="HoodLoader2 at90usb162"
 HoodLoader2at90usb162.build.usb_manufacturer="Nico Hood"
-HoodLoader2at90usb162.build.extra_flags={build.usb_flags}
+HoodLoader2at90usb162.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1)
 
 
 #Board selection (only important for burning bootloaders)
@@ -293,7 +293,7 @@ HoodLoader2atmega32u4.build.vid=0x2341
 HoodLoader2atmega32u4.build.pid=0x8036
 HoodLoader2atmega32u4.build.usb_product="HoodLoader2 32u4"
 HoodLoader2atmega32u4.build.usb_manufacturer="Nico Hood"
-HoodLoader2atmega32u4.build.extra_flags={build.usb_flags}
+HoodLoader2atmega32u4.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1)
 
 
 #Board/Bootloader selection
@@ -329,7 +329,7 @@ HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.lock_bits=0x0F
 ##############################################################
 
 
-unoHIDBridge.name=HL2 Uno
+unoHIDBridge.name=HoodLoader2 Uno
 
 unoHIDBridge.upload.tool=arduino:avrdude
 unoHIDBridge.upload.protocol=arduino
@@ -358,7 +358,7 @@ unoHIDBridge.build.variant=arduino:standard
 ##############################################################
 
 
-nanoHIDBridge.name=HL2 Nano/Pro Mini 5V/16Mhz
+nanoHIDBridge.name=HoodLoader2 Nano/Mini
 
 nanoHIDBridge.upload.tool=arduino:avrdude
 nanoHIDBridge.upload.protocol=arduino
@@ -386,7 +386,7 @@ nanoHIDBridge.build.variant=arduino:standard
 ##############################################################
 
 
-megaHIDBridge.name=HL2 Mega 2560
+megaHIDBridge.name=HoodLoader2 Mega 2560
 
 megaHIDBridge.upload.tool=arduino:avrdude
 megaHIDBridge.upload.maximum_data_size=8192
