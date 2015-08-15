@@ -58,7 +58,6 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // there is only a general EPSIZE handle (USBCore.cpp)
 #define USB_EP_SIZE 16
 
-
 /** LED mask for the first LED on the board. */
 #define LEDS_LED1        (1 << 5)
 
@@ -83,12 +82,12 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 #define RXLED0			PORTD |= LEDMASK_RX
 #define RXLED1			PORTD &= ~LEDMASK_RX
 
-static const uint8_t LED_BUILTIN_RX = 17;
-static const uint8_t LED_BUILTIN_TX = 18;
-static const uint8_t LED_BUILTIN = 18;
+#define LED_BUILTIN 18
+#define LED_BUILTIN_RX 17
+#define LED_BUILTIN_TX 18
 
 // reset line for 328/2560
-static const uint8_t MAIN_MCU_RESET_PIN = 20;
+#define IO_MCU_RESET_PIN 20
 
 static const uint8_t SS   = 0;
 static const uint8_t SCK  = 1;

@@ -1,4 +1,4 @@
-HoodLoader2.0.4
+HoodLoader2.0.5
 ===============
 
 ![header](header.jpg)
@@ -55,7 +55,7 @@ An offline snapshot is available in [releases](https://github.com/NicoHood/HoodL
 Contact
 =======
 
-You can contact me on my wordpress blog in the contact section.
+Contact information can be found here:
 
 www.nicohood.de
 
@@ -63,6 +63,24 @@ www.nicohood.de
 Version History
 ===============
 ```
+2.0.5 Release (xx.xx.2015)
+* No need for HID-Project anymore, PR3640 added u2 support to IDE 1.6.6
+* Added up to 2M baud support (thx to https://github.com/urjaman/fast-usbserial)
+* Improved USART reconfiguration
+* Changed Magic Key to RAMEND
+  (requires new HID-Project IDE patch, but is still backwards compatible)
+* Changed programming baud rate (from 57600 to 1200) to reprogramm an Arduino Nano
+* Saved a lot of ram by moving descriptors to PROGMEM (8/16u2)
+* Added 32u4 support
+* Added EEPROM program support for 32u2
+* Switch to U2Xn=0 if needed
+* Added old Atmega328 bootloader compatibility (baud 57600)
+* Added USB reconnect support
+* General improvements to reduce flash size
+* Added small linux avrdude firmware upload script
+* Updated Installation sketch
+* Note: Can only be (re)compiled with AVR-GCC 5.1 and LTO (see wiki)
+
 2.0.4 Release (20.03.2015)
 * HoodLoader2.0.4
  * Upload verification on USB hubs fix in bootloader

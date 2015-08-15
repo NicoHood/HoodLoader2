@@ -28,32 +28,13 @@
   this software.
 */
 
-/*
-Copyright(c) 2014-2015 NicoHood
-See the readme for credit to other people.
-
-This file is part of Hoodloader2.
-
-Hoodloader2 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Hoodloader2 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /** \file
  *  \brief Application Configuration Header File
  *
- *  This is a header file which is be used to configure LUFA's
- *  compile time options, as an alternative to the compile time
- *  constants supplied through a makefile.
+ *  This is a header file which is be used to configure some of
+ *  the application's compile time options, as an alternative to
+ *  specifying the compile time constants supplied through a
+ *  makefile or build system.
  *
  *  For information on what each token does, refer to the
  *  \ref Sec_Options section of the application documentation.
@@ -62,13 +43,6 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _APP_CONFIG_H_
 #define _APP_CONFIG_H_
 
-//	#define NO_BLOCK_SUPPORT
-#if defined(__AVR_ATmega32U4__) || !defined(__AVR_ATmega32U2__)
-	#define NO_EEPROM_BYTE_SUPPORT
-#endif
-	#define NO_FLASH_BYTE_SUPPORT
-#if defined(__AVR_ATmega32U4__)
-	#define NO_LOCK_BYTE_WRITE_SUPPORT
-#endif
+	#define SECURE_MODE              false
 
 #endif
