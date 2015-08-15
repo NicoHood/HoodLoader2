@@ -61,6 +61,7 @@ Version History
 ===============
 ```
 2.0.5 Release (xx.xx.2015)
+* No need for HID-Project anymore, PR3640 added u2 support to IDE 1.6.6
 * Added up to 2M baud support (thx to https://github.com/urjaman/fast-usbserial)
 * Improved USART reconfiguration
 * Changed Magic Key to RAMEND

@@ -270,7 +270,7 @@ HoodLoader2atmega32u4.upload.maximum_data_size=2560
 HoodLoader2atmega32u4.build.mcu=atmega32u4
 
 #general settings for all boards:
-HoodLoader2atmega32u4.build.variant=leonardo_HL2
+HoodLoader2atmega32u4.build.variant=arduino:leonardo
 HoodLoader2atmega32u4.build.board=HOODLOADER2
 HoodLoader2atmega32u4.build.f_cpu=16000000L
 
@@ -293,7 +293,7 @@ HoodLoader2atmega32u4.build.vid=0x2341
 HoodLoader2atmega32u4.build.pid=0x8036
 HoodLoader2atmega32u4.build.usb_product="HoodLoader2 32u4"
 HoodLoader2atmega32u4.build.usb_manufacturer="Nico Hood"
-HoodLoader2atmega32u4.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1)
+HoodLoader2atmega32u4.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1) -DIO_MCU_RESET_PIN=4
 
 
 #Board/Bootloader selection
@@ -301,7 +301,7 @@ HoodLoader2atmega32u4.menu.board.leo=HoodLoader2 Leonardo
 HoodLoader2atmega32u4.menu.board.leo.bootloader.file=HoodLoader2_0_5_Leonardo_atmega32u4.hex
 HoodLoader2atmega32u4.menu.board.micro=HoodLoader2 Micro
 HoodLoader2atmega32u4.menu.board.micro.bootloader.file=HoodLoader2_0_5_Micro_atmega32u4.hex
-HoodLoader2atmega32u4.menu.board.micro.build.variant=micro_HL2
+HoodLoader2atmega32u4.menu.board.micro.build.variant=arduino:micro
 HoodLoader2atmega32u4.menu.board.micro.build.pid=0x8037
 HoodLoader2atmega32u4.menu.board.dev=HoodLoader2 Dev
 HoodLoader2atmega32u4.menu.board.dev.bootloader.file=HoodLoader2/HoodLoader2.hex

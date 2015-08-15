@@ -22,7 +22,7 @@ void setup() {
   cli();
 
   // write magic key to ram
-  *MAGIC_KEY_POS = MAGIC_KEY;
+  *(uint16_t*)MAGIC_KEY_POS = 0x7777;
 
   // watchdog reset
   wdt_enable(WDTO_120MS);
