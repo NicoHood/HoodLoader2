@@ -3,7 +3,7 @@ HoodLoader2.0.5
 
 ![header](header.jpg)
 
-**HoodLoader2 is a CDC BootLoader with self reprogramming and USB-Serial function.**
+**HoodLoader2 is a CDC BootLoader with self reprogramming and Fast USB-Serial function.**
 
 An Arduino Uno/Mega board has two Microcontroller of which one(16u2) is normally used for USB-Serial translation.
 But we can also use it as standalone AVR Microcontroller with (or without) USB functions as well.
@@ -11,7 +11,7 @@ But we can also use it as standalone AVR Microcontroller with (or without) USB f
 HoodLoader2 gives you the option to **reprogram the 16u2** of a normal Arduino Uno/Mega R3 with **custom sketches**.
 This means you can use the 16u2 as a normal USB AVR like a Leonardo.
 You have a full compatible USB-HID core, CDC Serial and you can also use the 7 i/o pins of the 16u2.
-The extended HID devices and USB-Core improvements of the [HID Project](https://github.com/NicoHood/HID) also apply for the HoodLoader2.
+The extended HID devices of the [HID Project](https://github.com/NicoHood/HID) also apply for the HoodLoader2.
 
 The 16u2 is somehow limited in its functions but still a great addition if you know how to use it. It also compatible with
 [FastLED](https://github.com/FastLED/FastLED) and [IRLremote](https://github.com/NicoHood/IRLremote)(with PCINT) for example.
@@ -21,32 +21,14 @@ The great thing about this is that you actually have **two fully Arduino compati
 All you need for this is a normal Arduino Uno/Mega R3 and some cables to install the new HoodLoader2.
 Please __read the readme carfully__ to avoid any problems. You will find most of the answers to your questions already in the readme.
 
-**See http://nicohood.wordpress.com/ for more tutorials, projects and contact.**
-
-
-Download
-========
-
-You have 3 versions you can download:
-* The master includes all fixes to the current stable release. Download it by clicking download at the right.
-The [online Wiki](https://github.com/NicoHood/HoodLoader2/wiki) should have the newest documentation
-but might have some updated stuff which is only available in the dev tree.
-* Download an offline version in [releases](https://github.com/NicoHood/HoodLoader2/releases).
-It's a snapshot of the current stable release but might have missed some updates that the current master branch has included.
-This also includes an offline version of the wiki. Offline versions will be available after some time when the official release is out.
-* Select [branch 'dev'](https://github.com/NicoHood/HoodLoader2/tree/dev) to test the bleeding edge of this software.
-It might not work at all or has a lot of debugging stuff in it.
-Use the [online Wiki](https://github.com/NicoHood/HoodLoader2/wiki) to get the newest documentation.
-If the dev version gets near to a new release a note will be placed here, that you can test the new dev beta.
-Currently there is no beta available.
-
+Hoodloader2 is fully Arduino IDE 1.6.6+ compatible. Version 2.0.5 also supports 32u4 MCUs so you can use a Micro with a Pro Mini together for example.
 
 Wiki
 ====
 
-All documentation moved to the [wiki page](https://github.com/NicoHood/HoodLoader2/wiki).
+All documentation moved to the [wiki page](https://github.com/NicoHood/HoodLoader2/wiki) (most up to date documentation).
 
-An offline snapshot is available in [releases](https://github.com/NicoHood/HoodLoader2/releases).
+An offline snapshot (also for older versions) is available in [releases](https://github.com/NicoHood/HoodLoader2/releases).
 
 
 Contact
