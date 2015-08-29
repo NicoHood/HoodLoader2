@@ -138,7 +138,7 @@
 #define HIGH_FUSE 0xD8 // fuse high byte: SPI enable, boot into bootloader, 4096 byte bootloader
 #define EXT_FUSE 0xFC // fuse extended byte: brown-out detection at 2.6V
 #define LOCK_BITS 0xCF // lock bits
-#error
+
 #endif // 32u2 settings
 
 // Default 8u2 settings
