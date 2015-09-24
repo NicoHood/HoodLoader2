@@ -198,7 +198,7 @@ void Application_Jump_Check(void)
 
 		// On a power-on reset, we ALWAYS want to go to the sketch. If there is one.
 		else if ((mcusr_state & (1 << PORF)))
-		StartSketch();
+			StartSketch();
 
 		// On a watchdog reset, if the bootKey isn't set, and there's a sketch, we should just
 		//  go straight to the sketch.
@@ -269,8 +269,10 @@ int main(void)
 			// Compare last with new state
 			uint8_t newState = USB_DeviceState;
 			if(newState != DEVICE_STATE_Configured){
-				if(lastState == DEVICE_STATE_Configured)
+				// Try to reconnect if communication is still broken
+				if(lastState != DEVICE_STATE_Configured)
 					continue;
+				// Break and disable USART on connection lost
 				else
 					break;
 			}

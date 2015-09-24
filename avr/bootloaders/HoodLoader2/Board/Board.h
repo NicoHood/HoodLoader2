@@ -76,6 +76,9 @@ extern "C" {
 			
 			// Arduino Due 16u2
 			#if (PRODUCTID == ARDUINO_DUE_PID)
+
+			#error DUE is currently not supported because of its reset mechanism. See Issue #16 on Github for more information.
+
 			#define AVR_RESET_LINE_PORT PORTC
 			#define AVR_RESET_LINE_DDR DDRC
 			#define AVR_RESET_LINE_MASK (1 << 7)
