@@ -41,7 +41,7 @@ HoodLoader2atmega16u2.build.vid=0x2341
 HoodLoader2atmega16u2.build.pid=0x484C
 HoodLoader2atmega16u2.build.usb_product="HoodLoader2 16u2"
 HoodLoader2atmega16u2.build.usb_manufacturer="Nico Hood"
-HoodLoader2atmega16u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1)
+HoodLoader2atmega16u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1) -DUSB_EP_SIZE=16
 
 
 #Board selection (only important for burning bootloaders)
@@ -118,7 +118,7 @@ HoodLoader2atmega32u2.build.vid=0x2341
 HoodLoader2atmega32u2.build.pid=0x484D
 HoodLoader2atmega32u2.build.usb_product="HoodLoader2 32u2"
 HoodLoader2atmega32u2.build.usb_manufacturer="Nico Hood"
-HoodLoader2atmega32u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1)
+HoodLoader2atmega32u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1) -DUSB_EP_SIZE=16
 
 
 #Board selection (only important for burning bootloaders)
@@ -178,7 +178,7 @@ HoodLoader2atmega8u2.build.vid=0x2341
 HoodLoader2atmega8u2.build.pid=0x484E
 HoodLoader2atmega8u2.build.usb_product="HoodLoader2 8u2"
 HoodLoader2atmega8u2.build.usb_manufacturer="Nico Hood"
-HoodLoader2atmega8u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1)
+HoodLoader2atmega8u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1) -DUSB_EP_SIZE=16
 
 
 #Board selection (only important for burning bootloaders)
@@ -236,7 +236,7 @@ HoodLoader2at90usb162.build.vid=0x2341
 HoodLoader2at90usb162.build.pid=0x484F
 HoodLoader2at90usb162.build.usb_product="HoodLoader2 at90usb162"
 HoodLoader2at90usb162.build.usb_manufacturer="Nico Hood"
-HoodLoader2at90usb162.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1)
+HoodLoader2at90usb162.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1) -DUSB_EP_SIZE=16
 
 
 #Board selection (only important for burning bootloaders)

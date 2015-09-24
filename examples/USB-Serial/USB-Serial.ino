@@ -13,7 +13,7 @@
   a simple USB-Serial converter.
 
   Reset pin u2 Series: 20
-  Reset pin 32u4 with HoodLoader: 4
+  Reset pin 32u4 with HoodLoader2: 4
 */
 
 // Refine the reset pin to reset the destination MCU.
@@ -23,7 +23,7 @@ const uint8_t resetPin = IO_MCU_RESET_PIN;
 
 void setup()
 {
-  // set main MCU by default active
+  // Set main MCU by default active
   digitalWrite(resetPin, HIGH);
   pinMode(resetPin, OUTPUT);
 
@@ -38,7 +38,8 @@ void loop()
   if (Serial.baud() != baud) {
     baud = Serial.baud();
     Serial1.end();
-    Serial1.begin(baud);
+    if (baud)
+      Serial1.begin(baud);
   }
 
   // reset the main mcu if DTR goes HIGH

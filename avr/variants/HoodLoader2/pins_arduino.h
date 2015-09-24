@@ -53,11 +53,6 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <avr/pgmspace.h>
 
-// We only have a small USB buffer
-// We can only set a global EP size because in u8 USB_SendSpace(u8 ep)
-// there is only a general EPSIZE handle (USBCore.cpp)
-#define USB_EP_SIZE 16
-
 /** LED mask for the first LED on the board. */
 #define LEDS_LED1        (1 << 5)
 
