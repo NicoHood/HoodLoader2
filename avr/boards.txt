@@ -197,6 +197,66 @@ HoodLoader2atmega8u2.menu.board.dfu.bootloader.extended_fuses=0xF4
 HoodLoader2atmega8u2.menu.board.dfu.bootloader.unlock_bits=0x3F
 HoodLoader2atmega8u2.menu.board.dfu.bootloader.lock_bits=0x0F
 
+
+##############################################################
+
+
+HoodLoader2at90usb82.name=HoodLoader2 at90usb82
+HoodLoader2at90usb82.build.core=arduino:arduino
+HoodLoader2at90usb82.bootloader.tool=arduino:avrdude
+HoodLoader2at90usb82.upload.tool=arduino:avrdude
+
+# MCU properties
+HoodLoader2at90usb82.upload.maximum_size=4096
+HoodLoader2at90usb82.upload.maximum_data_size=512
+HoodLoader2at90usb82.build.mcu=at90usb82
+
+#general settings for all boards:
+HoodLoader2at90usb82.build.variant=HoodLoader2
+HoodLoader2at90usb82.build.board=HOODLOADER2
+HoodLoader2at90usb82.build.f_cpu=16000000L
+HoodLoader2at90usb82.vid.0=0x2341
+HoodLoader2at90usb82.pid.0=0x484B
+
+#uploading settings
+HoodLoader2at90usb82.upload.speed=57600
+HoodLoader2at90usb82.upload.protocol=avr109
+HoodLoader2at90usb82.upload.disable_flushing=true
+HoodLoader2at90usb82.upload.use_1200bps_touch=true
+HoodLoader2at90usb82.upload.wait_for_upload_port=true
+
+#fuses (HoodLoader2 only, not suitable for DFU)
+HoodLoader2at90usb82.bootloader.low_fuses=0xEF
+HoodLoader2at90usb82.bootloader.high_fuses=0xD8
+HoodLoader2at90usb82.bootloader.extended_fuses=0xFC
+HoodLoader2at90usb82.bootloader.unlock_bits=0x3F
+HoodLoader2at90usb82.bootloader.lock_bits=0x0F
+
+#usb settings, manufacturer overwritten by the IDE because of the VID
+HoodLoader2at90usb82.build.vid=0x2341
+HoodLoader2at90usb82.build.pid=0x484B
+HoodLoader2at90usb82.build.usb_product="HoodLoader2 at90usb82"
+HoodLoader2at90usb82.build.usb_manufacturer="Nico Hood"
+HoodLoader2at90usb82.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1) -DUSB_EP_SIZE=16
+
+
+#Board selection (only important for burning bootloaders)
+HoodLoader2at90usb82.menu.board.uno=HoodLoader2 Uno
+HoodLoader2at90usb82.menu.board.uno.bootloader.file=HoodLoader2_0_5_Uno_at90usb82.hex
+HoodLoader2at90usb82.menu.board.mega2560=HoodLoader2 Mega
+HoodLoader2at90usb82.menu.board.mega2560.bootloader.file=HoodLoader2_0_5_Mega_at90usb82.hex
+
+# DFU fuse settings are not suitable for HoodLoader2
+HoodLoader2at90usb82.menu.board.dfu=DFU only
+HoodLoader2at90usb82.menu.board.dfu.bootloader.file=BootloaderDFU_at90usb82.hex
+HoodLoader2at90usb82.menu.board.dfu.build.variant=HoodLoader2_NoUSB
+HoodLoader2at90usb82.menu.board.dfu.bootloader.low_fuses=0xEF
+HoodLoader2at90usb82.menu.board.dfu.bootloader.high_fuses=0xD9
+HoodLoader2at90usb82.menu.board.dfu.bootloader.extended_fuses=0xF4
+HoodLoader2at90usb82.menu.board.dfu.bootloader.unlock_bits=0x3F
+HoodLoader2at90usb82.menu.board.dfu.bootloader.lock_bits=0x0F
+
+
 ##############################################################
 
 

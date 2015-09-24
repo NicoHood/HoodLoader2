@@ -67,7 +67,8 @@ Version History
 * Changed Magic Key to RAMEND
   (requires new HID-Project IDE patch, but is still backwards compatible)
 * Saved a lot of ram by moving descriptors to PROGMEM (8/16u2)
-* Added 32u4 support
+* Added 32u4 support with saver bootkey option and backwards compatibility
+* Added at90usb82 support
 * Added EEPROM program support for 32u2
 * Switch to U2Xn=0 if needed
 * Added USB reconnect support
