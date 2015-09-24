@@ -277,15 +277,14 @@ int main(void)
 					break;
 			}
 
-
 			// Finished self reprogramming?
+			// Little note: on u2 series moving this upwards saves 2 bytes of flash
 			if(!RunBootloader){
 				ResetMCU();
 			}
 
 			/* Check if endpoint has a command in it sent from the host */
 			Endpoint_SelectEndpoint(CDC_RX_EPADDR);
-			bool newData = false;
 			uint8_t countRX = 0;
 
 			if (Endpoint_IsOUTReceived()){
@@ -295,13 +294,10 @@ int main(void)
 				// Acknowledge zero length packet and dont call any read functions
 				if (!countRX)
 					Endpoint_ClearOUT();
-				// Process new data
-				else
-					newData = true;
 			}
 
 			if(mode == MODE_BOOTLOADER){
-				if(newData){
+				if(countRX){
 					Bootloader_Task();
 				}
 			}
@@ -316,50 +312,46 @@ int main(void)
 				// Check how much free space the USBtoUSART buffer has
 				uint8_t USBtoUSART_free = (USB2USART_BUFLEN-1) - ( (USBtoUSART_WritePtr - USBtoUSART_ReadPtr) & (USB2USART_BUFLEN-1) );
 
-				// Check if we received any new data from the USB host
-				if (newData)
+				// Read new data from the USB host if we still have space in the buffer
+				if(countRX && countRX <= USBtoUSART_free )
 				{
-					// Read new data from the USB host if we still have space in the buffer
-					if(countRX <= USBtoUSART_free )
-					{
-						// Prepare temporary pointer
-						uint16_t tmp; // = 0x200 | USBtoUSART_WritePtr;
+					// Prepare temporary pointer
+					uint16_t tmp; // = 0x200 | USBtoUSART_WritePtr;
+					asm (
+						"ldi %B[tmp], 0x02\n\t"			// (1) Force high byte to 0x200
+						"lds %A[tmp], %[writePtr]\n\t"	// (1) Load USBtoUSART_WritePtr into low byte
+						// Outputs
+						: [tmp] "=&e" (tmp)	// Pointer register, output only
+						// Inputs
+						: [writePtr] "m" (USBtoUSART_WritePtr) // Memory location
+					);
+
+					// Save USB bank into our USBtoUSART ringbuffer
+					do {
+						register uint8_t data;
+						data = Endpoint_Read_8();
 						asm (
-							"ldi %B[tmp], 0x02\n\t"			// (1) Force high byte to 0x200
-							"lds %A[tmp], %[writePtr]\n\t"	// (1) Load USBtoUSART_WritePtr into low byte
+							"st %a[tmp]+, %[data]\n\t" 	// (2) Save byte in buffer and increment
+							"andi %A[tmp], 0x7F\n\t" 	// (1) Wrap around pointer, 128 bytes
 							// Outputs
-							: [tmp] "=&e" (tmp)	// Pointer register, output only
+							: [tmp] "=e" (tmp) // Input and output
 							// Inputs
-							: [writePtr] "m" (USBtoUSART_WritePtr) // Memory location
+							: "0" (tmp), [data] "r" (data)
 						);
+					} while (--countRX);
 
-						// Save USB bank into our USBtoUSART ringbuffer
-						do {
-							register uint8_t data;
-							data = Endpoint_Read_8();
-							asm (
-								"st %a[tmp]+, %[data]\n\t" 	// (2) Save byte in buffer and increment
-								"andi %A[tmp], 0x7F\n\t" 	// (1) Wrap around pointer, 128 bytes
-								// Outputs
-								: [tmp] "=e" (tmp) // Input and output
-								// Inputs
-								: "0" (tmp), [data] "r" (data)
-							);
-						} while (--countRX);
+					// Acknowledge data
+					Endpoint_ClearOUT();
 
-						// Acknowledge data
-						Endpoint_ClearOUT();
+					// Save back new pointer position
+					// Just save the lower byte of the pointer
+					USBtoUSART_WritePtr = tmp & 0xFF;
 
-						// Save back new pointer position
-						// Just save the lower byte of the pointer
-						USBtoUSART_WritePtr = tmp & 0xFF;
-
-						// Enable USART again to flush the buffer
-						UCSR1B = (_BV(RXCIE1) | _BV(TXEN1) | _BV(RXEN1) | _BV(UDRIE1));
-					}
-
+					// Enable USART again to flush the buffer
+					UCSR1B = (_BV(RXCIE1) | _BV(TXEN1) | _BV(RXEN1) | _BV(UDRIE1));
+					
 					// Force Leds to turn on
-					USBtoUSART_free=0;
+					USBtoUSART_free = 0;
 				}
 
 				// Light RX led if we still have data in the USBtoUSART buffer
