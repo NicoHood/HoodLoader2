@@ -288,7 +288,7 @@ int main(void)
 
 			if (Endpoint_IsOUTReceived()){
 				// Check if we received any new bytes and if we still have space in the buffer
-				uint8_t countRX = Endpoint_BytesInEndpoint();
+				countRX = Endpoint_BytesInEndpoint();
 
 				// Acknowledge zero length packet and dont call any read functions
 				if (!countRX)
