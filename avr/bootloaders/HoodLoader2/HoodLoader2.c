@@ -1052,10 +1052,12 @@ static void CDC_Device_LineEncodingChanged(void)
 	// Only reconfigure USART if we are not in self reprogramming mode
 	// and if the CDC Serial is not disabled
 	uint32_t BaudRateBPS = LineEncoding.BaudRateBPS;
-	if(BaudRateBPS == 0)
+	if(BaudRateBPS == 0){
 		mode = MODE_OFF;
-	else if(BaudRateBPS == BAUDRATE_CDC_BOOTLOADER)
+	}
+	else if(BaudRateBPS == BAUDRATE_CDC_BOOTLOADER){
 		mode = MODE_BOOTLOADER;
+	}
 	else
 	{
 		mode = MODE_USBSERIAL;
