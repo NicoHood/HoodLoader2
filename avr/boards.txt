@@ -418,34 +418,6 @@ unoHIDBridge.build.variant=arduino:standard
 ##############################################################
 
 
-nanoHIDBridge.name=HoodLoader2 Nano/Mini
-
-nanoHIDBridge.upload.tool=arduino:avrdude
-nanoHIDBridge.upload.protocol=arduino
-nanoHIDBridge.upload.maximum_size=30720
-nanoHIDBridge.upload.maximum_data_size=2048
-nanoHIDBridge.upload.speed=57600
-nanoHIDBridge.upload.use_1200bps_touch=true
-nanoHIDBridge.upload.wait_for_upload_port=true
-
-nanoHIDBridge.bootloader.tool=arduino:avrdude
-nanoHIDBridge.bootloader.low_fuses=0xFF
-nanoHIDBridge.bootloader.high_fuses=0xDA
-nanoHIDBridge.bootloader.extended_fuses=0x05
-nanoHIDBridge.bootloader.unlock_bits=0x3F
-nanoHIDBridge.bootloader.lock_bits=0x0F
-nanoHIDBridge.bootloader.file=arduino:atmega/ATmegaBOOT_168_atmega328.hex
-
-nanoHIDBridge.build.mcu=atmega328p
-nanoHIDBridge.build.f_cpu=16000000L
-nanoHIDBridge.build.board=AVR_UNO
-nanoHIDBridge.build.core=arduino:arduino
-nanoHIDBridge.build.variant=arduino:standard
-
-
-##############################################################
-
-
 megaHIDBridge.name=HoodLoader2 Mega 2560
 
 megaHIDBridge.upload.tool=arduino:avrdude
