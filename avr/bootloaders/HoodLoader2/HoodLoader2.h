@@ -98,45 +98,6 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		/** Eight character bootloader firmware identifier reported to the host when requested. */
 		#define SOFTWARE_IDENTIFIER          "HL2.0.5"
 
-		/** Port of the onboard leds, serial and reset line */
-		#define ARDUINO_PORT PORTD
-		#define ARDUINO_DDR DDRD
-
-// Avoid to select the wrong BOARD in the makefile
-#if !defined(__LEDS_LEONARDO_H__) && defined(__AVR_ATmega32U4__) || defined(__LEDS_LEONARDO_H__) && !defined(__AVR_ATmega32U4__)
-#error Please select LEONARDO as BOARD in the makefile
-#endif
-
-#ifdef __AVR_ATmega32U4__
-		/** Pin that can reset the main MCU. */
-		// PORTB would also be possible (D8-11 + SPI)
-		// I will not use it since PB contains the only PCINT
-		// And the pins on PD are not better or worse
-		#define AVR_RESET_LINE_PORT PORTD
-		#define AVR_RESET_LINE_DDR DDRD
-		#define AVR_RESET_LINE_PIN PIND
-		#define AVR_RESET_LINE_MASK (1 << PD4) // PD4 = D4, PD6 = D12, PD7 = D7
-
-		// Leds PORT needs to be switched for Micro
-#if (PRODUCTID == ARDUINO_MICRO_PID)
-		#define LEDs_TurnOnTXLED (PORTD &= ~LEDMASK_TX)
-		#define LEDs_TurnOnRXLED (PORTB &= ~LEDMASK_RX)
-		#define LEDs_TurnOffTXLED (PORTD |= LEDMASK_TX)
-		#define LEDs_TurnOffRXLED (PORTB |= LEDMASK_RX)
-#else
-		#define LEDs_TurnOffTXLED (PORTD &= ~LEDMASK_TX)
-		#define LEDs_TurnOffRXLED (PORTB &= ~LEDMASK_RX)
-		#define LEDs_TurnOnTXLED (PORTD |= LEDMASK_TX)
-		#define LEDs_TurnOnRXLED (PORTB |= LEDMASK_RX)
-#endif
-
-#else
-		#define LEDs_TurnOnTXLED (PORTD &= ~LEDMASK_TX)
-		#define LEDs_TurnOnRXLED (PORTD &= ~LEDMASK_RX)
-		#define LEDs_TurnOffTXLED (PORTD |= LEDMASK_TX)
-		#define LEDs_TurnOffRXLED (PORTD |= LEDMASK_RX)
-#endif
-
 	/* Enums: */
 		/** Possible memory types that can be addressed via the bootloader. */
 		enum AVR109_Memories

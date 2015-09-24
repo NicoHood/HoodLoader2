@@ -13,7 +13,7 @@
 
 MCU          = atmega16u2
 ARCH         = AVR8
-BOARD        = UNO
+BOARD        = USER
 F_CPU        = 16000000
 F_USB        = $(F_CPU)
 OPTIMIZATION = s
@@ -39,6 +39,7 @@ BOOT_SECTION_SIZE_KB  = 4
 #define ARDUINO_MEGA_ADK_PID		0x0044 // R3 (003F R1)
 #define ARDUINO_LEONARDO_PID		0x0036 // Bootloader, not program!
 #define ARDUINO_MICRO_PID   		0x0037 // Bootloader, not program!
+#define ARDUINO_DUE_PID             0x003D
 
 HOODLOADER2_OPTS  = -DVENDORID=ARDUINO_VID
 HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID

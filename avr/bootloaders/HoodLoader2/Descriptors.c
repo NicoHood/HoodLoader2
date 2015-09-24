@@ -57,16 +57,6 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Descriptors.h"
 
-#define LUFA_VID					0x03EB
-#define LUFA_PID					0x204A
-
-#define ARDUINO_VID					0x2341
-#define ARDUINO_UNO_PID				0x0043 // R3 (0001 R1)
-#define ARDUINO_MEGA_PID			0x0042 // R3 (0010 R1)
-#define ARDUINO_MEGA_ADK_PID		0x0044 // R3 (003F R1)
-#define ARDUINO_LEONARDO_PID		0x0036 // Bootloader, not program!
-#define ARDUINO_MICRO_PID   		0x0037 // Bootloader, not program!
-
 // Only use RAM Descriptors if we have enough ram
 #ifdef USE_RAM_DESCRIPTORS
 #define DESCRIPTOR_PROGMEM
@@ -230,19 +220,7 @@ const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ManufacturerString = USB_STRING
  *  and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
  *  Descriptor.
  */
-#if (PRODUCTID == ARDUINO_UNO_PID)
-const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Uno");
-#elif (PRODUCTID == ARDUINO_MEGA_PID)
-const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Mega");
-#elif (PRODUCTID == ARDUINO_ADK_PID)
-const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 ADK");
-#elif (PRODUCTID == ARDUINO_LEONARDO_PID)
-const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Leo");
-#elif (PRODUCTID == ARDUINO_MICRO_PID)
-const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Micro");
-#else
-const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"HoodLoader2 Lufa");
-#endif
+const USB_Descriptor_String_t DESCRIPTOR_PROGMEM ProductString = USB_STRING_DESCRIPTOR(USB_DESCRIPTOR_STRING);
 
 /** This function is called by the library when in device mode, and must be overridden (see LUFA library "USB Descriptors"
  *  documentation) by the application code so that the address and size of a requested descriptor can be given

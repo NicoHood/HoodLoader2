@@ -200,13 +200,20 @@ void Application_Jump_Check(void)
 
 		// On a watchdog reset, if the bootKey isn't set, and there's a sketch, we should just
 		//  go straight to the sketch.
-		else if ((mcusr_state & (1 << WDRF)) && (bootKeyPtrVal != MAGIC_BOOT_KEY)
+		else if ((mcusr_state & (1 << WDRF))){
+		    if((bootKeyPtrVal != MAGIC_BOOT_KEY)
 #ifdef SECOND_BOOTKEY
-&& (secondBootKeyPtrVal != MAGIC_BOOT_KEY)
+            && (secondBootKeyPtrVal != MAGIC_BOOT_KEY)
 #endif
-)
-		// If it looks like an "accidental" watchdog reset then start the sketch.
-		StartSketch();
+            ){
+		    // If it looks like an "accidental" watchdog reset then start the sketch.
+		    StartSketch();
+		    }
+		    // Bootkey present
+		    else{
+		        // Start HoodLoader2
+		    }
+		}
 	}
 }
 
@@ -450,21 +457,10 @@ static void SetupHardware(void)
 
 	/* Start the flush timer for Leds */
 	TCCR0B = (1 << CS02); // clk I/O / 256 (From prescaler)
-
-	// compacter setup for Leds, RX, TX, Reset Line
+	
+	// Inits Serial pins, leds, reset and erase pins
 	// No need to turn off Leds, this is done in the bootkey check function
-#if !defined(__AVR_ATmega32U4__)
-	ARDUINO_DDR |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
-	//ARDUINO_PORT |= (1 << PD2) | AVR_RESET_LINE_MASK;
-#else
-	// We use = here since the pins should be input/low anyways.
-	// This saves us some more bytes fo flash
-	DDRD = LEDMASK_TX | (1 << PD3) | AVR_RESET_LINE_MASK;
- 	// results in sbi instructions
-	DDRB  |= LEDMASK_RX;
-#endif
-	PORTD |= AVR_RESET_LINE_MASK;
-	PORTD |= (1 << PD2);
+	Board_Init();
 }
 
 /** Event handler for the USB_ConfigurationChanged event. This configures the device's endpoints ready
@@ -569,10 +565,7 @@ void EVENT_USB_Device_ControlRequest(void)
 			// At least if the usb is connected this always results in a main MCU reset if the bootloader is executed.
 			// From my testings there is no way to avoid this. Its needed as far as I tested, no way.
 			// TODO do not reset main MCU (not possible?)
-			if (USB_ControlRequest.wValue & CDC_CONTROL_LINE_OUT_DTR)
-			AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
-			else
-			AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+			Board_Reset(USB_ControlRequest.wValue & CDC_CONTROL_LINE_OUT_DTR);
 		}
 	}
 }
