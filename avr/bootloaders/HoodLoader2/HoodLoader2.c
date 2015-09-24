@@ -258,15 +258,24 @@ int main(void)
 		uint8_t TxLEDPulse = 0;
 		uint8_t RxLEDPulse = 0;
 
-		// Wait for the USB Device to (re)connect.
-		Endpoint_SelectEndpoint(ENDPOINT_CONTROLEP);
-		do {
+		// USB-Serial main loop
+		while(true) {
+			// USB Task
+			uint8_t lastState = USB_DeviceState;
+			Endpoint_SelectEndpoint(ENDPOINT_CONTROLEP);
 			if (Endpoint_IsSETUPReceived())
 			USB_Device_ProcessControlRequest();
-		} while (USB_DeviceState != DEVICE_STATE_Configured);
 
-		// USB-Serial main loop
-		do {
+			// Compare last with new state
+			uint8_t newState = USB_DeviceState;
+			if(newState != DEVICE_STATE_Configured){
+				if(lastState == DEVICE_STATE_Configured)
+					continue;
+				else
+					break;
+			}
+
+
 			// Finished self reprogramming?
 			if(!RunBootloader){
 				ResetMCU();
@@ -440,20 +449,15 @@ int main(void)
 				if (RxLEDPulse && !(--RxLEDPulse))
 				LEDs_TurnOffRXLED;
 			}
-
-			// USB Task
-			Endpoint_SelectEndpoint(ENDPOINT_CONTROLEP);
-			if (Endpoint_IsSETUPReceived())
-			USB_Device_ProcessControlRequest();
-		} while (USB_DeviceState == DEVICE_STATE_Configured);
-
-		// Dont forget LEDs on if suddenly unconfigured.
-		LEDs_TurnOffTXLED;
-		LEDs_TurnOffRXLED;
+		};
 
 		// Reset CDC Serial settings and disable USART properly
 		LineEncoding.BaudRateBPS = 0;
 		CDC_Device_LineEncodingChanged();
+
+		// Dont forget LEDs on if suddenly unconfigured.
+		LEDs_TurnOffTXLED;
+		LEDs_TurnOffRXLED;
 	}
 }
 
@@ -685,7 +689,7 @@ static void WriteNextResponseByte(const uint8_t Response)
 
 	/* Write the next byte to the IN endpoint */
 	Endpoint_Write_8(Response);
-	bankTX ++;
+	bankTX++;
 
 	// Send a maximum of up to one bank minus one.
 	// If we fill the whole bank we'd have to send an empty Zero Length Packet (ZLP)
