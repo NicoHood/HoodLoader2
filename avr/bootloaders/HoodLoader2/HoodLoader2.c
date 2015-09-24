@@ -90,7 +90,7 @@ static volatile uint8_t USBtoUSART_WritePtr = 0;
 static volatile uint8_t USARTtoUSB_ReadPtr = 0;
 
 // Variable to save how many bytes are laying in the USB TX bank if in bootloader mode
-register uint8_t bankTX  asm("r6");
+register uint8_t bankTX asm("r6");
 //static uint8_t bankTX = 0;
 
 /** Current address counter. This stores the current address of the FLASH or EEPROM as set by the host,
@@ -125,8 +125,10 @@ volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)BOOTKEY;
 // 2nd Bootkey backwards compatibility is normally not needed, wanted and useful
 // If you also change the programming speed.
 // You may only want to use this if you want to stick to the old HID Project 2.2 software with baud 57600.
-#if defined(__AVR_ATmega32U4__) || (BAUDRATE_CDC_BOOTLOADER != 57600)
+#if (BAUDRATE_CDC_BOOTLOADER != 57600)
 #undef SECOND_BOOTKEY
+#elif defined(__AVR_ATmega32U4__)
+volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)0x8000;
 #else
 volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)SECOND_BOOTKEY;
 #endif
@@ -266,11 +268,32 @@ int main(void)
 		// USB-Serial main loop
 		do {
 			// Finished self reprogramming?
-			if(!RunBootloader)
-			ResetMCU();
+			if(!RunBootloader){
+				ResetMCU();
+			}
 
-			if(mode == MODE_BOOTLOADER)
-			Bootloader_Task();
+			/* Check if endpoint has a command in it sent from the host */
+			Endpoint_SelectEndpoint(CDC_RX_EPADDR);
+			bool newData = false;
+			uint8_t countRX = 0;
+
+			if (Endpoint_IsOUTReceived()){
+				// Check if we received any new bytes and if we still have space in the buffer
+				uint8_t countRX = Endpoint_BytesInEndpoint();
+
+				// Acknowledge zero length packet and dont call any read functions
+				if (!countRX)
+					Endpoint_ClearOUT();
+				// Process new data
+				else
+					newData = true;
+			}
+
+			if(mode == MODE_BOOTLOADER){
+				if(newData){
+					Bootloader_Task();
+				}
+			}
 
 			// Skip USB-Serial translation if CDC Serial is not configured/disabled
 			else if(mode == MODE_USBSERIAL)
@@ -283,18 +306,10 @@ int main(void)
 				uint8_t USBtoUSART_free = (USB2USART_BUFLEN-1) - ( (USBtoUSART_WritePtr - USBtoUSART_ReadPtr) & (USB2USART_BUFLEN-1) );
 
 				// Check if we received any new data from the USB host
-				Endpoint_SelectEndpoint(CDC_RX_EPADDR);
-				if (Endpoint_IsOUTReceived())
+				if (newData)
 				{
-					// Check if we received any new bytes and if we still have space in the buffer
-					uint8_t countRX = Endpoint_BytesInEndpoint();
-
-					// Acknowledge zero length package TODO needed?
-					if (!countRX)
-					Endpoint_ClearOUT();
-
 					// Read new data from the USB host if we still have space in the buffer
-					else if(countRX && countRX <= USBtoUSART_free )
+					if(countRX <= USBtoUSART_free )
 					{
 						// Prepare temporary pointer
 						uint16_t tmp; // = 0x200 | USBtoUSART_WritePtr;
@@ -538,13 +553,14 @@ void EVENT_USB_Device_ControlRequest(void)
 				}
 			}
 
-			if (!skip)
-			while (!(Endpoint_IsINReady()))
-			{
-				uint8_t USB_DeviceState_LCL = USB_DeviceState;
+			if (!skip){
+				do
+				{
+					uint8_t USB_DeviceState_LCL = USB_DeviceState;
 
-				if ((USB_DeviceState_LCL == DEVICE_STATE_Unattached) || (USB_DeviceState_LCL == DEVICE_STATE_Suspended))
-				break;
+					if ((USB_DeviceState_LCL == DEVICE_STATE_Unattached) || (USB_DeviceState_LCL == DEVICE_STATE_Suspended))
+					break;
+				}while (!(Endpoint_IsINReady()));
 			}
 
 			// end of inline Endpoint_Read_Control_Stream_LE
@@ -639,11 +655,11 @@ static uint8_t FetchNextCommandByte(void)
 	{
 		Endpoint_ClearOUT();
 
-		while (!(Endpoint_IsOUTReceived()))
+		do
 		{
 			if (USB_DeviceState == DEVICE_STATE_Unattached)
 			return 0;
-		}
+		}while (!(Endpoint_IsOUTReceived()));
 	}
 
 	/* Fetch the next byte from the OUT endpoint */
@@ -661,11 +677,11 @@ static void WriteNextResponseByte(const uint8_t Response)
 	Endpoint_SelectEndpoint(CDC_TX_EPADDR);
 
 	// Wait untill endpoint is ready to write
-	while (!(Endpoint_IsINReady()))
+	do
 	{
 		if (USB_DeviceState == DEVICE_STATE_Unattached)
 		return;
-	}
+	}while (!(Endpoint_IsINReady()));
 
 	/* Write the next byte to the IN endpoint */
 	Endpoint_Write_8(Response);
@@ -686,13 +702,6 @@ static void WriteNextResponseByte(const uint8_t Response)
 *  and send the appropriate response back to the host.
 */
 static void Bootloader_Task(){
-	/* Select the OUT endpoint */
-	Endpoint_SelectEndpoint(CDC_RX_EPADDR);
-
-	/* Check if endpoint has a command in it sent from the host */
-	if (!(Endpoint_IsOUTReceived()))
-	return;
-
 	// Initialize/reset register variables
 	bankTX = 0;
 
@@ -893,11 +902,11 @@ static void Bootloader_Task(){
 		Endpoint_SelectEndpoint(CDC_TX_EPADDR);
 
 		// Wait untill endpoint is ready to write
-		while (!(Endpoint_IsINReady()))
-		{
+		do{
 			if (USB_DeviceState == DEVICE_STATE_Unattached)
 			return;
 		}
+		while (!(Endpoint_IsINReady()));
 
 		// Send the endpoint data to the host */
 		Endpoint_ClearIN();
