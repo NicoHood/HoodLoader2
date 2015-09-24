@@ -46,10 +46,9 @@ HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID
 
 # 1200 is the baud to load the Bootloader from an Arduino sketch,
 # 57600 turns out to be the actual baud rate for uploading for default arduino bootloaders (and arduino nano by default!)
-# with 2.0.5 we change this baud, to also be able to upload older 328 bootloaders and avoid other problems for baud 57600
 # make also sure to change your boards.txt uploading speed!
 # make sure to use a standard baud rate (supported by avrdude or it will (sometimes randomly) not work
-HOODLOADER2_OPTS += -DBAUDRATE_CDC_BOOTLOADER=1200
+HOODLOADER2_OPTS += -DBAUDRATE_CDC_BOOTLOADER=57600
 
 # Bootkey locations
 # 2nd Bootkey is not used for 32u4 devices (due to flash size)

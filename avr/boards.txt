@@ -23,7 +23,7 @@ HoodLoader2atmega16u2.vid.0=0x2341
 HoodLoader2atmega16u2.pid.0=0x484C
 
 #uploading settings
-HoodLoader2atmega16u2.upload.speed=1200
+HoodLoader2atmega16u2.upload.speed=57600
 HoodLoader2atmega16u2.upload.protocol=avr109
 HoodLoader2atmega16u2.upload.disable_flushing=true
 HoodLoader2atmega16u2.upload.use_1200bps_touch=true
@@ -100,7 +100,7 @@ HoodLoader2atmega32u2.vid.0=0x2341
 HoodLoader2atmega32u2.pid.0=0x484D
 
 #uploading settings
-HoodLoader2atmega32u2.upload.speed=1200
+HoodLoader2atmega32u2.upload.speed=57600
 HoodLoader2atmega32u2.upload.protocol=avr109
 HoodLoader2atmega32u2.upload.disable_flushing=true
 HoodLoader2atmega32u2.upload.use_1200bps_touch=true
@@ -160,7 +160,7 @@ HoodLoader2atmega8u2.vid.0=0x2341
 HoodLoader2atmega8u2.pid.0=0x484E
 
 #uploading settings
-HoodLoader2atmega8u2.upload.speed=1200
+HoodLoader2atmega8u2.upload.speed=57600
 HoodLoader2atmega8u2.upload.protocol=avr109
 HoodLoader2atmega8u2.upload.disable_flushing=true
 HoodLoader2atmega8u2.upload.use_1200bps_touch=true
@@ -218,7 +218,7 @@ HoodLoader2at90usb162.vid.0=0x2341
 HoodLoader2at90usb162.pid.0=0x484F
 
 #uploading settings
-HoodLoader2at90usb162.upload.speed=1200
+HoodLoader2at90usb162.upload.speed=57600
 HoodLoader2at90usb162.upload.protocol=avr109
 HoodLoader2at90usb162.upload.disable_flushing=true
 HoodLoader2at90usb162.upload.use_1200bps_touch=true
@@ -275,7 +275,7 @@ HoodLoader2atmega32u4.build.board=HOODLOADER2
 HoodLoader2atmega32u4.build.f_cpu=16000000L
 
 #uploading settings
-HoodLoader2atmega32u4.upload.speed=1200
+HoodLoader2atmega32u4.upload.speed=57600
 HoodLoader2atmega32u4.upload.protocol=avr109
 HoodLoader2atmega32u4.upload.disable_flushing=true
 HoodLoader2atmega32u4.upload.use_1200bps_touch=true
