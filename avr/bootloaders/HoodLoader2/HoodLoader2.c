@@ -192,13 +192,22 @@ void Application_Jump_Check(void)
 #ifdef SECOND_BOOTKEY
 				*SecondMagicBootKeyPtr = 0;
 #endif
+				// Single rab reset, start sketch
+				if(DOUBLE_TAB_RESET_TO_BOOTLOADER)
+					StartSketch();
+			}
+			// Double tab reset, start sketch only if you prefer the bootloader as single tab
+			else if(!DOUBLE_TAB_RESET_TO_BOOTLOADER){
 				StartSketch();
 			}
 		}
 
 		// On a power-on reset, we ALWAYS want to go to the sketch. If there is one.
-		else if ((mcusr_state & (1 << PORF)))
-			StartSketch();
+		else if ((mcusr_state & (1 << PORF))){
+			if(!POWER_ON_TO_BOOTLOADER){
+				StartSketch();
+			}
+		}
 
 		// On a watchdog reset, if the bootKey isn't set, and there's a sketch, we should just
 		//  go straight to the sketch.
@@ -208,8 +217,8 @@ void Application_Jump_Check(void)
             && (secondBootKeyPtrVal != MAGIC_BOOT_KEY)
 #endif
             ){
-		    // If it looks like an "accidental" watchdog reset then start the sketch.
-		    StartSketch();
+				// If it looks like an "accidental" watchdog reset then start the sketch.
+				StartSketch();
 		    }
 		    // Bootkey present
 		    else{

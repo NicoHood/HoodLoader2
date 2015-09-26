@@ -50,6 +50,12 @@ HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID
 # make sure to use a standard baud rate (supported by avrdude or it will (sometimes randomly) not work
 HOODLOADER2_OPTS += -DBAUDRATE_CDC_BOOTLOADER=57600
 
+# Select how the single/double tab should behave
+HOODLOADER2_OPTS += -DDOUBLE_TAB_RESET_TO_BOOTLOADER=true
+
+# Select if you want to start the bootloader when powered on (plugged in the usb cable)
+HOODLOADER2_OPTS += -DPOWER_ON_TO_BOOTLOADER=false
+
 # Bootkey locations
 # 2nd Bootkey is not used for 32u4 devices (due to flash size)
 # 2nd Bootkey option only makes sense if you compile with the old programming speed 57600
