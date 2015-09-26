@@ -39,8 +39,9 @@
 #define HEXFILE_BootloaderDFU_atmega32u4_leo_hex 301
 #define HEXFILE_BootloaderDFU_atmega16u2_hex 302
 #define HEXFILE_BootloaderDFU_atmega32u2_hex 303
-#define HEXFILE_BootloaderDFU_at90usb162_hex 304
-#define HEXFILE_BootloaderDFU_atmega8u2_hex 305
+#define HEXFILE_BootloaderDFU_at90usb82_hex 304
+#define HEXFILE_BootloaderDFU_at90usb162_hex 305
+#define HEXFILE_BootloaderDFU_atmega8u2_hex 306
 
 // For testing purposes
 #define HEXFILE_DEV 1000
@@ -170,6 +171,18 @@
 
 #endif // at90usb162 settings
 
+// Default at90usb82 settings
+#if (HEXFILE == HEXFILE_HoodLoader2_0_5_Uno_at90usb82_hex) || (HEXFILE == HEXFILE_HoodLoader2_0_5_Mega_at90usb82_hex) \
+|| (HEXFILE == HEXFILE_BootloaderDFU_at90usb82_hex)
+
+#define USE_AT90USB82 true
+#define START_ADDRESS 0x1000
+#define LOW_FUSE 0xEF // fuse low byte: external clock, m
+#define HIGH_FUSE 0xD8 // fuse high byte: SPI enable, boot into bootloader, 4096 byte bootloader
+#define EXT_FUSE 0xFC // fuse extended byte: brown-out detection at 2.6V
+#define LOCK_BITS 0xCF // lock bits
+
+#endif // at90usb82 settings
 
 // u2 Series DFU settings
 #if (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full) \
@@ -183,6 +196,7 @@
 || (HEXFILE == HEXFILE_BootloaderDFU_atmega16u2_hex) \
 || (HEXFILE == HEXFILE_BootloaderDFU_atmega16u2_hex) \
 || (HEXFILE == HEXFILE_BootloaderDFU_atmega32u2_hex) \
+|| (HEXFILE == HEXFILE_BootloaderDFU_at90usb82_hex) \
 || (HEXFILE == HEXFILE_BootloaderDFU_at90usb162_hex) \
 || (HEXFILE == HEXFILE_BootloaderDFU_atmega8u2_hex)
 
