@@ -184,7 +184,20 @@
 
 #endif // at90usb82 settings
 
-// u2 Series DFU settings
+// Default 32u4 settings
+#if (HEXFILE == HEXFILE_HoodLoader2_0_5_Leonardo_atmega32u4_hex) || (HEXFILE == HEXFILE_HoodLoader2_0_5_Micro_atmega32u4_hex) \
+|| (HEXFILE == HEXFILE_BootloaderDFU_atmega32u4_hex)
+
+#define USE_ATMEGA32U4 true
+#define START_ADDRESS 0x7000
+#define LOW_FUSE 0xFF // fuse low byte: external clock, m
+#define HIGH_FUSE 0xD8 // fuse high byte: SPI enable, boot into bootloader, 4096 byte bootloader
+#define EXT_FUSE 0xCB // fuse extended byte: brown-out detection at 2.6V
+#define LOCK_BITS 0x2F // lock bits
+
+#endif // 32u4 settings
+
+// DFU settings
 #if (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full) \
 || (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega_Rev3_hex_Full)
 
@@ -203,7 +216,12 @@
 #define HIGH_FUSE 0xD9 // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
 #define EXT_FUSE 0xF4 // fuse extended byte: brown-out detection at 2.6V
 
-#endif // DFU u2 series settings
+#elif (HEXFILE == HEXFILE_BootloaderDFU_atmega32u4_hex)
+
+#define HIGH_FUSE 0xD9 // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
+#define EXT_FUSE 0xC4 // fuse extended byte: brown-out detection at 2.6V
+
+#endif // DFU settings
 
 //================================================================================
 // HoodLoader2 Installation program
