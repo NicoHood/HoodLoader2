@@ -59,10 +59,11 @@ Version History
 * Updated and improved Installation sketch
 * Added standard Uno/Mega bootloaders
 * Removed /tools folder and added information to wiki instead
+* Added recompile option to change single/double tab reset
+* Added recompile option to change power on behavior
+* Added optional old Atmega328 bootloader compatibility(baud 57600),
+  only when compiled with a different baud
 * Note: Can only be (re)compiled with AVR-GCC 5.1 and LTO (see wiki)
-Not included features (removed while developing, but can be recompiled):
-* Changed programming baud rate (from 57600 to 1200) to reprogramm an Arduino Nano
-* Added old Atmega328 bootloader compatibility (baud 57600)
 
 2.0.4 Release (20.03.2015)
 * HoodLoader2.0.4
