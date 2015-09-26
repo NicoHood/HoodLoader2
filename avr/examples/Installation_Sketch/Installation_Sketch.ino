@@ -322,8 +322,24 @@ signatureType signatures [] =
   { { 0x1E, 0x92, 0x0A }, "ATmega48PA",   4 * kb,         0 },
   { { 0x1E, 0x93, 0x0F }, "ATmega88PA",   8 * kb,       256 },
   { { 0x1E, 0x94, 0x0B }, "ATmega168PA", 16 * kb,       256 },
-  { { 0x1E, 0x95, 0x0F }, "ATmega328P",  32 * kb,       512 },
-  { { 0x1E, 0x95, 0x14 }, "ATmega328",  32 * kb,        512 },
+  { { 0x1E, 0x95, 0x0F }, "ATmega328P",  32 * kb,       512,
+        atmega328_optiboot,   // loader image
+        0x7E00,               // start address
+        sizeof atmega328_optiboot,
+        128,          // page size in bytes (for committing)
+        0xFF,         // fuse low byte: external clock, max start-up time
+        0xDE,         // fuse high byte: SPI enable, boot into bootloader, 512 byte bootloader
+        0x05,         // fuse extended byte: brown-out detection at 2.7V
+        0x2F },       // lock bits: SPM is not allowed to write to the Boot Loader section.
+  { { 0x1E, 0x95, 0x14 }, "ATmega328",  32 * kb,       512,
+        atmega328_optiboot,   // loader image
+        0x7E00,               // start address
+        sizeof atmega328_optiboot,
+        128,          // page size in bytes (for committing)
+        0xFF,         // fuse low byte: external clock, max start-up time
+        0xDE,         // fuse high byte: SPI enable, boot into bootloader, 512 byte bootloader
+        0x05,         // fuse extended byte: brown-out detection at 2.7V
+        0x2F },       // lock bits: SPM is not allowed to write to the Boot Loader section.
 
   // Atmega644 family
   { { 0x1E, 0x94, 0x0A }, "ATmega164P",   16 * kb,      256 },

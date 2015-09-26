@@ -405,8 +405,7 @@ unoHIDBridge.bootloader.high_fuses=0xDE
 unoHIDBridge.bootloader.extended_fuses=0x05
 unoHIDBridge.bootloader.unlock_bits=0x3F
 unoHIDBridge.bootloader.lock_bits=0x0F
-# TODO hex files path broken/not used
-unoHIDBridge.bootloader.file=optiboot/optiboot_atmega328_2M.hex
+unoHIDBridge.bootloader.file=optiboot_atmega328.hex
 
 unoHIDBridge.build.mcu=atmega328p
 unoHIDBridge.build.f_cpu=16000000L
@@ -434,7 +433,7 @@ megaHIDBridge.bootloader.unlock_bits=0x3F
 megaHIDBridge.bootloader.lock_bits=0x0F
 megaHIDBridge.bootloader.high_fuses=0xD8
 megaHIDBridge.bootloader.extended_fuses=0xFD
-megaHIDBridge.bootloader.file=arduino:stk500v2/stk500boot_v2_mega2560.hex
+megaHIDBridge.bootloader.file=stk500boot_v2_mega2560.hex
 
 megaHIDBridge.build.f_cpu=16000000L
 megaHIDBridge.build.core=arduino:arduino
