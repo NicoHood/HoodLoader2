@@ -324,7 +324,7 @@ HoodLoader2atmega32u4.build.mcu=atmega32u4
 
 #general settings for all boards:
 HoodLoader2atmega32u4.build.variant=arduino:leonardo
-HoodLoader2atmega32u4.build.board=HOODLOADER2
+HoodLoader2atmega32u4.build.board=AVR_LEONARDO
 HoodLoader2atmega32u4.build.f_cpu=16000000L
 
 #uploading settings
@@ -356,6 +356,7 @@ HoodLoader2atmega32u4.menu.board.micro=HoodLoader2 Micro
 HoodLoader2atmega32u4.menu.board.micro.bootloader.file=HexFiles/HoodLoader2_0_5_Micro_atmega32u4.hex
 HoodLoader2atmega32u4.menu.board.micro.build.variant=arduino:micro
 HoodLoader2atmega32u4.menu.board.micro.build.pid=0x8037
+HoodLoader2atmega32u4.menu.board.micro.build.board=AVR_MICRO
 HoodLoader2atmega32u4.menu.board.dev=HoodLoader2 Dev
 HoodLoader2atmega32u4.menu.board.dev.bootloader.file=HoodLoader2/HoodLoader2.hex
 
@@ -375,6 +376,7 @@ HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.high_fuses=0xD9
 HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.extended_fuses=0xC4
 HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.unlock_bits=0x3F
 HoodLoader2atmega32u4.menu.board.dfumicro.bootloader.lock_bits=0x0F
+HoodLoader2atmega32u4.menu.board.dfumicro.build.board=AVR_MICRO
 
 
 ##############################################################
