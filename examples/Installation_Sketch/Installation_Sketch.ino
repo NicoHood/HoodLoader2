@@ -7,8 +7,8 @@
 // Led pin to signalize programming was successfull
 #define LED_PIN LED_BUILTIN
 
-// Select one of the files below (default 3: HL2.0.5, 16u2, Uno)
-#define HEXFILE 3
+// Select one of the files below
+#define HEXFILE HEXFILE_HoodLoader2_0_5_Uno_atmega16u2_hex
 
 // Newest HoodLoader2.0.5 hex files
 #define HEXFILE_HoodLoader2_0_5_Leonardo_atmega32u4_hex 1
@@ -17,31 +17,33 @@
 #define HEXFILE_HoodLoader2_0_5_Mega_atmega16u2_hex 4
 #define HEXFILE_HoodLoader2_0_5_Uno_atmega32u2_hex 5
 #define HEXFILE_HoodLoader2_0_5_Mega_atmega32u2_hex 6
-#define HEXFILE_HoodLoader2_0_5_Uno_at90usb162_hex 7
-#define HEXFILE_HoodLoader2_0_5_Mega_at90usb162_hex 8
-#define HEXFILE_HoodLoader2_0_5_Uno_atmega8u2_hex 9
-#define HEXFILE_HoodLoader2_0_5_Mega_atmega8u2_hex 10
+#define HEXFILE_HoodLoader2_0_5_Uno_at90usb82_hex 7
+#define HEXFILE_HoodLoader2_0_5_Mega_at90usb82_hex 8
+#define HEXFILE_HoodLoader2_0_5_Uno_at90usb162_hex 9
+#define HEXFILE_HoodLoader2_0_5_Mega_at90usb162_hex 10
+#define HEXFILE_HoodLoader2_0_5_Uno_atmega8u2_hex 11
+#define HEXFILE_HoodLoader2_0_5_Mega_atmega8u2_hex 12
 
 // Legacy versions
-#define HEXFILE_HoodLoader2_0_4_Uno_16u2_hex 11
-#define HEXFILE_HoodLoader2_0_4_Mega_16u2_hex 12
-#define HEXFILE_HoodLoader2_0_4_Uno_32u2_hex 13
-#define HEXFILE_HoodLoader2_0_4_Mega_32u2_hex 14
+#define HEXFILE_HoodLoader2_0_4_Uno_16u2_hex 101
+#define HEXFILE_HoodLoader2_0_4_Mega_16u2_hex 102
+#define HEXFILE_HoodLoader2_0_4_Uno_32u2_hex 103
+#define HEXFILE_HoodLoader2_0_4_Mega_32u2_hex 104
 
 // Original DFU Bootloader with/without USB-Serial Firmware
-#define HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full 15
-#define HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex_Full 16
-#define HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex 17
+#define HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full 201
+#define HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex_Full 202
+#define HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex 203
 
 // Recomplied Lufa DFU bootloaders (compatible with Arduino Leds)
-#define HEXFILE_BootloaderDFU_atmega32u4_leo_hex 18
-#define HEXFILE_BootloaderDFU_atmega16u2_hex 19
-#define HEXFILE_BootloaderDFU_atmega32u2_hex 20
-#define HEXFILE_BootloaderDFU_at90usb162_hex 21
-#define HEXFILE_BootloaderDFU_atmega8u2_hex 22
+#define HEXFILE_BootloaderDFU_atmega32u4_leo_hex 301
+#define HEXFILE_BootloaderDFU_atmega16u2_hex 302
+#define HEXFILE_BootloaderDFU_atmega32u2_hex 303
+#define HEXFILE_BootloaderDFU_at90usb162_hex 304
+#define HEXFILE_BootloaderDFU_atmega8u2_hex 305
 
 // For testing purposes
-#define HEXFILE_DEV 100
+#define HEXFILE_DEV 1000
 
 //================================================================================
 // HoodLoader2 Predefinitions
@@ -265,6 +267,9 @@ const unsigned long kb = 1024;
 
 // hex bootloader data
 #include "bootloaders.h"
+#include "DFUBootloaders.h"
+#include "legacyBootloaders.h"
+#include "originalBootloaders.h"
 
 // see Atmega328 datasheet page 298
 signatureType signatures [] =
