@@ -28,26 +28,6 @@
   this software.
 */
 
-/*
-Copyright(c) 2014-2015 NicoHood
-See the readme for credit to other people.
-
-This file is part of Hoodloader2.
-
-Hoodloader2 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Hoodloader2 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /** \file
  *
  *  Header file for Descriptors.c.
@@ -60,96 +40,128 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#include <LUFA/Drivers/USB/USB.h>
 
 		#include "Config/AppConfig.h"
-        #include "Config/LUFAConfig.h"
-        #include <LUFA/Drivers/Board/Board.h>
 
 	/* Macros: */
+		/** Descriptor type value for a DFU class functional descriptor. */
+		#define DTYPE_DFUFunctional               0x21
+
+		/** DFU attribute mask, indicating that the DFU device will detach and re-attach when a DFU_DETACH
+		 *  command is issued, rather than the host issuing a USB Reset.
+		 */
+		#define ATTR_WILL_DETATCH                 (1 << 3)
+
+		/** DFU attribute mask, indicating that the DFU device can communicate during the manifestation phase
+		 *  (memory programming phase).
+		 */
+		#define ATTR_MANEFESTATION_TOLLERANT      (1 << 2)
+
+		/** DFU attribute mask, indicating that the DFU device can accept DFU_UPLOAD requests to send data from
+		 *  the device to the host.
+		 */
+		#define ATTR_CAN_UPLOAD                   (1 << 1)
+
+		/** DFU attribute mask, indicating that the DFU device can accept DFU_DNLOAD requests to send data from
+		 *  the host to the device.
+		 */
+		#define ATTR_CAN_DOWNLOAD                 (1 << 0)
+
 		#if defined(__AVR_AT90USB1287__)
+			#define PRODUCT_ID_CODE               0x2FFB
 			#define AVR_SIGNATURE_1               0x1E
 			#define AVR_SIGNATURE_2               0x97
 			#define AVR_SIGNATURE_3               0x82
 		#elif defined(__AVR_AT90USB647__)
+			#define PRODUCT_ID_CODE               0x2FF9
 			#define AVR_SIGNATURE_1               0x1E
 			#define AVR_SIGNATURE_2               0x96
 			#define AVR_SIGNATURE_3               0x82
 		#elif defined(__AVR_AT90USB1286__)
+			#define PRODUCT_ID_CODE               0x2FFB
 			#define AVR_SIGNATURE_1               0x1E
 			#define AVR_SIGNATURE_2               0x97
 			#define AVR_SIGNATURE_3               0x82
 		#elif defined(__AVR_AT90USB646__)
+			#define PRODUCT_ID_CODE               0x2FF9
 			#define AVR_SIGNATURE_1               0x1E
 			#define AVR_SIGNATURE_2               0x96
 			#define AVR_SIGNATURE_3               0x82
 		#elif defined(__AVR_ATmega32U4__)
+			#define PRODUCT_ID_CODE               0x2FF4
 			#define AVR_SIGNATURE_1               0x1E
 			#define AVR_SIGNATURE_2               0x95
 			#define AVR_SIGNATURE_3               0x87
 		#elif defined(__AVR_ATmega16U4__)
+			#define PRODUCT_ID_CODE               0x2FF3
 			#define AVR_SIGNATURE_1               0x1E
 			#define AVR_SIGNATURE_2               0x94
 			#define AVR_SIGNATURE_3               0x88
 		#elif defined(__AVR_ATmega32U2__)
+			#define PRODUCT_ID_CODE               0x2FF0
 			#define AVR_SIGNATURE_1               0x1E
 			#define AVR_SIGNATURE_2               0x95
 			#define AVR_SIGNATURE_3               0x8A
 		#elif defined(__AVR_ATmega16U2__)
+			#define PRODUCT_ID_CODE               0x2FEF
 			#define AVR_SIGNATURE_1               0x1E
 			#define AVR_SIGNATURE_2               0x94
 			#define AVR_SIGNATURE_3               0x89
 		#elif defined(__AVR_AT90USB162__)
+			#define PRODUCT_ID_CODE               0x2FFA
 			#define AVR_SIGNATURE_1               0x1E
 			#define AVR_SIGNATURE_2               0x94
 			#define AVR_SIGNATURE_3               0x82
 		#elif defined(__AVR_ATmega8U2__)
+			#define PRODUCT_ID_CODE               0x2FEE
 			#define AVR_SIGNATURE_1               0x1E
 			#define AVR_SIGNATURE_2               0x93
 			#define AVR_SIGNATURE_3               0x89
 		#elif defined(__AVR_AT90USB82__)
+			#define PRODUCT_ID_CODE               0x2FF7
 			#define AVR_SIGNATURE_1               0x1E
-			#define AVR_SIGNATURE_2               0x93
+			#define AVR_SIGNATURE_2               0x94
 			#define AVR_SIGNATURE_3               0x82
 		#else
 			#error The selected AVR part is not currently supported by this bootloader.
 		#endif
 
-		/** Endpoint address for the CDC control interface event notification endpoint. */
-		#define CDC_NOTIFICATION_EPADDR        (ENDPOINT_DIR_IN | 2)
-
-		/** Endpoint address for the CDC data interface TX (data IN) endpoint. */
-		#define CDC_TX_EPADDR                  (ENDPOINT_DIR_IN | 3)
-
-		/** Endpoint address for the CDC data interface RX (data OUT) endpoint. */
-		#define CDC_RX_EPADDR                  (ENDPOINT_DIR_OUT | 4)
-
-		/** Size of the CDC data interface TX and RX data endpoint banks, in bytes. */
-		#define CDC_TX_EPSIZE                64
-#define CDC_TX_BANK_SIZE 2
-		#define CDC_RX_EPSIZE                32
-#define CDC_RX_BANK_SIZE 1
-
-		/** Size of the CDC control interface notification endpoint bank, in bytes. */
-		#define CDC_NOTIFICATION_EPSIZE        8
+		#if !defined(PRODUCT_ID_CODE)
+			#error Current AVR model is not supported by this bootloader.
+		#endif
 
 	/* Type Defines: */
+		/** Type define for a DFU class function descriptor. This descriptor gives DFU class information
+		 *  to the host when read, indicating the DFU device's capabilities.
+		 */
+		typedef struct
+		{
+			USB_Descriptor_Header_t Header; /**< Standard descriptor header structure */
+
+			uint8_t                 Attributes; /**< DFU device attributes, a mask comprising of the
+			                                     *  ATTR_* macros listed in this source file
+			                                     */
+			uint16_t                DetachTimeout; /**< Timeout in milliseconds between a USB_DETACH
+			                                        *  command being issued and the device detaching
+			                                        *  from the USB bus
+			                                        */
+			uint16_t                TransferSize; /**< Maximum number of bytes the DFU device can accept
+			                                       *  from the host in a transaction
+			                                       */
+			uint16_t                DFUSpecification; /**< BCD packed DFU specification number this DFU
+			                                           *  device complies with
+			                                           */
+		} USB_Descriptor_DFU_Functional_t;
+
 		/** Type define for the device configuration descriptor structure. This must be defined in the
 		 *  application code, as the configuration descriptor contains several sub-descriptors which
 		 *  vary between devices, and which describe the device's usage to the host.
 		 */
 		typedef struct
 		{
-			USB_Descriptor_Configuration_Header_t    Config;
+			USB_Descriptor_Configuration_Header_t Config;
 
-			// CDC Control Interface
-			USB_Descriptor_Interface_t               CDC_CCI_Interface;
-			USB_CDC_Descriptor_FunctionalHeader_t    CDC_Functional_Header;
-			USB_CDC_Descriptor_FunctionalACM_t       CDC_Functional_ACM;
-			USB_CDC_Descriptor_FunctionalUnion_t     CDC_Functional_Union;
-			USB_Descriptor_Endpoint_t                CDC_NotificationEndpoint;
-
-			// CDC Data Interface
-			USB_Descriptor_Interface_t               CDC_DCI_Interface;
-			USB_Descriptor_Endpoint_t                CDC_DataOutEndpoint;
-			USB_Descriptor_Endpoint_t                CDC_DataInEndpoint;
+			// DFU Interface
+			USB_Descriptor_Interface_t            DFU_Interface;
+			USB_Descriptor_DFU_Functional_t       DFU_Functional;
 		} USB_Descriptor_Configuration_t;
 
 		/** Enum for the device interface descriptor IDs within the device. Each interface descriptor
@@ -158,8 +170,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		 */
 		enum InterfaceDescriptors_t
 		{
-			INTERFACE_ID_CDC_CCI = 0, /**< CDC CCI interface descriptor ID */
-			INTERFACE_ID_CDC_DCI = 1, /**< CDC DCI interface descriptor ID */
+			INTERFACE_ID_DFU = 0, /**< DFU interface descriptor ID */
 		};
 
 		/** Enum for the device string descriptor IDs within the device. Each string descriptor should

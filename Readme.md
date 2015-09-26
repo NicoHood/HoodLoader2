@@ -1,12 +1,9 @@
-HoodLoader2.0.4
+HoodLoader2.0.5
 ===============
 
 ![header](header.jpg)
 
-#HL2.0.5 ready for testing. Click [here](https://github.com/NicoHood/HoodLoader2/tree/dev_205)
-*Wiki is also updated to 2.0.5, use the Release .zip file for older docs.*
-
-**HoodLoader2 is a CDC BootLoader with self reprogramming and USB-Serial function.**
+**HoodLoader2 is a CDC BootLoader with self reprogramming and Fast USB-Serial function.**
 
 An Arduino Uno/Mega board has two Microcontroller of which one(16u2) is normally used for USB-Serial translation.
 But we can also use it as standalone AVR Microcontroller with (or without) USB functions as well.
@@ -14,48 +11,31 @@ But we can also use it as standalone AVR Microcontroller with (or without) USB f
 HoodLoader2 gives you the option to **reprogram the 16u2** of a normal Arduino Uno/Mega R3 with **custom sketches**.
 This means you can use the 16u2 as a normal USB AVR like a Leonardo.
 You have a full compatible USB-HID core, CDC Serial and you can also use the 7 i/o pins of the 16u2.
-The extended HID devices and USB-Core improvements of the [HID Project](https://github.com/NicoHood/HID) also apply for the HoodLoader2.
+The extended HID devices of the [HID Project](https://github.com/NicoHood/HID) also apply for the HoodLoader2.
 
 The 16u2 is somehow limited in its functions but still a great addition if you know how to use it. It also compatible with
 [FastLED](https://github.com/FastLED/FastLED) and [IRLremote](https://github.com/NicoHood/IRLremote)(with PCINT) for example.
 
 The great thing about this is that you actually have **two fully Arduino compatible Microcontrollers in one Arduino Uno/Mega board**
-– the board most of you already own. Your main MCU (328/2560) is **still reprogrammable** if you enter bootloader mode.
+– the board most of you already own. Your IO MCU (328/2560) is **still reprogrammable** if you enter bootloader mode.
 All you need for this is a normal Arduino Uno/Mega R3 and some cables to install the new HoodLoader2.
-Please __read the readme carfully__ to avoid any problems. You will find most of the answers to your questions already in the readme.
 
-**See http://nicohood.wordpress.com/ for more tutorials, projects and contact.**
+With version 2.0.5 you can now use HoodLoader2 also on a 32u4 which gives you even more power.
 
-
-Download
-========
-
-You have 3 versions you can download:
-* The master includes all fixes to the current stable release. Download it by clicking download at the right.
-The [online Wiki](https://github.com/NicoHood/HoodLoader2/wiki) should have the newest documentation
-but might have some updated stuff which is only available in the dev tree.
-* Download an offline version in [releases](https://github.com/NicoHood/HoodLoader2/releases).
-It's a snapshot of the current stable release but might have missed some updates that the current master branch has included.
-This also includes an offline version of the wiki. Offline versions will be available after some time when the official release is out.
-* Select [branch 'dev'](https://github.com/NicoHood/HoodLoader2/tree/dev) to test the bleeding edge of this software.
-It might not work at all or has a lot of debugging stuff in it.
-Use the [online Wiki](https://github.com/NicoHood/HoodLoader2/wiki) to get the newest documentation.
-If the dev version gets near to a new release a note will be placed here, that you can test the new dev beta.
-Currently there is no beta available.
-
+Please __read the wiki carefully__ to avoid any problems. You will find most of the answers to your questions already in the wiki.
 
 Wiki
 ====
 
-All documentation moved to the [wiki page](https://github.com/NicoHood/HoodLoader2/wiki).
+All documentation moved to the [wiki page](https://github.com/NicoHood/HoodLoader2/wiki) (most up to date documentation).
 
-An offline snapshot is available in [releases](https://github.com/NicoHood/HoodLoader2/releases).
+An offline snapshot (also for older versions) is available in [releases](https://github.com/NicoHood/HoodLoader2/releases)
 
 
 Contact
 =======
 
-You can contact me on my wordpress blog in the contact section.
+Contact information can be found here:
 
 www.nicohood.de
 
@@ -63,6 +43,27 @@ www.nicohood.de
 Version History
 ===============
 ```
+2.0.5 Release (26.09.2015)
+* No need for HID-Project anymore, PR3640 added u2 support to IDE 1.6.6
+* Added up to 2M baud support (thx to https://github.com/urjaman/fast-usbserial)
+* Improved USART reconfiguration
+* Changed Magic Key to RAMEND
+  (requires new HID-Project IDE patch, but is still backwards compatible)
+* Saved a lot of ram by moving descriptors to PROGMEM (8/16u2)
+* Added 32u4 support with saver bootkey option and backwards compatibility
+* Added at90usb82 support
+* Added EEPROM program support for 32u2
+* Switch to U2Xn=0 if needed
+* Added USB reconnect support
+* General improvements to reduce flash size
+* Updated and improved Installation sketch
+* Added standard Uno/Mega bootloaders
+* Removed /tools folder and added information to wiki instead
+* Note: Can only be (re)compiled with AVR-GCC 5.1 and LTO (see wiki)
+Not included features (removed while developing, but can be recompiled):
+* Changed programming baud rate (from 57600 to 1200) to reprogramm an Arduino Nano
+* Added old Atmega328 bootloader compatibility (baud 57600)
+
 2.0.4 Release (20.03.2015)
 * HoodLoader2.0.4
  * Upload verification on USB hubs fix in bootloader

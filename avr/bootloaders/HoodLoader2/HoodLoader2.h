@@ -63,6 +63,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#include <avr/eeprom.h>
 		#include <avr/power.h>
 		#include <avr/interrupt.h>
+		#include <util/atomic.h>
 		#include <stdbool.h>
 
 		#include "Descriptors.h"
@@ -95,14 +96,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#define BOOTLOADER_HWVERSION_MINOR   0x00
 
 		/** Eight character bootloader firmware identifier reported to the host when requested. */
-		#define SOFTWARE_IDENTIFIER          "HL2.0.4"
-
-		/** 1200 is the baud to load the Bootloader from an Arduino sketch, 57600 turns out to be the actual baud rate for uploading. */
-		#define BAUDRATE_CDC_BOOTLOADER 57600
-
-		/** Port of the onboard leds, serial and reset line */
-		#define ARDUINO_PORT PORTD
-		#define ARDUINO_DDR DDRD
+		#define SOFTWARE_IDENTIFIER          "HL2.0.5"
 
 	/* Enums: */
 		/** Possible memory types that can be addressed via the bootloader. */
@@ -152,12 +146,11 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		typedef void (*AppPtr_t)(void) ATTR_NO_RETURN;
 
 	/* Function Prototypes: */
-		static void CDC_Task(void);
-		static void Bootloader_Task(const uint8_t Command);
+		static void Bootloader_Task(void) __attribute__ ((noinline));
 		static void CDC_Device_LineEncodingChanged(void);
 		static void SetupHardware(void);
-		static void FlushCDC(void);
-		static void StartSketch(void);
+		static void StartSketch(void) __attribute__ ((noinline));
+		static void ResetMCU(void);
 
 		void Application_Jump_Check(void) ATTR_INIT_SECTION(3);
 

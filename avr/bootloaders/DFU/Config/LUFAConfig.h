@@ -28,26 +28,6 @@
   this software.
 */
 
-/*
-Copyright(c) 2014-2015 NicoHood
-See the readme for credit to other people.
-
-This file is part of Hoodloader2.
-
-Hoodloader2 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Hoodloader2 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /** \file
  *  \brief LUFA Library Configuration Header File
  *
@@ -64,9 +44,6 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 
 	#if (ARCH == ARCH_AVR8)
 
-// Pull in RAMEND definitions
-#include <avr/io.h>
-
 		/* Non-USB Related Configuration Tokens: */
 //		#define DISABLE_TERMINAL_CODES
 
@@ -80,7 +57,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 //		#define NO_CLASS_DRIVER_AUTOFLUSH
 
 		/* General USB Driver Related Tokens: */
-		#define ORDERED_EP_CONFIG
+//		#define ORDERED_EP_CONFIG
 		#define USE_STATIC_OPTIONS               (USB_DEVICE_OPT_FULLSPEED | USB_OPT_REG_ENABLED | USB_OPT_AUTO_PLL)
 		#define USB_DEVICE_ONLY
 //		#define USB_HOST_ONLY
@@ -89,19 +66,14 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#define NO_SOF_EVENTS
 
 		/* USB Device Mode Driver Related Tokens: */
-// Only use RAM Descriptors if we have enough ram
-#if ((RAMEND - RAMSTART) >= 512)
 		#define USE_RAM_DESCRIPTORS
-#else
-		#define USE_FLASH_DESCRIPTORS
-#endif
-
+//		#define USE_FLASH_DESCRIPTORS
 //		#define USE_EEPROM_DESCRIPTORS
 		#define NO_INTERNAL_SERIAL
-		#define FIXED_CONTROL_ENDPOINT_SIZE      8
-		#define DEVICE_STATE_AS_GPIOR            2 // GPIOR0 is used for the RX ISR with cbi()
+		#define FIXED_CONTROL_ENDPOINT_SIZE      32
+		#define DEVICE_STATE_AS_GPIOR            0
 		#define FIXED_NUM_CONFIGURATIONS         1
-//		#define CONTROL_ONLY_DEVICE
+		#define CONTROL_ONLY_DEVICE
 //		#define INTERRUPT_CONTROL_ENDPOINT
 		#define NO_DEVICE_REMOTE_WAKEUP
 		#define NO_DEVICE_SELF_POWER
