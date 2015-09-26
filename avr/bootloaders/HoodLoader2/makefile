@@ -56,6 +56,10 @@ HOODLOADER2_OPTS += -DDOUBLE_TAB_RESET_TO_BOOTLOADER=true
 # Select if you want to start the bootloader when powered on (plugged in the usb cable)
 HOODLOADER2_OPTS += -DPOWER_ON_TO_BOOTLOADER=false
 
+# Option to disable autoreset via jumper on pin 6 (u2 Series) or pin 8 (32u4)
+# Pull the pin low to disable autoreset. You may change the pin in the Board.h file
+#HOODLOADER2_OPTS += -DAUTORESET_JUMPER
+
 # Bootkey locations
 # 2nd Bootkey is not used for 32u4 devices (due to flash size)
 # 2nd Bootkey option only makes sense if you compile with the old programming speed 57600

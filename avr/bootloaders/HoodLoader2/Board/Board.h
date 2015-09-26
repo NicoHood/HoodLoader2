@@ -87,6 +87,11 @@ extern "C" {
 			#define AVR_ERASE_LINE_DDR DDRC
 			#define AVR_ERASE_LINE_MASK (1 << 6)
 			
+			#define AUTORESET_PORT PORTB
+			#define AUTORESET_DDR DDRB
+			#define AUTORESET_PIN PINB
+			#define AUTORESET_MASK (1 << PB6) // D6
+			
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Board_Init(void)
@@ -122,6 +127,11 @@ extern "C" {
 			
 			static inline void Board_Erase(bool erase)
 			{
+				#ifdef AUTORESET_JUMPER
+				if(!(AUTORESET_PIN & AUTORESET_MASK))
+					return;
+				#endif
+				
 				if (erase)
 					AVR_ERASE_LINE_PORT &= ~AVR_ERASE_LINE_MASK;
 				else
@@ -140,6 +150,11 @@ extern "C" {
 			#define AVR_RESET_LINE_DDR DDRD
 			#define AVR_RESET_LINE_PIN PIND
 			#define AVR_RESET_LINE_MASK (1 << PD4) // PD4 = D4, PD6 = D12, PD7 = D7
+			
+			#define AUTORESET_PORT PORTB
+			#define AUTORESET_DDR DDRB
+			#define AUTORESET_PIN PINB
+			#define AUTORESET_MASK (1 << PB4) // D8
 			
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
@@ -177,6 +192,11 @@ extern "C" {
 			#define AVR_RESET_LINE_PIN PIND
 			#define AVR_RESET_LINE_MASK (1 << PD7)
 			
+			#define AUTORESET_PORT PORTB
+			#define AUTORESET_DDR DDRB
+			#define AUTORESET_PIN PINB
+			#define AUTORESET_MASK (1 << PB6) // D6
+			
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Board_Init(void)
@@ -188,10 +208,23 @@ extern "C" {
 			
 			static inline void Board_Reset(bool reset)
 			{
+				#ifdef AUTORESET_JUMPER
+				if(!(AUTORESET_PIN & AUTORESET_MASK))
+					return;
+					
 				if (reset)
 					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
 				else
 					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+
+				#else
+				
+				if (reset)
+					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
+				else
+					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+					
+				#endif
 			}
 			
 			static inline void Board_Erase(bool erase)
