@@ -17,12 +17,12 @@ The 16u2 is somehow limited in its functions but still a great addition if you k
 [FastLED](https://github.com/FastLED/FastLED) and [IRLremote](https://github.com/NicoHood/IRLremote)(with PCINT) for example.
 
 The great thing about this is that you actually have **two fully Arduino compatible Microcontrollers in one Arduino Uno/Mega board**
-– the board most of you already own. Your main MCU (328/2560) is **still reprogrammable** if you enter bootloader mode.
+– the board most of you already own. Your IO MCU (328/2560) is **still reprogrammable** if you enter bootloader mode.
 All you need for this is a normal Arduino Uno/Mega R3 and some cables to install the new HoodLoader2.
-Please __read the readme carfully__ to avoid any problems. You will find most of the answers to your questions already in the readme.
 
-**See http://nicohood.wordpress.com/ for more tutorials, projects and contact.**
+With version 2.0.5 you can now use HoodLoader2 also on a 32u4 which gives you even more power.
 
+Please __read the wiki carefully__ to avoid any problems. You will find most of the answers to your questions already in the wiki.
 
 Download
 ========
@@ -60,7 +60,7 @@ www.nicohood.de
 Version History
 ===============
 ```
-2.0.5 Release (xx.xx.2015)
+2.0.5 Release (26.09.2015)
 * No need for HID-Project anymore, PR3640 added u2 support to IDE 1.6.6
 * Added up to 2M baud support (thx to https://github.com/urjaman/fast-usbserial)
 * Improved USART reconfiguration
@@ -73,12 +73,13 @@ Version History
 * Switch to U2Xn=0 if needed
 * Added USB reconnect support
 * General improvements to reduce flash size
-* Updated Installation sketch
+* Updated and improved Installation sketch
+* Added standard Uno/Mega bootloaders
+* Removed /tools folder and added information to wiki instead
 * Note: Can only be (re)compiled with AVR-GCC 5.1 and LTO (see wiki)
 Not included features (removed while developing, but can be recompiled):
 * Changed programming baud rate (from 57600 to 1200) to reprogramm an Arduino Nano
 * Added old Atmega328 bootloader compatibility (baud 57600)
-* Removed /tools folder and added information to wiki instead
 
 2.0.4 Release (20.03.2015)
 * HoodLoader2.0.4
