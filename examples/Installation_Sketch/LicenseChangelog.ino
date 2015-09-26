@@ -107,3 +107,4 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 // Version 1.32-HL204-A: Bug fixes, added support for At90USB82, At90USB162 signatures
 // Version 1.32-HL204-B: Signature fixes
 // Version 1.32-HL205-A: Updated to HL2.0.5, only supports a single hex file now
+// Version 1.32-HL205-A: Updated to the latest HL2.0.5 hex files, added 1.6.6 compatibility

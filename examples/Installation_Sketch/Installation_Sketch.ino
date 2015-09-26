@@ -1,4 +1,4 @@
-#define VERSION "1.32-HL205-A"
+#define VERSION "1.32-HL205-B"
 
 //================================================================================
 // HoodLoader2 Settings
@@ -414,7 +414,8 @@ byte lastAddressMSB = 0;
 
 // execute one programming instruction ... b1 is command, b2, b3, b4 are arguments
 //  processor may return a result on the 4th transfer, this is returned.
-byte program (const byte b1, const byte b2 = 0, const byte b3 = 0, const byte b4 = 0)
+byte program (const byte b1, const byte b2 = 0, const byte b3 = 0, const byte b4 = 0);
+byte program (const byte b1, const byte b2, const byte b3, const byte b4)
 {
   SPI.transfer (b1);
   SPI.transfer (b2);
@@ -448,7 +449,8 @@ byte writeFlash (unsigned long addr, const byte data)
 } // end of writeFlash
 
 // show a byte in hex with leading zero and optional newline
-void showHex (const byte b, const boolean newline = false, const boolean show0x = true)
+void showHex (const byte b, const boolean newline = false, const boolean show0x = true);
+void showHex (const byte b, const boolean newline, const boolean show0x)
 {
   if (show0x)
     Serial.print (F("0x"));
@@ -464,7 +466,8 @@ void showHex (const byte b, const boolean newline = false, const boolean show0x 
 }  // end of showHex
 
 // convert a boolean to Yes/No
-void showYesNo (const boolean b, const boolean newline = false)
+void showYesNo (const boolean b, const boolean newline = false);
+void showYesNo (const boolean b, const boolean newline)
 {
   if (b)
     Serial.print (F("Yes"));
