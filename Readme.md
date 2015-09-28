@@ -43,6 +43,11 @@ www.nicohood.de
 Version History
 ===============
 ```
+2.0.5 r2 Release (xx.xx.2015)
+* Added examples to the IDE menu
+* Added IDE version warning
+* Fixed Leonardo/Micro board definitions
+
 2.0.5 Release (26.09.2015)
 * No need for HID-Project anymore, PR3640 added u2 support to IDE 1.6.6
 * Added up to 2M baud support (thx to https://github.com/urjaman/fast-usbserial)
