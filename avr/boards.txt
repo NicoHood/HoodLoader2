@@ -40,7 +40,7 @@ HoodLoader2atmega16u2.bootloader.lock_bits=0x0F
 HoodLoader2atmega16u2.build.vid=0x2341
 HoodLoader2atmega16u2.build.pid=0x484C
 HoodLoader2atmega16u2.build.usb_product="HoodLoader2 16u2"
-HoodLoader2atmega16u2.build.usb_manufacturer="Nico Hood"
+HoodLoader2atmega16u2.build.usb_manufacturer="NicoHood"
 HoodLoader2atmega16u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1) -DUSB_EP_SIZE=16
 
 
@@ -114,7 +114,7 @@ HoodLoader2atmega32u2.bootloader.lock_bits=0x0F
 HoodLoader2atmega32u2.build.vid=0x2341
 HoodLoader2atmega32u2.build.pid=0x484D
 HoodLoader2atmega32u2.build.usb_product="HoodLoader2 32u2"
-HoodLoader2atmega32u2.build.usb_manufacturer="Nico Hood"
+HoodLoader2atmega32u2.build.usb_manufacturer="NicoHood"
 HoodLoader2atmega32u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1) -DUSB_EP_SIZE=16
 
 
@@ -173,7 +173,7 @@ HoodLoader2atmega8u2.bootloader.lock_bits=0x0F
 HoodLoader2atmega8u2.build.vid=0x2341
 HoodLoader2atmega8u2.build.pid=0x484E
 HoodLoader2atmega8u2.build.usb_product="HoodLoader2 8u2"
-HoodLoader2atmega8u2.build.usb_manufacturer="Nico Hood"
+HoodLoader2atmega8u2.build.usb_manufacturer="NicoHood"
 HoodLoader2atmega8u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1) -DUSB_EP_SIZE=16
 
 
@@ -231,7 +231,7 @@ HoodLoader2at90usb82.bootloader.lock_bits=0x0F
 HoodLoader2at90usb82.build.vid=0x2341
 HoodLoader2at90usb82.build.pid=0x484B
 HoodLoader2at90usb82.build.usb_product="HoodLoader2 at90usb82"
-HoodLoader2at90usb82.build.usb_manufacturer="Nico Hood"
+HoodLoader2at90usb82.build.usb_manufacturer="NicoHood"
 HoodLoader2at90usb82.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1) -DUSB_EP_SIZE=16
 
 
@@ -289,7 +289,7 @@ HoodLoader2at90usb162.bootloader.lock_bits=0x0F
 HoodLoader2at90usb162.build.vid=0x2341
 HoodLoader2at90usb162.build.pid=0x484F
 HoodLoader2at90usb162.build.usb_product="HoodLoader2 at90usb162"
-HoodLoader2at90usb162.build.usb_manufacturer="Nico Hood"
+HoodLoader2at90usb162.build.usb_manufacturer="NicoHood"
 HoodLoader2at90usb162.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1) -DUSB_EP_SIZE=16
 
 
@@ -345,7 +345,7 @@ HoodLoader2atmega32u4.bootloader.lock_bits=0x2F
 HoodLoader2atmega32u4.build.vid=0x2341
 HoodLoader2atmega32u4.build.pid=0x8036
 HoodLoader2atmega32u4.build.usb_product="HoodLoader2 32u4"
-HoodLoader2atmega32u4.build.usb_manufacturer="Nico Hood"
+HoodLoader2atmega32u4.build.usb_manufacturer="NicoHood"
 HoodLoader2atmega32u4.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND-1) -DIO_MCU_RESET_PIN=4
 
 
