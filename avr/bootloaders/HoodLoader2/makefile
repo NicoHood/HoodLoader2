@@ -63,6 +63,10 @@ endif
 HOODLOADER2_OPTS  = -DVENDORID=$(VID)
 HOODLOADER2_OPTS += -DPRODUCTID=$(PID)
 
+ifneq ($(NAME),)
+HOODLOADER2_OPTS += "-DUSB_DESCRIPTOR_STRING=\"$(NAME)\""
+endif
+
 # 1200 is the baud to load the Bootloader from an Arduino sketch,
 # 57600 turns out to be the actual baud rate for uploading for default arduino bootloaders (and arduino nano by default!)
 # make also sure to change your boards.txt uploading speed!
