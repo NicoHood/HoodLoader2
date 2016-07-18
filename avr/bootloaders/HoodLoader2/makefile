@@ -11,7 +11,9 @@
 
 # Run "make help" for target help.
 
+ifeq ($(MCU),)
 MCU          = atmega16u2
+endif
 ARCH         = AVR8
 BOARD        = USER
 F_CPU        = 16000000
@@ -23,6 +25,15 @@ LUFA_PATH    = ../lufa-LUFA-140928/LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_START_ADDR=$(BOOT_START_OFFSET) $(REGS) -flto -fuse-linker-plugin
 LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=$(RAM_OFFSET) $(REGS) -flto -fuse-linker-plugin
 
+ifneq ($(MCU),atmega8u2)
+ifneq ($(MCU),atmega16u2)
+ifneq ($(MCU),atmega16u4)
+ifneq ($(MCU),atmega32u4)
+$(error MCU must be one of atmega8u2, atmega16u2, atmega16u4 or atmega32u4)
+endif
+endif
+endif
+endif
 
 # Flash size and bootloader section sizes of the target, in KB. These must
 # match the target's total FLASH size and the bootloader size set in the
@@ -41,8 +52,16 @@ BOOT_SECTION_SIZE_KB  = 4
 #define ARDUINO_MICRO_PID   		0x0037 // Bootloader, not program!
 #define ARDUINO_DUE_PID             0x003D
 
-HOODLOADER2_OPTS  = -DVENDORID=ARDUINO_VID
-HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID
+ifeq ($(VID),)
+VID := ARDUINO_VID
+endif
+
+ifeq ($(PID),)
+PID := ARDUINO_UNO_PID
+endif
+
+HOODLOADER2_OPTS  = -DVENDORID=$(VID)
+HOODLOADER2_OPTS += -DPRODUCTID=$(PID)
 
 # 1200 is the baud to load the Bootloader from an Arduino sketch,
 # 57600 turns out to be the actual baud rate for uploading for default arduino bootloaders (and arduino nano by default!)
