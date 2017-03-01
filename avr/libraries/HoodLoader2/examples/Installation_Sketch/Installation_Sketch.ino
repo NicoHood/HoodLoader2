@@ -309,20 +309,20 @@ signatureType signatures [] =
   //     signature          description   flash size  bootloader size
 
   // Attiny84 family
-  { { 0x1E, 0x91, 0x0B }, "ATtiny24",   2 * kb,         0 },
-  { { 0x1E, 0x92, 0x07 }, "ATtiny44",   4 * kb,         0 },
-  { { 0x1E, 0x93, 0x0C }, "ATtiny84",   8 * kb,         0 },
+  { { 0x1E, 0x91, 0x0B }, (char*)"ATtiny24",   2 * kb,         0, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x92, 0x07 }, (char*)"ATtiny44",   4 * kb,         0, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x93, 0x0C }, (char*)"ATtiny84",   8 * kb,         0, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 
   // Attiny85 family
-  { { 0x1E, 0x91, 0x08 }, "ATtiny25",   2 * kb,         0 },
-  { { 0x1E, 0x92, 0x06 }, "ATtiny45",   4 * kb,         0 },
-  { { 0x1E, 0x93, 0x0B }, "ATtiny85",   8 * kb,         0 },
+  { { 0x1E, 0x91, 0x08 }, (char*)"ATtiny25",   2 * kb,         0, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x92, 0x06 }, (char*)"ATtiny45",   4 * kb,         0, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x93, 0x0B }, (char*)"ATtiny85",   8 * kb,         0, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 
   // Atmega328 family
-  { { 0x1E, 0x92, 0x0A }, "ATmega48PA",   4 * kb,         0 },
-  { { 0x1E, 0x93, 0x0F }, "ATmega88PA",   8 * kb,       256 },
-  { { 0x1E, 0x94, 0x0B }, "ATmega168PA", 16 * kb,       256 },
-  { { 0x1E, 0x95, 0x0F }, "ATmega328P",  32 * kb,       512,
+  { { 0x1E, 0x92, 0x0A }, (char*)"ATmega48PA",   4 * kb,         0, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x93, 0x0F }, (char*)"ATmega88PA",   8 * kb,       256, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x94, 0x0B }, (char*)"ATmega168PA", 16 * kb,       256, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x95, 0x0F }, (char*)"ATmega328P",  32 * kb,       512,
         atmega328_optiboot,   // loader image
         0x7E00,               // start address
         sizeof atmega328_optiboot,
@@ -330,8 +330,9 @@ signatureType signatures [] =
         0xFF,         // fuse low byte: external clock, max start-up time
         0xDE,         // fuse high byte: SPI enable, boot into bootloader, 512 byte bootloader
         0x05,         // fuse extended byte: brown-out detection at 2.7V
-        0x2F },       // lock bits: SPM is not allowed to write to the Boot Loader section.
-  { { 0x1E, 0x95, 0x14 }, "ATmega328",  32 * kb,       512,
+        0x2F,        // lock bits: SPM is not allowed to write to the Boot Loader section.
+        0 },
+  { { 0x1E, 0x95, 0x14 }, (char*)"ATmega328",  32 * kb,       512,
         atmega328_optiboot,   // loader image
         0x7E00,               // start address
         sizeof atmega328_optiboot,
@@ -339,23 +340,24 @@ signatureType signatures [] =
         0xFF,         // fuse low byte: external clock, max start-up time
         0xDE,         // fuse high byte: SPI enable, boot into bootloader, 512 byte bootloader
         0x05,         // fuse extended byte: brown-out detection at 2.7V
-        0x2F },       // lock bits: SPM is not allowed to write to the Boot Loader section.
+        0x2F,         // lock bits: SPM is not allowed to write to the Boot Loader section.
+        0 },
 
   // Atmega644 family
-  { { 0x1E, 0x94, 0x0A }, "ATmega164P",   16 * kb,      256 },
-  { { 0x1E, 0x95, 0x08 }, "ATmega324P",   32 * kb,      512 },
-  { { 0x1E, 0x96, 0x0A }, "ATmega644P",   64 * kb,   1 * kb },
+  { { 0x1E, 0x94, 0x0A }, (char*)"ATmega164P",   16 * kb,      256, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x95, 0x08 }, (char*)"ATmega324P",   32 * kb,      512, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x96, 0x0A }, (char*)"ATmega644P",   64 * kb,   1 * kb, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 
   // Atmega2560 family
-  { { 0x1E, 0x96, 0x08 }, "ATmega640",    64 * kb,   1 * kb },
-  { { 0x1E, 0x97, 0x03 }, "ATmega1280",  128 * kb,   1 * kb },
-  { { 0x1E, 0x97, 0x04 }, "ATmega1281",  128 * kb,   1 * kb },
-  { { 0x1E, 0x98, 0x01 }, "ATmega2560",  256 * kb,   1 * kb },
-  { { 0x1E, 0x98, 0x02 }, "ATmega2561",  256 * kb,   1 * kb },
+  { { 0x1E, 0x96, 0x08 }, (char*)"ATmega640",    64 * kb,   1 * kb, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x97, 0x03 }, (char*)"ATmega1280",  128 * kb,   1 * kb, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x97, 0x04 }, (char*)"ATmega1281",  128 * kb,   1 * kb, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x98, 0x01 }, (char*)"ATmega2560",  256 * kb,   1 * kb, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x98, 0x02 }, (char*)"ATmega2561",  256 * kb,   1 * kb, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 
   // AT90USB family
   #ifdef USE_AT90USB82
-  { { 0x1E, 0x93, 0x82 }, "At90USB82", 8 * kb, 512,
+  { { 0x1E, 0x93, 0x82 }, (char*)"At90USB82", 8 * kb, 512,
     HEXARR,// loader image
     START_ADDRESS,
     sizeof HEXARR,
@@ -363,13 +365,14 @@ signatureType signatures [] =
     LOW_FUSE,
     HIGH_FUSE,
     EXT_FUSE,
-    LOCK_BITS
+    LOCK_BITS,
+    0
   },
 #else
-  { { 0x1E, 0x93, 0x82 }, "At90USB82", 8 * kb, 512 },
+  { { 0x1E, 0x93, 0x82 }, (char*)"At90USB82", 8 * kb, 512, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 #endif
 #ifdef USE_AT90USB162
-  { { 0x1E, 0x94, 0x82 }, "At90USB162", 16 * kb, 512,
+  { { 0x1E, 0x94, 0x82 }, (char*)"At90USB162", 16 * kb, 512,
     HEXARR,// loader image
     START_ADDRESS,
     sizeof HEXARR,
@@ -377,15 +380,16 @@ signatureType signatures [] =
     LOW_FUSE,
     HIGH_FUSE,
     EXT_FUSE,
-    LOCK_BITS
+    LOCK_BITS,
+    0
   },
 #else
-  { { 0x1E, 0x94, 0x82 }, "At90USB162", 16 * kb, 512 },
+  { { 0x1E, 0x94, 0x82 }, (char*)"At90USB162", 16 * kb, 512, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 #endif
 
   // Atmega32U2 family
 #ifdef USE_ATMEGA8U2
-  { { 0x1E, 0x93, 0x89 }, "ATmega8U2",    8 * kb,   512,
+  { { 0x1E, 0x93, 0x89 }, (char*)"ATmega8U2",    8 * kb,   512,
     HEXARR,// loader image
     START_ADDRESS,
     sizeof HEXARR,
@@ -393,14 +397,15 @@ signatureType signatures [] =
     LOW_FUSE,
     HIGH_FUSE,
     EXT_FUSE,
-    LOCK_BITS
+    LOCK_BITS,
+    0
   },
 #else
-  { { 0x1E, 0x93, 0x89 }, "ATmega8U2",    8 * kb,   512 },
+  { { 0x1E, 0x93, 0x89 }, (char*)"ATmega8U2",    8 * kb,   512, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 #endif
 
 #ifdef USE_ATMEGA16U2
-  { { 0x1E, 0x94, 0x89 }, "ATmega16U2", 16 * kb, 512,
+  { { 0x1E, 0x94, 0x89 }, (char*)"ATmega16U2", 16 * kb, 512,
     HEXARR,// loader image
     START_ADDRESS,
     sizeof HEXARR,
@@ -408,14 +413,15 @@ signatureType signatures [] =
     LOW_FUSE,
     HIGH_FUSE,
     EXT_FUSE,
-    LOCK_BITS
+    LOCK_BITS,
+    0
   },
 #else
-  { { 0x1E, 0x94, 0x89 }, "ATmega16U2", 16 * kb, 512 },
+  { { 0x1E, 0x94, 0x89 }, (char*)"ATmega16U2", 16 * kb, 512, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 #endif
 
 #ifdef USE_ATMEGA32U2
-  { { 0x1E, 0x95, 0x8A }, "ATmega32U2", 32 * kb, 512,
+  { { 0x1E, 0x95, 0x8A }, (char*)"ATmega32U2", 32 * kb, 512,
     HEXARR,// loader image
     START_ADDRESS,
     sizeof HEXARR,
@@ -423,16 +429,17 @@ signatureType signatures [] =
     LOW_FUSE,
     HIGH_FUSE,
     EXT_FUSE,
-    LOCK_BITS
+    LOCK_BITS,
+    0
   },
 #else
-  { { 0x1E, 0x95, 0x8A }, "ATmega32U2", 32 * kb, 512 },
+  { { 0x1E, 0x95, 0x8A }, (char*)"ATmega32U2", 32 * kb, 512, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 #endif
 
   // Atmega32U4 family
-  { { 0x1E, 0x94, 0x88 }, "ATmega16U4",  16 * kb,   512 },
+  { { 0x1E, 0x94, 0x88 }, (char*)"ATmega16U4",  16 * kb,   512, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 #ifdef USE_ATMEGA32U4
-  { { 0x1E, 0x95, 0x87 }, "ATmega32U4",  32 * kb,   4 * kb,
+  { { 0x1E, 0x95, 0x87 }, (char*)"ATmega32U4",  32 * kb,   4 * kb,
     HEXARR,// loader image
     START_ADDRESS,
     sizeof HEXARR,
@@ -440,24 +447,25 @@ signatureType signatures [] =
     LOW_FUSE,
     HIGH_FUSE,
     EXT_FUSE,
-    LOCK_BITS
+    LOCK_BITS,
+    0
   },
 #else
-  { { 0x1E, 0x95, 0x87 }, "ATmega32U4",  32 * kb,   4 * kb },
+  { { 0x1E, 0x95, 0x87 }, (char*)"ATmega32U4",  32 * kb,   4 * kb, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 #endif
 
   // ATmega1284P family
-  { { 0x1E, 0x97, 0x05 }, "ATmega1284P", 128 * kb,   1 * kb },
+  { { 0x1E, 0x97, 0x05 }, (char*)"ATmega1284P", 128 * kb,   1 * kb, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 
   // ATtiny4313 family
-  { { 0x1E, 0x91, 0x0A }, "ATtiny2313A", 2 * kb,   0 },
-  { { 0x1E, 0x92, 0x0D }, "ATtiny4313",  4 * kb,   0 },
+  { { 0x1E, 0x91, 0x0A }, (char*)"ATtiny2313A", 2 * kb,   0, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
+  { { 0x1E, 0x92, 0x0D }, (char*)"ATtiny4313",  4 * kb,   0, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 
   // ATtiny13 family
-  { { 0x1E, 0x90, 0x07 }, "ATtiny13A",     1 * kb, 0 },
+  { { 0x1E, 0x90, 0x07 }, (char*)"ATtiny13A",     1 * kb, 0, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 
   // Atmega8A family
-  { { 0x1E, 0x93, 0x07 }, "ATmega8A",     8 * kb, 256 },
+  { { 0x1E, 0x93, 0x07 }, (char*)"ATmega8A",     8 * kb, 256, NULL, 0, 0, 0, 0, 0, 0, 0, 0 },
 
 };  // end of signatures
 
@@ -494,7 +502,7 @@ byte readFlash (unsigned long addr)
 } // end of readFlash
 
 // write a byte to the flash memory buffer (ready for committing)
-byte writeFlash (unsigned long addr, const byte data)
+void writeFlash (unsigned long addr, const byte data)
 {
   byte high = (addr & 1) ? 0x08 : 0;  // set if high byte wanted
   addr >>= 1;  // turn into word address
@@ -508,7 +516,7 @@ void showHex (const byte b, const boolean newline, const boolean show0x)
   if (show0x)
     Serial.print (F("0x"));
   // try to avoid using sprintf
-  char buf [4] = { ((b >> 4) & 0x0F) | '0', (b & 0x0F) | '0', ' ' , 0 };
+  char buf [4] = { char(((b >> 4) & 0x0F) | '0'), char((b & 0x0F) | '0'), ' ' , 0 };
   if (buf [0] > '9')
     buf [0] += 7;
   if (buf [1] > '9')
@@ -596,7 +604,7 @@ void writeBootloader ()
     return;
   }  // end if
 
-  int i;
+  size_t i;
 
   byte lFuse = program (readLowFuseByte, readLowFuseByteArg2);
 
@@ -793,7 +801,7 @@ void getSignature ()
   }  // end for each signature byte
   Serial.println ();
 
-  for (int j = 0; j < NUMITEMS (signatures); j++)
+  for (size_t j = 0; j < NUMITEMS (signatures); j++)
   {
     if (memcmp (sig, signatures [j].sig, sizeof sig) == 0)
     {
@@ -856,7 +864,7 @@ void setup ()
 
 void loop ()
 {
-  int speed;
+  uint32_t speed;
   if (success)
     speed = 100;
   else
