@@ -118,7 +118,7 @@ static uint8_t mode = MODE_OFF;
 // 0x280 is reserved by the makefile (right after out buffers) and 0x8000 should not be used anyways
 // To avoid problems inside the sketch a newer methode with RAMEND was introduced with HL2.0.5
 // for the u2 series only (to save flash with the 32u4)
-volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)BOOTKEY;
+static volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)BOOTKEY;
 
 // Backwardscompatibility with old Bootkey (adds 20 bytes of flash)
 // Undef to save flash for 32u4 devices
@@ -128,9 +128,9 @@ volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)BOOTKEY;
 #if (BAUDRATE_CDC_BOOTLOADER != 57600)
 #undef SECOND_BOOTKEY
 #elif defined(__AVR_ATmega32U4__)
-volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)0x8000;
+static volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)0x8000;
 #else
-volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)SECOND_BOOTKEY;
+static volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)SECOND_BOOTKEY;
 #endif
 
 /** Magic bootloader key to unlock forced application start mode. */
