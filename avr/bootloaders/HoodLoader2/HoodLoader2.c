@@ -662,11 +662,11 @@ static uint8_t FetchNextCommandByte(void)
 	{
 		Endpoint_ClearOUT();
 
-		do
+		while (!(Endpoint_IsOUTReceived()))
 		{
 			if (USB_DeviceState == DEVICE_STATE_Unattached)
-			return 0;
-		}while (!(Endpoint_IsOUTReceived()));
+			  return 0;
+		}
 	}
 
 	/* Fetch the next byte from the OUT endpoint */
@@ -781,12 +781,7 @@ static void Bootloader_Task(){
 	{
 		/* Clear the application section of flash */
 		for (uint32_t CurrFlashAddress = 0; CurrFlashAddress < (uint32_t)BOOT_START_ADDR; CurrFlashAddress += SPM_PAGESIZE)
-		{
-			boot_page_erase(CurrFlashAddress);
-			boot_spm_busy_wait();
-			boot_page_write(CurrFlashAddress);
-			boot_spm_busy_wait();
-		}
+			BootloaderAPI_ErasePage(CurrFlashAddress);
 
 		/* Send confirmation byte back to the host */
 		WriteNextResponseByte('\r');
@@ -795,7 +790,7 @@ static void Bootloader_Task(){
 	else if (Command == AVR109_COMMAND_WriteLockbits)
 	{
 		/* Set the lock bits to those given by the host */
-		boot_lock_bits_set(FetchNextCommandByte());
+		BootloaderAPI_WriteLock(FetchNextCommandByte());
 
 		/* Send confirmation byte back to the host */
 		WriteNextResponseByte('\r');
@@ -803,19 +798,19 @@ static void Bootloader_Task(){
 	#endif
 	else if (Command == AVR109_COMMAND_ReadLockbits)
 	{
-		WriteNextResponseByte(boot_lock_fuse_bits_get(GET_LOCK_BITS));
+		WriteNextResponseByte(BootloaderAPI_ReadLock());
 	}
 	else if (Command == AVR109_COMMAND_ReadLowFuses)
 	{
-		WriteNextResponseByte(boot_lock_fuse_bits_get(GET_LOW_FUSE_BITS));
+		WriteNextResponseByte(BootloaderAPI_ReadFuse(GET_LOW_FUSE_BITS));
 	}
 	else if (Command == AVR109_COMMAND_ReadHighFuses)
 	{
-		WriteNextResponseByte(boot_lock_fuse_bits_get(GET_HIGH_FUSE_BITS));
+		WriteNextResponseByte(BootloaderAPI_ReadFuse(GET_HIGH_FUSE_BITS));
 	}
 	else if (Command == AVR109_COMMAND_ReadExtendedFuses)
 	{
-		WriteNextResponseByte(boot_lock_fuse_bits_get(GET_EXTENDED_FUSE_BITS));
+		WriteNextResponseByte(BootloaderAPI_ReadFuse(GET_EXTENDED_FUSE_BITS));
 	}
 	#if !defined(NO_BLOCK_SUPPORT)
 	else if (Command == AVR109_COMMAND_GetBlockWriteSupport)
@@ -836,7 +831,7 @@ static void Bootloader_Task(){
 	else if (Command == AVR109_COMMAND_FillFlashPageWordHigh)
 	{
 		/* Write the high byte to the current flash page */
-		boot_page_fill(CurrAddress, FetchNextCommandByte());
+		BootloaderAPI_FillWord(CurrAddress, FetchNextCommandByte());
 
 		/* Send confirmation byte back to the host */
 		WriteNextResponseByte('\r');
@@ -844,7 +839,7 @@ static void Bootloader_Task(){
 	else if (Command == AVR109_COMMAND_FillFlashPageWordLow)
 	{
 		/* Write the low byte to the current flash page */
-		boot_page_fill(CurrAddress | 0x01, FetchNextCommandByte());
+		BootloaderAPI_FillWord(CurrAddress | 0x01, FetchNextCommandByte());
 
 		/* Increment the address */
 		CurrAddress += 2;
@@ -855,10 +850,7 @@ static void Bootloader_Task(){
 	else if (Command == AVR109_COMMAND_WriteFlashPage)
 	{
 		/* Commit the flash page to memory */
-		boot_page_write(CurrAddress);
-
-		/* Wait until write operation has completed */
-		boot_spm_busy_wait();
+		BootloaderAPI_WritePage(CurrAddress);
 
 		/* Send confirmation byte back to the host */
 		WriteNextResponseByte('\r');
@@ -879,7 +871,7 @@ static void Bootloader_Task(){
 	else if (Command == AVR109_COMMAND_WriteEEPROM)
 	{
 		/* Read the byte from the endpoint and write it to the EEPROM */
-		eeprom_write_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
+		eeprom_update_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
 
 		/* Increment the address after use */
 		CurrAddress += 2;
