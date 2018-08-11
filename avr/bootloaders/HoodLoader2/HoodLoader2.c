@@ -49,9 +49,9 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /** \file
-*
-*  Main source file for the CDC class bootloader. This file contains the complete bootloader logic.
-*/
+ *
+ *  Main source file for the CDC class bootloader. This file contains the complete bootloader logic.
+ */
 
 #define  INCLUDE_FROM_BOOTLOADERCDC_C
 #include "HoodLoader2.h"
@@ -247,7 +247,6 @@ static void ResetMCU(void){
 	wdt_enable(WDTO_250MS);
 	while(true);
 }
-
 
 /** Main program entry point. This routine configures the hardware required by the bootloader, then continuously
 *  runs the bootloader processing routine until instructed to soft-exit, or hard-reset via the watchdog to start
@@ -486,14 +485,13 @@ static void SetupHardware(void)
 }
 
 /** Event handler for the USB_ConfigurationChanged event. This configures the device's endpoints ready
-*  to relay data to and from the attached USB host.
-*/
+ *  to relay data to and from the attached USB host.
+ */
 void EVENT_USB_Device_ConfigurationChanged(void)
 {
 	/* Setup CDC Notification, Rx and Tx Endpoints */
 	Endpoint_ConfigureEndpoint(CDC_NOTIFICATION_EPADDR, EP_TYPE_INTERRUPT,
-		CDC_NOTIFICATION_EPSIZE, 1
-	);
+	                           CDC_NOTIFICATION_EPSIZE, 1);
 
 	Endpoint_ConfigureEndpoint(CDC_TX_EPADDR, EP_TYPE_BULK, CDC_TX_EPSIZE, CDC_TX_BANK_SIZE);
 
@@ -501,9 +499,9 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 }
 
 /** Event handler for the USB_ControlRequest event. This is used to catch and process control requests sent to
-*  the device from the USB host before passing along unhandled control requests to the library for processing
-*  internally.
-*/
+ *  the device from the USB host before passing along unhandled control requests to the library for processing
+ *  internally.
+ */
 void EVENT_USB_Device_ControlRequest(void)
 {
 	/* Ignore any requests that aren't directed to the CDC interface */
