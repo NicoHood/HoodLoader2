@@ -1,3 +1,6 @@
 [submodule "HoodLoader2.wiki"]
 	path = HoodLoader2.wiki
 	url = https://github.com/NicoHood/HoodLoader2.wiki.git
+[submodule "avr/bootloaders/lufa"]
+	path = avr/bootloaders/lufa
+	url = https://github.com/abcminiuser/lufa.git
