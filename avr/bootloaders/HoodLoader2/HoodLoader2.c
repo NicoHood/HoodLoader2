@@ -644,6 +644,112 @@ ISR(USART1_UDRE_vect, ISR_NAKED)
 	);
 }
 
+#if !defined(NO_BLOCK_SUPPORT)
+/** Reads or writes a block of EEPROM or FLASH memory to or from the appropriate CDC data endpoint, depending
+ *  on the AVR109 protocol command issued.
+ *
+ *  \param[in] Command  Single character AVR109 protocol command indicating what memory operation to perform
+ */
+static void ReadWriteMemoryBlock(const uint8_t Command)
+{
+	uint16_t BlockSize;
+	char     MemoryType;
+
+	uint8_t  HighByte = 0;
+	uint8_t  LowByte  = 0;
+
+	BlockSize  = (FetchNextCommandByte() << 8);
+	BlockSize |=  FetchNextCommandByte();
+
+	MemoryType =  FetchNextCommandByte();
+
+	if ((MemoryType != MEMORY_TYPE_FLASH) && (MemoryType != MEMORY_TYPE_EEPROM))
+	{
+		/* Send error byte back to the host */
+		WriteNextResponseByte('?');
+
+		return;
+	}
+
+	/* Check if command is to read a memory block */
+	if (Command == AVR109_COMMAND_BlockRead)
+	{
+		while (BlockSize--)
+		{
+			if (MemoryType == MEMORY_TYPE_FLASH)
+			{
+				/* Read the next FLASH byte from the current FLASH page */
+				#if (FLASHEND > 0xFFFF)
+				WriteNextResponseByte(pgm_read_byte_far(CurrAddress | HighByte));
+				#else
+				WriteNextResponseByte(pgm_read_byte(CurrAddress | HighByte));
+				#endif
+
+				/* If both bytes in current word have been read, increment the address counter */
+				if (HighByte)
+				  CurrAddress += 2;
+
+				HighByte = !HighByte;
+			}
+			else
+			{
+				/* Read the next EEPROM byte into the endpoint */
+				WriteNextResponseByte(eeprom_read_byte((uint8_t*)(intptr_t)(CurrAddress >> 1)));
+
+				/* Increment the address counter after use */
+				CurrAddress += 2;
+			}
+		}
+	}
+	else
+	{
+		uint32_t PageStartAddress = CurrAddress;
+
+		if (MemoryType == MEMORY_TYPE_FLASH)
+		  BootloaderAPI_ErasePage(PageStartAddress);
+
+		while (BlockSize--)
+		{
+			if (MemoryType == MEMORY_TYPE_FLASH)
+			{
+				/* If both bytes in current word have been written, increment the address counter */
+				if (HighByte)
+				{
+					/* Write the next FLASH word to the current FLASH page */
+					BootloaderAPI_FillWord(CurrAddress, ((FetchNextCommandByte() << 8) | LowByte));
+
+					/* Increment the address counter after use */
+					CurrAddress += 2;
+				}
+				else
+				{
+					LowByte = FetchNextCommandByte();
+				}
+
+				HighByte = !HighByte;
+			}
+			else
+			{
+				/* Write the next EEPROM byte from the endpoint */
+				eeprom_update_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
+
+				/* Increment the address counter after use */
+				CurrAddress += 2;
+			}
+		}
+
+		/* If in FLASH programming mode, commit the page after writing */
+		if (MemoryType == MEMORY_TYPE_FLASH)
+		{
+			/* Commit the flash page to memory */
+			BootloaderAPI_WritePage(PageStartAddress);
+		}
+
+		/* Send response byte back to the host */
+		WriteNextResponseByte('\r');
+	}
+}
+#endif
 
 /** Retrieves the next byte from the host in the CDC data OUT endpoint, and clears the endpoint bank if needed
  *  to allow reception of the next data packet from the host.
@@ -919,112 +1025,6 @@ static void Bootloader_Task(){
 	Endpoint_ClearOUT();
 }
 
-#if !defined(NO_BLOCK_SUPPORT)
-/** Reads or writes a block of EEPROM or FLASH memory to or from the appropriate CDC data endpoint, depending
- *  on the AVR109 protocol command issued.
- *
- *  \param[in] Command  Single character AVR109 protocol command indicating what memory operation to perform
- */
-static void ReadWriteMemoryBlock(const uint8_t Command)
-{
-	uint16_t BlockSize;
-	char     MemoryType;
-
-	uint8_t  HighByte = 0;
-	uint8_t  LowByte  = 0;
-
-	BlockSize  = (FetchNextCommandByte() << 8);
-	BlockSize |=  FetchNextCommandByte();
-
-	MemoryType =  FetchNextCommandByte();
-
-	if ((MemoryType != MEMORY_TYPE_FLASH) && (MemoryType != MEMORY_TYPE_EEPROM))
-	{
-		/* Send error byte back to the host */
-		WriteNextResponseByte('?');
-
-		return;
-	}
-
-	/* Check if command is to read a memory block */
-	if (Command == AVR109_COMMAND_BlockRead)
-	{
-		while (BlockSize--)
-		{
-			if (MemoryType == MEMORY_TYPE_FLASH)
-			{
-				/* Read the next FLASH byte from the current FLASH page */
-				#if (FLASHEND > 0xFFFF)
-				WriteNextResponseByte(pgm_read_byte_far(CurrAddress | HighByte));
-				#else
-				WriteNextResponseByte(pgm_read_byte(CurrAddress | HighByte));
-				#endif
-
-				/* If both bytes in current word have been read, increment the address counter */
-				if (HighByte)
-				  CurrAddress += 2;
-
-				HighByte = !HighByte;
-			}
-			else
-			{
-				/* Read the next EEPROM byte into the endpoint */
-				WriteNextResponseByte(eeprom_read_byte((uint8_t*)(intptr_t)(CurrAddress >> 1)));
-
-				/* Increment the address counter after use */
-				CurrAddress += 2;
-			}
-		}
-	}
-	else
-	{
-		uint32_t PageStartAddress = CurrAddress;
-
-		if (MemoryType == MEMORY_TYPE_FLASH)
-		  BootloaderAPI_ErasePage(PageStartAddress);
-
-		while (BlockSize--)
-		{
-			if (MemoryType == MEMORY_TYPE_FLASH)
-			{
-				/* If both bytes in current word have been written, increment the address counter */
-				if (HighByte)
-				{
-					/* Write the next FLASH word to the current FLASH page */
-					BootloaderAPI_FillWord(CurrAddress, ((FetchNextCommandByte() << 8) | LowByte));
-
-					/* Increment the address counter after use */
-					CurrAddress += 2;
-				}
-				else
-				{
-					LowByte = FetchNextCommandByte();
-				}
-
-				HighByte = !HighByte;
-			}
-			else
-			{
-				/* Write the next EEPROM byte from the endpoint */
-				eeprom_update_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
-
-				/* Increment the address counter after use */
-				CurrAddress += 2;
-			}
-		}
-
-		/* If in FLASH programming mode, commit the page after writing */
-		if (MemoryType == MEMORY_TYPE_FLASH)
-		{
-			/* Commit the flash page to memory */
-			BootloaderAPI_WritePage(PageStartAddress);
-		}
-
-		/* Send response byte back to the host */
-		WriteNextResponseByte('\r');
-	}
-}
-#endif
 
 /** Event handler for the CDC Class driver Line Encoding Changed event.
 *
