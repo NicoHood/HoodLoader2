@@ -155,7 +155,7 @@ void Application_Jump_Check(void)
 #endif
 
 	// Check the reason for the reset so we can act accordingly
-	uint8_t  mcusr_state = MCUSR;		// store the initial state of the Status register
+	uint8_t mcusr_state = MCUSR;		// store the initial state of the Status register
 	MCUSR = 0;							// clear all reset flags
 
 	/* Disable watchdog if enabled by bootloader/fuses */
@@ -202,7 +202,7 @@ void Application_Jump_Check(void)
 			}
 		}
 
-		// On a power-on reset, we ALWAYS want to go to the sketch. If there is one.
+		// On a power-on reset, we ALWAYS want to go to the sketch if there is one.
 		else if ((mcusr_state & (1 << PORF))){
 			if(!POWER_ON_TO_BOOTLOADER){
 				StartSketch();
@@ -358,7 +358,7 @@ int main(void)
 
 					// Enable USART again to flush the buffer
 					UCSR1B = (_BV(RXCIE1) | _BV(TXEN1) | _BV(RXEN1) | _BV(UDRIE1));
-					
+
 					// Force Leds to turn on
 					USBtoUSART_free = 0;
 				}
@@ -479,7 +479,7 @@ static void SetupHardware(void)
 
 	/* Start the flush timer for Leds */
 	TCCR0B = (1 << CS02); // clk I/O / 256 (From prescaler)
-	
+
 	// Inits Serial pins, leds, reset and erase pins
 	// No need to turn off Leds, this is done in the bootkey check function
 	Board_Init();
