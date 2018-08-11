@@ -923,22 +923,22 @@ static void Bootloader_Task(){
 
 #if !defined(NO_BLOCK_SUPPORT)
 /** Reads or writes a block of EEPROM or FLASH memory to or from the appropriate CDC data endpoint, depending
-*  on the AVR109 protocol command issued.
-*
-*  \param[in] Command  Single character AVR109 protocol command indicating what memory operation to perform
-*/
+ *  on the AVR109 protocol command issued.
+ *
+ *  \param[in] Command  Single character AVR109 protocol command indicating what memory operation to perform
+ */
 static void ReadWriteMemoryBlock(const uint8_t Command)
 {
 	uint16_t BlockSize;
 	char     MemoryType;
 
 	uint8_t  HighByte = 0;
-	uint8_t  LowByte = 0;
+	uint8_t  LowByte  = 0;
 
-	BlockSize = (FetchNextCommandByte() << 8);
-	BlockSize |= FetchNextCommandByte();
+	BlockSize  = (FetchNextCommandByte() << 8);
+	BlockSize |=  FetchNextCommandByte();
 
-	MemoryType = FetchNextCommandByte();
+	MemoryType =  FetchNextCommandByte();
 
 	if ((MemoryType != MEMORY_TYPE_FLASH) && (MemoryType != MEMORY_TYPE_EEPROM))
 	{
@@ -951,9 +951,6 @@ static void ReadWriteMemoryBlock(const uint8_t Command)
 	/* Check if command is to read a memory block */
 	if (Command == AVR109_COMMAND_BlockRead)
 	{
-		/* Re-enable RWW section */
-		boot_rww_enable();
-
 		while (BlockSize--)
 		{
 			if (MemoryType == MEMORY_TYPE_FLASH)
@@ -967,7 +964,7 @@ static void ReadWriteMemoryBlock(const uint8_t Command)
 
 				/* If both bytes in current word have been read, increment the address counter */
 				if (HighByte)
-				CurrAddress += 2;
+				  CurrAddress += 2;
 
 				HighByte = !HighByte;
 			}
@@ -986,10 +983,7 @@ static void ReadWriteMemoryBlock(const uint8_t Command)
 		uint32_t PageStartAddress = CurrAddress;
 
 		if (MemoryType == MEMORY_TYPE_FLASH)
-		{
-			boot_page_erase(PageStartAddress);
-			boot_spm_busy_wait();
-		}
+		  BootloaderAPI_ErasePage(PageStartAddress);
 
 		while (BlockSize--)
 		{
@@ -999,7 +993,7 @@ static void ReadWriteMemoryBlock(const uint8_t Command)
 				if (HighByte)
 				{
 					/* Write the next FLASH word to the current FLASH page */
-					boot_page_fill(CurrAddress, ((FetchNextCommandByte() << 8) | LowByte));
+					BootloaderAPI_FillWord(CurrAddress, ((FetchNextCommandByte() << 8) | LowByte));
 
 					/* Increment the address counter after use */
 					CurrAddress += 2;
@@ -1014,7 +1008,7 @@ static void ReadWriteMemoryBlock(const uint8_t Command)
 			else
 			{
 				/* Write the next EEPROM byte from the endpoint */
-				eeprom_write_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
+				eeprom_update_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
 
 				/* Increment the address counter after use */
 				CurrAddress += 2;
@@ -1025,10 +1019,7 @@ static void ReadWriteMemoryBlock(const uint8_t Command)
 		if (MemoryType == MEMORY_TYPE_FLASH)
 		{
 			/* Commit the flash page to memory */
-			boot_page_write(PageStartAddress);
-
-			/* Wait until write operation has completed */
-			boot_spm_busy_wait();
+			BootloaderAPI_WritePage(PageStartAddress);
 		}
 
 		/* Send response byte back to the host */
