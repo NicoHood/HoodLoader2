@@ -508,7 +508,7 @@ void EVENT_USB_Device_ControlRequest(void)
 {
 	/* Ignore any requests that aren't directed to the CDC interface */
 	if ((USB_ControlRequest.bmRequestType & (CONTROL_REQTYPE_TYPE | CONTROL_REQTYPE_RECIPIENT)) !=
-	(REQTYPE_CLASS | REQREC_INTERFACE))
+	    (REQTYPE_CLASS | REQREC_INTERFACE))
 	{
 		return;
 	}
@@ -648,10 +648,10 @@ ISR(USART1_UDRE_vect, ISR_NAKED)
 
 
 /** Retrieves the next byte from the host in the CDC data OUT endpoint, and clears the endpoint bank if needed
-*  to allow reception of the next data packet from the host.
-*
-*  \return Next received byte from the host in the CDC data OUT endpoint
-*/
+ *  to allow reception of the next data packet from the host.
+ *
+ *  \return Next received byte from the host in the CDC data OUT endpoint
+ */
 static uint8_t FetchNextCommandByte(void)
 {
 	/* Select the OUT endpoint so that the next data byte can be read */
@@ -674,10 +674,10 @@ static uint8_t FetchNextCommandByte(void)
 }
 
 /** Writes the next response byte to the CDC data IN endpoint, and sends the endpoint back if needed to free up the
-*  bank when full ready for the next byte in the packet to the host.
-*
-*  \param[in] Response  Next response byte to send to the host
-*/
+ *  bank when full ready for the next byte in the packet to the host.
+ *
+ *  \param[in] Response  Next response byte to send to the host
+ */
 static void WriteNextResponseByte(const uint8_t Response)
 {
 	/* Select the IN endpoint so that the next data byte can be written */
@@ -723,7 +723,7 @@ static void Bootloader_Task(){
 		WriteNextResponseByte('\r');
 	}
 	else if ((Command == AVR109_COMMAND_SetLED) || (Command == AVR109_COMMAND_ClearLED) ||
-	(Command == AVR109_COMMAND_SelectDeviceType))
+	         (Command == AVR109_COMMAND_SelectDeviceType))
 	{
 		FetchNextCommandByte();
 
@@ -749,8 +749,8 @@ static void Bootloader_Task(){
 	else if (Command == AVR109_COMMAND_SetCurrentAddress)
 	{
 		/* Set the current address to that given by the host (translate 16-bit word address to byte address) */
-		CurrAddress = (FetchNextCommandByte() << 9);
-		CurrAddress |= (FetchNextCommandByte() << 1);
+		CurrAddress   = (FetchNextCommandByte() << 9);
+		CurrAddress  |= (FetchNextCommandByte() << 1);
 
 		/* Send confirmation byte back to the host */
 		WriteNextResponseByte('\r');
@@ -764,7 +764,7 @@ static void Bootloader_Task(){
 	{
 		/* Write the 7-byte software identifier to the endpoint */
 		for (uint8_t CurrByte = 0; CurrByte < 7; CurrByte++)
-		WriteNextResponseByte(SOFTWARE_IDENTIFIER[CurrByte]);
+		  WriteNextResponseByte(SOFTWARE_IDENTIFIER[CurrByte]);
 	}
 	else if (Command == AVR109_COMMAND_ReadBootloaderSWVersion)
 	{
