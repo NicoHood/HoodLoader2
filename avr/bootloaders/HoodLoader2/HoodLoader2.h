@@ -29,7 +29,7 @@
 */
 
 /*
-Copyright(c) 2014-2015 NicoHood
+Copyright(c) 2014-2018 NicoHood
 See the readme for credit to other people.
 
 This file is part of Hoodloader2.
@@ -165,4 +165,3 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#endif
 
 #endif
-
