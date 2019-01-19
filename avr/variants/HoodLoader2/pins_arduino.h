@@ -113,7 +113,9 @@ static const uint8_t MISO = 3;
                                 0 ) ) )
 
 // 8 interrupts!
-#define digitalPinToInterrupt(p) ((p) == 13 ? 0 : ((p) == 14 ? 1 : ((p) == 15 ? 2 : ((p) == 16 ? 3 : ((p) == 8 ? 4 : ((p) == 17 ? 5 : ((p) == 19 ? 6 : ((p) == 20 ? 7 : NOT_AN_INTERRUPT))))))))
+// These are "mixed around" by the Arduino core libraries for "historic reasons"
+// https://github.com/arduino/ArduinoCore-avr/blob/c27aef0e/cores/arduino/WInterrupts.c#L292
+#define digitalPinToInterrupt(p) ((p) == 8 ? 0 : ((p) == 17 ? 1 : ((p) == 13 ? 2 : ((p) == 14 ? 3 : ((p) == 15 ? 4 : ((p) == 16 ? 5 : ((p) == 19 ? 6 : ((p) == 20 ? 7 : NOT_AN_INTERRUPT))))))))
 
 
 #ifdef ARDUINO_MAIN
@@ -141,9 +143,9 @@ D13 - [NC] PD0 INT0 TIMER0B
 D14 - [NC] PD1 INT1
 D15 - PD2 INT2 USART1 RX
 D16 - PD3 INT3 USART1 TX
-D17 - PD4 INT4    RXLED
+D17 - PD4 INT5    RXLED
 D18 - PD5 PCINT12 TXLED
-D19 - [NC] PD6 INT5
+D19 - [NC] PD6 INT6
 D20 - PD7 INT7 328 / 2560 RESET
 */
 
