@@ -116,7 +116,7 @@
 #if (HEXFILE == HEXFILE_HoodLoader2_0_5_Uno_atmega16u2_hex) || (HEXFILE == HEXFILE_HoodLoader2_0_5_Mega_atmega16u2_hex) \
 || (HEXFILE == HEXFILE_HoodLoader2_0_4_Uno_16u2_hex) || (HEXFILE == HEXFILE_HoodLoader2_0_4_Mega_16u2_hex) \
 || (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full) \
-|| (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega_Rev3_hex_Full) \
+|| (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex_Full) \
 || (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex) \
 || (HEXFILE == HEXFILE_BootloaderDFU_atmega16u2_hex)
 
@@ -199,7 +199,7 @@
 
 // DFU settings
 #if (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Uno_Rev3_hex_Full) \
-|| (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega_Rev3_hex_Full)
+|| (HEXFILE == HEXFILE_Arduino_COMBINED_dfu_usbserial_atmega16u2_Mega2560_Rev3_hex_Full)
 
 #define START_ADDRESS 0x0000 // Bootloader + Firmware
 #define HIGH_FUSE 0xD9 // fuse high byte: SPI enable, NOT boot into bootloader, 4096 byte bootloader
