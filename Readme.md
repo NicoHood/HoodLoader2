@@ -24,7 +24,7 @@ With version 2.0.5 you can now use HoodLoader2 also on a 32u4 which gives you ev
 
 Please __read the wiki carefully__ to avoid any problems. You will find most of the answers to your questions already in the wiki.
 
-<a href="https://www.buymeacoffee.com/Mnwg9NrCK" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+<a href="https://www.buymeacoffee.com/nicohood" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 Wiki
 ====
