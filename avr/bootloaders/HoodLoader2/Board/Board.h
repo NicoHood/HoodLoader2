@@ -57,6 +57,7 @@ extern "C" {
 			#define ARDUINO_MICRO_PID   		0x0037 // Bootloader, not program!
 			#define ARDUINO_DUE_PID             0x003D
 			
+			#ifndef USB_DESCRIPTOR_STRING // If the Makefile did not supply a product string...
 			// USB product string settings
 			#if (PRODUCTID == ARDUINO_UNO_PID)
 			#define USB_DESCRIPTOR_STRING L"HoodLoader2 Uno"
@@ -72,6 +73,7 @@ extern "C" {
 			#define USB_DESCRIPTOR_STRING L"HoodLoader2 Due"
 			#else
 			#define USB_DESCRIPTOR_STRING L"HoodLoader2 Lufa"
+			#endif
 			#endif
 			
 			// Arduino Due 16u2
