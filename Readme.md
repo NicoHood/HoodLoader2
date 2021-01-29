@@ -47,6 +47,11 @@ Version History
 * Added examples to the IDE menu
 * Added IDE version warning
 * Fixed Leonardo/Micro board definitions
+TODO make Magic Bootkey static
+TODO Descriptor switch case -> if/else
+TODO try ORDERED_EP_CONFIG option to reduce code size even more
+TODO update lufa to latest version
+TODO try LTO
 
 2.0.5 Release (26.09.2015)
 * No need for HID-Project anymore, PR3640 added u2 support to IDE 1.6.6
