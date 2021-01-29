@@ -85,7 +85,7 @@ const USB_Descriptor_Device_t DESCRIPTOR_PROGMEM DeviceDescriptor =
 	// passed through makefile
 	.VendorID = VENDORID,
 	.ProductID = PRODUCTID,
-	.ReleaseNumber          = VERSION_BCD(2,0,5),
+	.ReleaseNumber          = VERSION_BCD(2,0,6),
 
 	.ManufacturerStrIndex   = STRING_ID_Manufacturer,
 	.ProductStrIndex        = STRING_ID_Product,
