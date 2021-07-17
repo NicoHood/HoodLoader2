@@ -1,0 +1,6 @@
+atmega16u2 0x2341 0x0043 HoodLoader2 Uno
+atmega16u2 0x2341 0x0042 HoodLoader2 Mega
+atmega16u2 0x2341 0x0044 HoodLoader2 ADK
+atmega32u4 0x2341 0x0036 HoodLoader2 Leo
+atmeag32u4 0x2341 0x0037 HoodLoader2 Micro
+atmega32u4 0x2341 0x003c HoodLoader2 Esplora
