@@ -61,6 +61,17 @@ HOODLOADER2_OPTS += -DPOWER_ON_TO_BOOTLOADER=false
 # Pull the pin low to disable autoreset. You may change the pin in the Board.h file
 #HOODLOADER2_OPTS += -DAUTORESET_JUMPER
 
+
+# Arduino modifications to support DebugWire:
+#  SoftwareReset:
+#   Due to SoftwareReset it is possible to optionally replace the capacitor
+#   between DTR (pin 20) of the USB MCU and RESET pin (PB6) of the main MCU by a resistor.
+#   This enables ISP programming without a bypass capacitor of 10 μF
+#   which is usually needed to be connected to main MCU's RESET and GND.
+#   Furthermore it does not affect upload to Arduinos with capacitor! (==> enabled by default)
+HOODLOADER2_OPTS += -DUSING_SOFTWARE_RESET # needs 4 Bytes of flash memory only
+
+
 # Bootkey locations
 # 2nd Bootkey is not used for 32u4 devices (due to flash size)
 # 2nd Bootkey option only makes sense if you compile with the old programming speed 57600
