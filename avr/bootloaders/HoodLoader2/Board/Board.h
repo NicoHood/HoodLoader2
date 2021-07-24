@@ -156,11 +156,27 @@ extern "C" {
 			#define AUTORESET_DDR DDRB
 			#define AUTORESET_PIN PINB
 			#define AUTORESET_MASK (1 << PB4) // D8
+
+			/* Pin that can power the main MCU */
+			#define AVR_VCCEN_LINE_PORT  PORTB
+			#define AVR_VCCEN_LINE_DDR   DDRB
+			#define AVR_VCCEN_LINE_PIN   PINB
+			#define AVR_VCCEN_LINE_MASK  (1 << PB5) // D9
 			
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Board_Init(void)
 			{
+				/* switch on the main MCU */
+				#ifdef WITH_VCC_ENABLE
+					// when switching is done via pullup/input pin can stay input (saves 2 bytes)
+					AVR_VCCEN_LINE_DDR  |= AVR_VCCEN_LINE_MASK; // Set VCCEN pin to output
+					#if(VCCEN_ACTIVE_HIGH)
+						AVR_VCCEN_LINE_PORT |= AVR_VCCEN_LINE_MASK; // VCCEN is HIGH active (n-ch mosfet)
+					#else
+						AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK; // VCCEN is LOW active (p-ch mosfet)
+					#endif
+				#endif
 				// We use = here since the pins should be input/low anyways.
 				// This saves us some more bytes for flash
 				DDRD = LEDMASK_TX | (1 << PD3) | AVR_RESET_LINE_MASK;
@@ -216,11 +232,26 @@ extern "C" {
 			#define AUTORESET_PIN PINB
 			#define AUTORESET_MASK (1 << PB6) // D6
 
+			/* Pin that can power the main MCU */
+			#define AVR_VCCEN_LINE_PORT  PORTB
+			#define AVR_VCCEN_LINE_DDR   DDRB
+			#define AVR_VCCEN_LINE_PIN   PINB
+			#define AVR_VCCEN_LINE_MASK  (1 << PB5) // D5
 			
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Board_Init(void)
 			{
+				/* switch on the main MCU */
+				#ifdef WITH_VCC_ENABLE
+					// when switching is done via pullup/input pin can stay input (saves 2 bytes)
+					AVR_VCCEN_LINE_DDR  |= AVR_VCCEN_LINE_MASK; // Set VCCEN pin to output
+					#if(VCCEN_ACTIVE_HIGH)
+						AVR_VCCEN_LINE_PORT |= AVR_VCCEN_LINE_MASK; // VCCEN is HIGH active (n-ch mosfet)
+					#else
+						AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK; // VCCEN is LOW active (p-ch mosfet)
+					#endif
+				#endif
 				DDRD |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
 				PORTD |= AVR_RESET_LINE_MASK;
 				PORTD |= (1 << PD2);

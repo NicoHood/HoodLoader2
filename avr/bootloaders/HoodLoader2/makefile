@@ -71,6 +71,15 @@ HOODLOADER2_OPTS += -DPOWER_ON_TO_BOOTLOADER=false
 #   Furthermore it does not affect upload to Arduinos with capacitor! (==> enabled by default)
 HOODLOADER2_OPTS += -DUSING_SOFTWARE_RESET # needs 4 Bytes of flash memory only
 
+#  PowerSwitch:
+#   A Mosfet is soldered between +5V and the output of the voltage regulator
+#   to switch on/off power supply of the main MCU by software running on USB MCU.
+#   Besides the power supply of the USB MCU is not affected.
+#   The default VCCEN pin to control the active low p-channel mosfet is PB5. (set to output!!!)
+#HOODLOADER2_OPTS += -DWITH_VCC_ENABLE
+#   change this to true for n-ch Mosfet (tricky to use because of n-channels inflated GS-Voltage)
+#HOODLOADER2_OPTS += -DVCCEN_ACTIVE_HIGH=false # false (default) for p-ch Mosfet (recommanded)
+
 
 # Bootkey locations
 # 2nd Bootkey is not used for 32u4 devices (due to flash size)
