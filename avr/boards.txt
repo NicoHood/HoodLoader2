@@ -46,9 +46,9 @@ HoodLoader2atmega16u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEN
 
 #Board selection (only important for burning bootloaders)
 HoodLoader2atmega16u2.menu.board.uno=HoodLoader2 Uno
-HoodLoader2atmega16u2.menu.board.uno.bootloader.file=HexFiles/HoodLoader2_0_5_Uno_atmega16u2.hex
+HoodLoader2atmega16u2.menu.board.uno.bootloader.file=HexFiles/HoodLoader2_0_6_Uno_atmega16u2.hex
 HoodLoader2atmega16u2.menu.board.mega2560=HoodLoader2 Mega
-HoodLoader2atmega16u2.menu.board.mega2560.bootloader.file=HexFiles/HoodLoader2_0_5_Mega_atmega16u2.hex
+HoodLoader2atmega16u2.menu.board.mega2560.bootloader.file=HexFiles/HoodLoader2_0_6_Mega_atmega16u2.hex
 HoodLoader2atmega16u2.menu.board.dev=HoodLoader2 Dev
 HoodLoader2atmega16u2.menu.board.dev.bootloader.file=HoodLoader2/HoodLoader2.hex
 
@@ -120,9 +120,9 @@ HoodLoader2atmega32u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEN
 
 #Board selection (only important for burning bootloaders)
 HoodLoader2atmega32u2.menu.board.uno=HoodLoader2 Uno
-HoodLoader2atmega32u2.menu.board.uno.bootloader.file=HexFiles/HoodLoader2_0_5_Uno_atmega32u2.hex
+HoodLoader2atmega32u2.menu.board.uno.bootloader.file=HexFiles/HoodLoader2_0_6_Uno_atmega32u2.hex
 HoodLoader2atmega32u2.menu.board.mega2560=HoodLoader2 Mega
-HoodLoader2atmega32u2.menu.board.mega2560.bootloader.file=HexFiles/HoodLoader2_0_5_Mega_32u2.hex
+HoodLoader2atmega32u2.menu.board.mega2560.bootloader.file=HexFiles/HoodLoader2_0_6_Mega_32u2.hex
 HoodLoader2atmega32u2.menu.board.dev=HoodLoader2 Dev
 HoodLoader2atmega32u2.menu.board.dev.bootloader.file=HoodLoader2/HoodLoader2.hex
 
@@ -179,9 +179,9 @@ HoodLoader2atmega8u2.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND
 
 #Board selection (only important for burning bootloaders)
 HoodLoader2atmega8u2.menu.board.uno=HoodLoader2 Uno
-HoodLoader2atmega8u2.menu.board.uno.bootloader.file=HexFiles/HoodLoader2_0_5_Uno_atmega8u2.hex
+HoodLoader2atmega8u2.menu.board.uno.bootloader.file=HexFiles/HoodLoader2_0_6_Uno_atmega8u2.hex
 HoodLoader2atmega8u2.menu.board.mega2560=HoodLoader2 Mega
-HoodLoader2atmega8u2.menu.board.mega2560.bootloader.file=HexFiles/HoodLoader2_0_5_Mega_atmega8u2.hex
+HoodLoader2atmega8u2.menu.board.mega2560.bootloader.file=HexFiles/HoodLoader2_0_6_Mega_atmega8u2.hex
 
 # DFU fuse settings are not suitable for HoodLoader2
 HoodLoader2atmega8u2.menu.board.dfu=DFU
@@ -237,9 +237,9 @@ HoodLoader2at90usb82.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEND
 
 #Board selection (only important for burning bootloaders)
 HoodLoader2at90usb82.menu.board.uno=HoodLoader2 Uno
-HoodLoader2at90usb82.menu.board.uno.bootloader.file=HexFiles/HoodLoader2_0_5_Uno_at90usb82.hex
+HoodLoader2at90usb82.menu.board.uno.bootloader.file=HexFiles/HoodLoader2_0_6_Uno_at90usb82.hex
 HoodLoader2at90usb82.menu.board.mega2560=HoodLoader2 Mega
-HoodLoader2at90usb82.menu.board.mega2560.bootloader.file=HexFiles/HoodLoader2_0_5_Mega_at90usb82.hex
+HoodLoader2at90usb82.menu.board.mega2560.bootloader.file=HexFiles/HoodLoader2_0_6_Mega_at90usb82.hex
 
 # DFU fuse settings are not suitable for HoodLoader2
 HoodLoader2at90usb82.menu.board.dfu=DFU
@@ -295,9 +295,9 @@ HoodLoader2at90usb162.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEN
 
 #Board selection (only important for burning bootloaders)
 HoodLoader2at90usb162.menu.board.uno=HoodLoader2 Uno
-HoodLoader2at90usb162.menu.board.uno.bootloader.file=HexFiles/HoodLoader2_0_5_Uno_at90usb162.hex
+HoodLoader2at90usb162.menu.board.uno.bootloader.file=HexFiles/HoodLoader2_0_6_Uno_at90usb162.hex
 HoodLoader2at90usb162.menu.board.mega2560=HoodLoader2 Mega
-HoodLoader2at90usb162.menu.board.mega2560.bootloader.file=HexFiles/HoodLoader2_0_5_Mega_at90usb162.hex
+HoodLoader2at90usb162.menu.board.mega2560.bootloader.file=HexFiles/HoodLoader2_0_6_Mega_at90usb162.hex
 
 # DFU fuse settings are not suitable for HoodLoader2
 HoodLoader2at90usb162.menu.board.dfu=DFU
@@ -351,9 +351,9 @@ HoodLoader2atmega32u4.build.extra_flags={build.usb_flags} -DMAGIC_KEY_POS=(RAMEN
 
 #Board/Bootloader selection
 HoodLoader2atmega32u4.menu.board.leo=HoodLoader2 Leonardo
-HoodLoader2atmega32u4.menu.board.leo.bootloader.file=HexFiles/HoodLoader2_0_5_Leonardo_atmega32u4.hex
+HoodLoader2atmega32u4.menu.board.leo.bootloader.file=HexFiles/HoodLoader2_0_6_Leonardo_atmega32u4.hex
 HoodLoader2atmega32u4.menu.board.micro=HoodLoader2 Micro
-HoodLoader2atmega32u4.menu.board.micro.bootloader.file=HexFiles/HoodLoader2_0_5_Micro_atmega32u4.hex
+HoodLoader2atmega32u4.menu.board.micro.bootloader.file=HexFiles/HoodLoader2_0_6_Micro_atmega32u4.hex
 HoodLoader2atmega32u4.menu.board.micro.build.variant=arduino:micro
 HoodLoader2atmega32u4.menu.board.micro.build.pid=0x8037
 HoodLoader2atmega32u4.menu.board.micro.build.board=AVR_MICRO
